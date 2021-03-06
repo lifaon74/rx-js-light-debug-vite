@@ -1,0 +1,12 @@
+<div
+  class="modal-container"
+  *for="let modal of $.modals.subscribe"
+  (click)="$.onClickModalContainer"
+  [class.visible]="modal.visible"
+>
+  <rx-inject-content
+    content="modal.template"
+  ></rx-inject-content>
+</div>
+
+

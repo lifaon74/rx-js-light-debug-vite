@@ -1,0 +1,33 @@
+@import '../../../../../style/mixins';
+
+:host {
+  display: block;
+  //margin: 0 auto;
+  //max-width: 500px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+
+  & > .tiles-list {
+    //margin: (-15px);
+    margin: 0 auto;
+    max-width: 500px;
+
+    & > * { // .tile
+      padding: 15px;
+
+      & > .content {
+        & > img,
+        & > iframe {
+          width: 100%;
+        }
+
+        & > iframe {
+          // @include aspect-ratio-mixin(16, 9);
+          aspect-ratio: 16 / 9;
+        }
+      }
+    }
+  }
+}
+

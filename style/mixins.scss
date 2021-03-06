@@ -1,0 +1,25 @@
+
+@mixin aspect-ratio-mixin($width, $height) {
+  $ratio: '#{$width} / ${$height}';
+
+  // https://codepen.io/una/pen/BazyaOM
+  // https://css-tricks.com/aspect-ratio-boxes/
+
+  // sass-lint:disable-all
+  aspect-ratio: #{$ratio};
+  // sass-lint:enable-all
+
+  @supports not (aspect-ratio: #{$ratio}) {
+    &::before {
+      float: left;
+      padding-top: ($width / $height) * 100%;
+      content: '';
+    }
+
+    &::after {
+      display: block;
+      content: '';
+      clear: both;
+    }
+  }
+}

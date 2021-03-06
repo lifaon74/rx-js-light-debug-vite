@@ -1,0 +1,35 @@
+<div class="tiles-list">
+  <div
+    class="tile"
+    *for="let tile of $.$tiles$.subscribe"
+  >
+    <div
+      class="title"
+      *if="of(tile.title)"
+    >
+      {{ of(tile.title) }}
+    </div>
+    <div
+      class="content"
+    >
+      <rx-switch
+        expression="of(tile.resource.kind)"
+      >
+        <img
+          *switch-case="'image'"
+          [src]="of(tile.resource.url)"
+        >
+        <iframe
+          *switch-case="'youtube'"
+          [src]="of(tile.resource.url)"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </rx-switch>
+    </div>
+  </div>
+</div>
+
+
+
