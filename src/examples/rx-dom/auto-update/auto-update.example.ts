@@ -1,5 +1,5 @@
 import {
-  compileReactiveHTMLAsComponentTemplate, Component, DEFAULT_ARITHMETIC_CONSTANTS_TO_IMPORT,
+  compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_ARITHMETIC_CONSTANTS_TO_IMPORT,
   DEFAULT_CONSTANTS_TO_IMPORT, HTMLElementConstructor, nodeAppendChild, OnCreate, DEFAULT_CASTING_CONSTANTS_TO_IMPORT, bootstrap
 } from '@lifaon/rx-dom';
 import {
@@ -35,7 +35,7 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-main',
-  template: compileReactiveHTMLAsComponentTemplate(`
+  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <div>
       <input
         #input-a

@@ -1,35 +1,17 @@
 import {
-  createLocalesSource, createMulticastReplayLastSource, createSubscribeFunctionProxy, createUnicastReplayLastSource,
-  dateTimeShortcutFormatSubscribePipe, fromEventTarget, fromFetch,
-  fromMatchMedia, fromPromise,
-  IDateTimeFormatValue,
-  IDateTimeShortcutFormat, IDefaultNotificationsUnion, IEmitFunction,
-  IMulticastReplayLastSource,
-  interval,
-  ISubscribeFunction,
-  ISubscribeFunctionFromFetchNotifications,
-  ISubscribeFunctionProxy,
-  ISubscribePipeFunction, ISubscription, IUnicastReplayLastSource, mapSubscribePipe,
-  mergeMapSubscribePipeWithNotifications,
-  mergeWithNotifications,
-  numberFormatSubscribePipe, of,
-  pipeSubscribeFunction, reactiveFunction, sourceSubscribePipe,
-  Subscription,
-  asyncUnsubscribe,
-  conditionalSubscribePipe,
-  expression,
+  asyncUnsubscribe, conditionalSubscribePipe, createLocalesSource, createMulticastReplayLastSource,
+  createSubscribeFunctionProxy, createUnicastReplayLastSource, dateTimeShortcutFormatSubscribePipe, expression,
+  fromFetch, fromMatchMedia, fromPromise, IDateTimeFormatValue, IDateTimeShortcutFormat, IDefaultNotificationsUnion,
+  IMulticastReplayLastSource, interval, ISubscribeFunction, ISubscribeFunctionFromFetchNotifications,
+  ISubscribeFunctionProxy, ISubscribePipeFunction, IUnicastReplayLastSource, mapSubscribePipe,
+  mergeMapSubscribePipeWithNotifications, mergeWithNotifications, numberFormatSubscribePipe, of, pipeSubscribeFunction,
+  reactiveFunction, sourceSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate,
-  compileReactiveHTMLAsModuleWithStats, createDocumentFragment,
-  createElementNode,
-  DEFAULT_CONSTANTS_TO_IMPORT,
-  DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, getFirstElementChild, IReactiveContent, nodeAppendChild, uuid,
-  wrapHTMLTemplateForComponentTemplate,
-  Component,
-  OnCreate,
-  OnConnect,
-  OnDisconnect,
+  bootstrap,
+  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component, createElementNode,
+  DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, nodeAppendChild, OnConnect, OnCreate,
+  OnDisconnect, uuid,
 } from '@lifaon/rx-dom';
 import { AppWindowComponent } from './window-component/window.component';
 import { noCORS } from '../../examples/misc/no-cors';
@@ -261,9 +243,9 @@ async function debugReactiveDOMCompiler1() {
     items: $of([1, 2, 3].map($of)),
     trackByFn: (_: any) => _,
     clickCondition: clickSource.subscribe,
-    content: $of(compileReactiveHTMLAsComponentTemplate(`
+    content: $of(compileAndEvaluateReactiveHTMLAsComponentTemplate(`
       hello world
-    `)({})),
+    `, {})({})),
     switchValue: $of(3)
   };
 
@@ -272,7 +254,7 @@ async function debugReactiveDOMCompiler1() {
   // console.log(compileHTMLAsHTMLTemplate(html).join('\n'));
 
   // console.time('compilation');
-  // const template = compileReactiveHTMLAsComponentTemplate<GData>(html.trim());
+  // const template = compileAndEvaluateReactiveHTMLAsComponentTemplate<GData>(html.trim());
   // console.timeEnd('compilation');
   // console.time('injection');
   // const node = template(data);
@@ -302,15 +284,15 @@ async function debugReactiveDOMCompiler1() {
    * - wins compiler size and compilation time
    * - potentially less performant if user has a connection lower than 1.25Mb/s (125KB/s) (10% of 1.25MB/s - compile time)
    */
-  const componentCode: string = await compileReactiveHTMLAsModuleWithStats(html);
-  navigator.clipboard.writeText(componentCode);
-  const dataURL: string = `data:application/javascript;base64,${ btoa(unescape(encodeURIComponent(componentCode))) }`;
-  const module = await import(dataURL);
-  const template = wrapHTMLTemplateForComponentTemplate(module.default, DEFAULT_CONSTANTS_TO_IMPORT);
-  console.time('injection');
-  const node = template(data);
-  nodeAppendChild(document.body, node);
-  console.timeEnd('injection');
+  // const componentCode: string = await compileReactiveHTMLAsModuleWithStats(html);
+  // navigator.clipboard.writeText(componentCode);
+  // const dataURL: string = `data:application/javascript;base64,${ btoa(unescape(encodeURIComponent(componentCode))) }`;
+  // const module = await import(dataURL);
+  // const template = wrapHTMLTemplateForComponentTemplate(module.default, DEFAULT_CONSTANTS_TO_IMPORT);
+  // console.time('injection');
+  // const node = template(data);
+  // nodeAppendChild(document.body, node);
+  // console.timeEnd('injection');
 }
 
 
@@ -373,7 +355,7 @@ async function debugReactiveDOMCompiler2() {
     </button>
   `;
 
-  nodeAppendChild(document.body, compileReactiveHTMLAsComponentTemplate(html.trim())(data));
+  nodeAppendChild(document.body, compileAndEvaluateReactiveHTMLAsComponentTemplate(html.trim(), DEFAULT_CONSTANTS_TO_IMPORT)(data));
 
   // const module = compileHTMLAsModule(html).join('\n');
   // console.log(await minify(module));
@@ -396,7 +378,7 @@ async function debugReactiveDOMCompiler3() {
 
     @Component({
       name: 'app-date',
-      template: compileReactiveHTMLAsComponentTemplate<IData>(`
+      template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
         {{ $.date }}
       `,
         CONSTANTS_TO_IMPORT
@@ -447,7 +429,7 @@ async function debugReactiveDOMCompiler3() {
 
     @Component({
       name: 'app-main',
-      template: compileReactiveHTMLAsComponentTemplate<IData>(`
+      template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
         <div>
           <app-date [date]="$.time"></app-date>
         </div>
@@ -537,7 +519,7 @@ async function debugReactiveDOMCompiler4() {
 
     @Component({
       name: 'app-main',
-      template: compileReactiveHTMLAsComponentTemplate<IData>(`
+      template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
         <form
           (submit)="$.onSubmitForm"
         >
@@ -686,7 +668,7 @@ async function debugReactiveDOMCompiler5() {
 
     @Component({
       name: 'app-main',
-      template: compileReactiveHTMLAsComponentTemplate<IData>(`
+      template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
         <div>{{ $.proxy.name.$ }}</div>
         <div>{{ $.proxy.email.$ }}</div>
         <div>{{ $.proxy.items.length.$ }}</div>
@@ -788,7 +770,7 @@ async function debugReactiveDOMCompiler5() {
 //
 //     @Component({
 //       name: 'app-popup-manager',
-//       template: compileReactiveHTMLAsComponentTemplate<IData>(`
+//       template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
 //         <div
 //           class="popup-container"
 //           *for="let popup of $.popups.subscribe"
@@ -945,7 +927,7 @@ async function debugReactiveDOMCompiler5() {
 //
 //     @Component({
 //       name: 'app-popup-hello-world',
-//       template: compileReactiveHTMLAsComponentTemplate<IData>(`
+//       template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
 //         hello world
 //       `,
 //         CONSTANTS_TO_IMPORT,
@@ -1196,7 +1178,7 @@ async function debugReactiveDOMCompiler7() {
 async function debugReactiveDOMCompiler8() {
 
   const win = new AppWindowComponent();
-  nodeAppendChild(document.body, win);
+  bootstrap(win);
 
   // win.subscribeRight((value: number) => {
   //   console.log('right', value);

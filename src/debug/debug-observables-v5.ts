@@ -381,7 +381,7 @@ async function debugSourcePerf1() {
   const test1 = () => {
     // same time to subscribe => 2845.319091796875ms
     // const source = createSourceUsingFastArrayIterator<void>();
-    const source = createMulticastSource<void>(true);
+    const source = createMulticastSource<void>();
     console.time('perf');
     let j: number = 0;
     for (let i = 0; i < 1e5; i++) {
@@ -397,7 +397,7 @@ async function debugSourcePerf1() {
   const test2 = () => {
     // 816.326171875 vs 577.4970703125
     // const source = createSourceUsingFastArrayIterator<void>();
-    const source = createMulticastSource<void>(true);
+    const source = createMulticastSource<void>();
     for (let i = 0; i < 1e6; i++) {
       source.subscribe(() => {
         j++;

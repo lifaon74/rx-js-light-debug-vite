@@ -35,11 +35,12 @@
       "dom"
     ],
     "typeRoots": [
-      "./node_modules/@types",
+      "./node_modules/@types"
     ],
     "baseUrl": ".",
     "module": "esnext",
     "importHelpers": true,
+    "allowSyntheticDefaultImports": true
   },
   "formatCodeOptions": {
     "indentSize": 2,

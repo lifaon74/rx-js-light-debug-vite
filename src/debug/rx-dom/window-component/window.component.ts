@@ -2,12 +2,12 @@ import {
   createDragSubscribeFunction, IDragObject, IDragSubscribeFunctionNotifications
 } from './create-drag-subscribe-function';
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate,
+  compileReactiveCSSAsComponentStyle, compileAndEvaluateReactiveHTMLAsComponentTemplate,
   Component,
   DEFAULT_CONSTANTS_TO_IMPORT,
   DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, getParentNode, loadAndCompileReactiveCSSAsComponentStyle,
-  loadAndCompileReactiveHTMLAsComponentTemplate, OnConnect, OnCreate, OnDisconnect,
-  OnInit, querySelectorOrThrow
+  OnConnect, OnCreate, OnDisconnect,
+  OnInit, querySelectorOrThrow, loadCompileAndEvaluateReactiveHTMLAsComponentTemplate
 } from '@lifaon/rx-dom';
 import {
   createMulticastReplayLastSource, IEmitFunction,
@@ -256,12 +256,12 @@ type IWindowData = any;
 
 @Component({
   name: 'app-window',
-  template: loadAndCompileReactiveHTMLAsComponentTemplate<IWindowData>(
+  template: loadCompileAndEvaluateReactiveHTMLAsComponentTemplate<IWindowData>(
     // @ts-ignore
     new URL('./window.component.html', import.meta.url).href,
     CONSTANTS_TO_IMPORT,
   ),
-  // template: compileReactiveHTMLAsComponentTemplate(html),
+  // template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html),
   // style: loadAndCompileReactiveCSSAsComponentStyle(
   //   // @ts-ignore
   //   new URL('./window.component.css', import.meta.url).href,

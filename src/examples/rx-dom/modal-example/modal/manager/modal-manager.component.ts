@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, createDocumentFragment,
+  compileReactiveCSSAsComponentStyle, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, createDocumentFragment,
   DEFAULT_CONSTANTS_TO_IMPORT, getFirstElementChild, IReactiveContent, nodeAppendChild, OnConnect, OnCreate,
   OnDisconnect, onNodeConnectedToWithImmediateCached
 } from '@lifaon/rx-dom';
@@ -38,7 +38,7 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-modal-manager',
-  template: compileReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(style),
 })
 export class AppModalManagerComponent extends HTMLElement implements OnCreate<IData>, OnConnect, OnDisconnect {

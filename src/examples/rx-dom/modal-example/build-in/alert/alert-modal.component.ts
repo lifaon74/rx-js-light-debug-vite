@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
+  compileReactiveCSSAsComponentStyle, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
   OnCreate
 } from '@lifaon/rx-dom';
 import { IEmitFunction, ISubscribeFunction, of } from '@lifaon/rx-js-light';
@@ -28,7 +28,7 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-modal-alert',
-  template: compileReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(style),
 })
 export class AppAlertModalComponent extends AppModalComponent implements OnCreate<IData> {

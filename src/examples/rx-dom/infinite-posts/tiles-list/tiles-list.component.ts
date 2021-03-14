@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
+  compileReactiveCSSAsComponentStyle, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
   DEFAULT_FROM_CONSTANTS_TO_IMPORT,
   OnConnect, OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
@@ -13,11 +13,20 @@ import style from './tiles-list.component.scss';
 // @ts-ignore
 import html from './tiles-list.component.html?raw';
 import { createInfiniteScrollSubscribeFunction } from '../helpers/infinite-scroll';
-import { fetchNineGagPosts, INineGagJSONResponse } from '../services/fetch-nine-gag-posts';
 import {
   fetchMonkeyUsersPosts, IMonkeyUserResponse, IResource, IResourceKind
 } from '../services/fetch-monkey-user-posts';
+// @ts-ignore
+// import styleUrl from './tiles-list.component.css?url';
 
+// function loadCSS() {
+//   const url = new URL('./tiles-list.component.css?url', import.meta.url).href;
+//   return fetch(url)
+//     .then((response: Response) => response.text());
+// }
+//
+// console.log(styleUrl);
+// console.log(await loadCSS());
 
 export function mutateReadonlyReplayLastSourceArray<GItem>(
   source: IReplayLastSource<readonly GItem[], IGenericSource>,
@@ -56,7 +65,7 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-tiles-list',
-  template: compileReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(style),
 })
 export class AppTilesListComponent extends HTMLElement implements OnCreate<IData>, OnConnect, OnDisconnect {

@@ -2,6 +2,35 @@
 # yarn lockfile v1
 
 
+"@lifaon/rx-dom@lastest":
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom/-/rx-dom-1.0.0-beta.1.tgz#f32de1a2b897a5ae516b4463170ea802667edc4e"
+  integrity sha512-4KDymMJomFB2sj+MCKGwN5a4bAWLq5uoi95vKASyOdlkJSI/w8vbU2D1VO0mCFcW/RMKZNW9fhYsRXYiD/L6Bw==
+  dependencies:
+    "@lifaon/rx-js-light" "^1.0.0-beta.1"
+
+"@lifaon/rx-js-light@^1.0.0-beta.1":
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.0.0-beta.1.tgz#647c5df49e8f9596f12189e35aaa17ad280bfcce"
+  integrity sha512-1Q5rZIOmP4iE6EFHAGwXBJ1dL81RYVW3YymE+8WwC9JvUAEsdt0VGqPdY2RC35P++Yq8jbY7V/mWBSNk2VGeDw==
+
+"@lifaon/rx-js-light@lastest":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.0.0-beta.2.tgz#9955925342178125998382c48a8e300332f5bcc2"
+  integrity sha512-Pn0X9hGJLsaaCW5zIjN+CTW0QmCfPNxQ7iKl5MgVXt7V25+56LCYgxvaUDssSo48kGEG4w/iOflRNxjdd7kWBw==
+
+"@types/dompurify@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.2.1.tgz#eebf3af8afe2f577a53acab9d98a3a4cb04bbbe7"
+  integrity sha512-3JwbEeRVQ3n6+JgBW/hCdkydRk9/vWT+UEglcXEJqLJEcUganDH37zlfLznxPKTZZfDqA9K229l1qN458ubcOQ==
+  dependencies:
+    "@types/trusted-types" "*"
+
+"@types/trusted-types@*":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.0.tgz#aee6e868fcef74f2b8c71614b6df81a601a42f17"
+  integrity sha512-I8MnZqNXsOLHsU111oHbn3khtvKMi5Bn4qVFsIWSJcCP1KKDiXX5AEw8UPk0nSopeC+Hvxt6yAy1/a5PailFqg==
+
 anymatch@~3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-3.1.1.tgz#c55ecf02185e2469259399310c173ce31233b142"
@@ -41,6 +70,11 @@ colorette@^1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/colorette/-/colorette-1.2.2.tgz#cbcc79d5e99caea2dbf10eb3a26fd8b3e6acfa94"
   integrity sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w==
+
+dompurify@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.6.tgz#54945dc5c0b45ce5ae228705777e8e59d7b2edc4"
+  integrity sha512-7b7ZArhhH0SP6W2R9cqK6RjaU82FZ2UPM7RO8qN1b1wyvC/NY1FNWcX1Pu00fFOAnzEORtwXe4bPaClg6pUybQ==
 
 esbuild@^0.8.52:
   version "0.8.54"
