@@ -12,6 +12,11 @@ import { helloWorldExample } from './examples/rx-dom/hello-world/hello-world.exa
 import { progressBarExample } from './examples/rx-dom/progress-bar/progress-bar.example';
 import { progressBarLazyExample } from './examples/rx-dom/progress-bar/progress-bar.lazy.example';
 import { trustedTypesExample } from './examples/trusted-types/trusted-types.example';
+import { routerExample } from './examples/rx-dom/router/router.example';
+import { progressRingExample } from './examples/rx-dom/progress-ring/progress-ring.example';
+import { composeExample } from './examples/rx-js-light/compose.example';
+import { progressRingLazyExample } from './examples/rx-dom/progress-ring/progress-ring.lazy.example';
+import { guidelineExample } from './examples/rx-dom/guideline/guideline.example';
 
 function run() {
   // console.log('started');
@@ -23,10 +28,15 @@ function run() {
   // infinitePostsExample();
   // progressBarExample();
   // progressBarLazyExample();
+  // progressRingExample();
+  // progressRingLazyExample();
   // trustedTypesExample();
   // intersectionObserverExample();
   // matchMediaExample();
-  helloWorldExample();
+  // helloWorldExample();
+  // routerExample();
+  guidelineExample();
+  // composeExample();
   // autoUpdateExample();
   // debugReactiveDOM();
 }

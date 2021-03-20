@@ -21,9 +21,6 @@ interface IData {
   valid: ISubscribeFunction<boolean>;
 }
 
-/**
- * TODO improve by generating a module that import the constants instead of having all of them as object
- */
 const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
   // nodeAppendChild,
@@ -79,6 +76,7 @@ class AppMainComponent extends HTMLElement implements OnCreate<IData> {
     const valid = pipeSubscribeFunction(remaining, [
       mapSubscribePipe((value: number) => (value <= 10)),
     ]);
+
 
     this.data = {
       input,

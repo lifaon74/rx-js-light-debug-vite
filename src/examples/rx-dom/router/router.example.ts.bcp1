@@ -1,0 +1,221 @@
+import { HTMLElementConstructor } from '@lifaon/rx-dom';
+import { AppProgressBarComponent } from '../progress-bar/progress-bar.component';
+
+export function normalizePath(
+  path: string,
+): string {
+  return new URL(path, window.origin).pathname;
+}
+
+export class Path {
+  protected _path: string;
+
+  constructor(
+    path: string,
+  ) {
+    this._path = normalizePath(path);
+  }
+
+  toString(): string {
+    return this._path;
+  }
+}
+
+
+
+
+/*------------*/
+
+export type IRouteComponent = HTMLElementConstructor;
+
+/**
+ * Syntax:
+ * /path_segment
+ * /:id
+ * /**
+ * /*
+ */
+export type IRoutePath = Path;
+
+export interface IRoute {
+  path: IRoutePath;
+  component?: IRouteComponent;
+  children?: ILazyRoute[];
+  routerOutlet?: string;
+}
+
+export type ILazyRoute = Promise<IRoute> | IRoute;
+
+
+
+function wrapPathSegment(
+  pattern: string,
+): string {
+  return `(^|\\/)${ pattern }($|\\/)`;
+}
+
+export function convertRoutePathToRegExpPattern(
+  path: Path,
+): string {
+  return '^' + path.toString()
+    .replace(
+      new RegExp(wrapPathSegment(':([\\w\\-]+)'), 'g'),
+      (match: string, start: string, id: string, end: string) => {
+        return `${ start }(?<${ id }>([\\w\\-]+))${ end }`;
+      },
+    )
+    .replace(
+      new RegExp(wrapPathSegment('\\*'), 'g'),
+      (match: string, start: string, end: string) => {
+        return `${ start }[\\w\\-]+${ end }`;
+      },
+    )
+    .replace(
+      new RegExp(wrapPathSegment('\\*\\*'), 'g'),
+      (match: string, start: string, end: string) => {
+        return `${ start }[\\w\\-\\/]*${ end }`;
+      },
+    )
+    ;
+}
+
+export function convertRoutePathToRegExp(
+  path: Path,
+): RegExp {
+  return new RegExp(convertRoutePathToRegExpPattern(path));
+}
+
+const routes: ILazyRoute[] = [
+  {
+    path: new Path('/all'),
+    component: AppProgressBarComponent,
+  },
+  {
+    path: new Path('/single/:id'),
+    children: [
+      {
+        path: new Path('/a'),
+        component: AppProgressBarComponent,
+      },
+      {
+        path: new Path('/**'),
+        component: AppProgressBarComponent,
+      },
+    ],
+  }
+];
+
+
+/*------*/
+
+export interface IRouteResolver {
+  (path: Path): Promise<IRouteResolverResult | null>;
+}
+
+export type IRouteResolverParams = Map<string, string>;
+
+export interface IRouteResolverResult {
+  params: IRouteResolverParams;
+}
+
+
+export function createRouteResolver(
+  routes: ArrayLike<ILazyRoute>,
+): IRouteResolver {
+  return async (path: Path): Promise<IRouteResolverResult | null> => {
+    for (let i = 0, l = routes.length; i < l; i++) {
+      const route: IRoute = await routes[i];
+      const routePath: Path = route.path;
+      const regExp: RegExp = convertRoutePathToRegExp(routePath);
+      const match: RegExpExecArray | null = regExp.exec(path.toString());
+
+      if (match !== null) {
+        console.log(match);
+
+        const remainingPath: Path = new Path(path.toString().slice(match[0].length));
+        const routerOutlet: string = route.routerOutlet ?? 'rx-router';
+
+        console.log(remainingPath);
+
+        if (route.children) {
+          const childResolver: IRouteResolver = createRouteResolver(route.children);
+          const result = await childResolver(remainingPath);
+          if (await childResolver(remainingPath)) {
+            return true;
+          }
+        } else {
+          // if (remainingPath !== '/') {
+          //   throw new Error(``);
+          // }
+        }
+      }
+    }
+    // const pathSegments: string[] = url.pathname.split('/');
+    // console.log(pathSegments);
+
+    return null;
+  };
+}
+
+/**
+ * Better in 2 steps:
+ * 1) resolve the route tree
+ * 2) apply the component to the DOM
+ */
+
+// export function resolveRoute(
+//   url: URL,
+// ): Promise<void> {
+//
+// }
+
+
+// /** COMPONENT **/
+//
+// interface IData {
+//   // input: IMulticastReplayLastSource<string>;
+//   // remaining: ISubscribeFunction<number>;
+//   // valid: ISubscribeFunction<boolean>;
+// }
+//
+//
+// const CONSTANTS_TO_IMPORT = {
+//   ...DEFAULT_CONSTANTS_TO_IMPORT,
+// };
+//
+// @Component({
+//   name: 'rx-router',
+//   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
+//     TODO
+//   `, CONSTANTS_TO_IMPORT),
+// })
+// class AppMainComponent extends HTMLElement implements OnCreate<IData> {
+//   protected readonly data: IData;
+//
+//   constructor() {
+//     super();
+//     this.data = {
+//     };
+//   }
+//
+//   public onCreate(): IData {
+//     return this.data;
+//   }
+// }
+
+/*-----------------*/
+
+
+export async function routerExample() {
+
+  // console.log(convertRoutePathToRegExp('/abc'));
+  // console.log(convertRoutePathToRegExp('/:id'));
+  // console.log(convertRoutePathToRegExp('/**'));
+  // console.log(convertRoutePathToRegExp('/*'));
+  // console.log(convertRoutePathToRegExp('/abc/:id/*/ijk/**'));
+
+  const routeResolver = createRouteResolver(routes);
+  // await routeResolver(new URL('/all', window.origin));
+  await routeResolver(new Path('/single/abc'));
+}
+

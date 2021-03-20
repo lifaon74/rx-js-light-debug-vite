@@ -1,4 +1,4 @@
-import { IMapFunction, ISubscribeFunction, mapSubscribePipe } from '../packages/@lifaon/rx-js-light';
+import { IMapFunction, ISubscribeFunction, mapSubscribePipe } from '@lifaon/rx-js-light';
 
 /**
  * DO NOT USE

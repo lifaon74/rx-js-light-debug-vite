@@ -6,5 +6,5 @@ export async function progressBarLazyExample() {
   const progressBar = new AppProgressBarComponent();
   bootstrap(progressBar);
 
-  progressBar.ratio = 0.5;
+  progressBar.progress = 0.5;
 }

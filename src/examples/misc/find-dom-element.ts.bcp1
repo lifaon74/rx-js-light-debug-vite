@@ -1,0 +1,63 @@
+
+export interface IFindDOMElementOptions {
+  timeout?: number;
+  interval?: number;
+  parentElement?: ParentNode;
+  single?: boolean;
+  signal?: AbortSignal;
+}
+
+export function findDOMElement<Element extends HTMLElement>(
+  selector: string,
+  options?: Omit<IFindDOMElementOptions, 'single'>,
+): Promise<Element> {
+  return findDOMElements<Element[]>(selector, {
+    ...options,
+    single: true,
+  })
+    .then((elements: Element[]) => elements[0]);
+}
+
+export function findDOMElements<Elements extends HTMLElement[]>(
+  selector: string,
+  {
+    timeout = 5000,
+    interval = 50,
+    parentElement = document,
+    single = false,
+    signal,
+  }: IFindDOMElementOptions = {},
+): Promise<Elements> {
+  return raceAbortedOptional(
+    new Promise<Elements>((resolve: (value: Elements) => void, reject: (reason: Error) => void) => {
+      const endTime = Date.now() + timeout;
+      const loop = () => {
+        if (!isSignalAbortedOptional(signal)) {
+          if (Date.now() > endTime) {
+            reject(new Error('Timeout'));
+          } else {
+            if (single) {
+              const element: Element | null = parentElement.querySelector(selector);
+              if (element === null) {
+                setTimeout(loop, interval);
+              } else {
+                resolve([element] as Elements);
+              }
+            } else {
+              const elements: NodeListOf<Element> = parentElement.querySelectorAll(selector);
+              if (elements.length === 0) {
+                setTimeout(loop, interval);
+              } else {
+                resolve(Array.from(elements) as Elements);
+              }
+            }
+          }
+        }
+      };
+      loop();
+    }),
+    signal,
+  );
+}
+
+
