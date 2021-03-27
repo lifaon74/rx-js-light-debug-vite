@@ -1,0 +1,45 @@
+<div class="buttons-container">
+  <button
+    class="button-style"
+    (click)="$.onClickStartDownload"
+    [disabled]="eq($.status, of('loading'))"
+  >
+    Start download
+  </button>
+  <button
+    class="button-style"
+    (click)="$.onClickCancelDownload"
+    [disabled]="neq($.status, of('loading'))"
+  >
+    Cancel
+  </button>
+</div>
+
+<div
+  class="status"
+>
+  <rx-switch expression="$.status">
+    <div
+      *switch-case="'loading'"
+      class="loading"
+    >
+      <app-progress-ring
+        [progress]="$.progress"
+        radius="60"
+        stroke="20"
+      ></app-progress-ring>
+    </div>
+    <div
+      *switch-case="'complete'"
+      class="complete"
+    >
+      Success
+    </div>
+    <div
+      *switch-case="'error'"
+      class="error"
+    >
+      Error: {{ pipe($.error, [map((error) => error.message)]) }}
+    </div>
+  </rx-switch>
+</div>

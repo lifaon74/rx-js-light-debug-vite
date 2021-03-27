@@ -2,7 +2,7 @@ import { IMapFunction, ISubscribeFunction, mapSubscribePipe } from '@lifaon/rx-j
 
 /**
  * DO NOT USE
- * JUST HERE AD AN IDEA
+ * JUST AN IDEA
  *
  * currently it's a very bad idea, because:
  * - no external / tier pipes

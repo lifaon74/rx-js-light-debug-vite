@@ -109,9 +109,5 @@ export async function debugI18N() {
   // await debugDateTime();
   // await debugCurrency();
   // await debugTranslations();
-  // await formatDateExample();
-  // await formatCurrencyExample();
-  // await translationsExample();
-  await translationsExample();
 }
 

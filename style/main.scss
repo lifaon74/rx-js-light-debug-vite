@@ -1,8 +1,11 @@
+@import './components/button';
+
 * {
   &,
   &::before,
   &::after {
     box-sizing: border-box;
+    outline: none;
     //transform: translateZ(0);
     //will-change: transform, opacity, left, top, contents;
   }

@@ -1,0 +1,99 @@
+@import '../variables';
+
+$button-color-default: $color-gray-04;
+$button-background-color-default: $color-gray-02;
+$button-border-color-default: $color-gray-03;
+
+$button-color-default-disabled: lighten($button-color-default, 10%);
+$button-background-color-default-disabled: lighten($button-color-default, 10%);
+$button-border-color-default-disabled: lighten($button-color-default, 10%);
+
+$button-colors-default: (
+  color: $color-gray-04,
+  background-color: $color-gray-02,
+  border-color: $color-gray-03,
+);
+
+@function generate-button-colors-disabled-function(
+  $config,
+  $lighten: 10%
+) {
+  @return (
+    color: lighten(map-get($config, color), $lighten),
+    background-color: lighten(map-get($config,  background-color), $lighten),
+    border-color: lighten(map-get($config, border-color), $lighten),
+  );
+}
+
+$button-config-default: (
+  color: $color-gray-04,
+  background-color: $color-gray-02,
+  border-color: $color-gray-03,
+
+  disabled: generate-button-colors-disabled-function($button-colors-default),
+);
+
+
+/*---*/
+
+@mixin disabled-mixin() {
+  &:disabled,
+  &[disabled],
+  &.disabled {
+    @content;
+  }
+}
+
+
+@mixin active-mixin() {
+  &:active,
+  &[active],
+  &.active {
+    @content;
+  }
+}
+
+@mixin setup-button-colors-mixin(
+  $config: $button-config-default,
+) {
+  @if $config == null {
+    $config: $button-config-default;
+  }
+  color: map-get($config, color);
+  background-color: map-get($config, background-color);
+  border-color: map-get($config, border-color);
+}
+
+@mixin setup-button-mixin(
+  $config
+) {
+  @include setup-button-colors-mixin($config);
+  @include disabled-mixin() {
+    @include setup-button-colors-mixin(map-get($config, disabled));
+  };
+
+}
+
+.button-style {
+  padding: 10px;
+  font-family: inherit;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform 100ms;
+
+  border: 1px solid transparent;
+
+  @include setup-button-mixin($button-config-default);
+
+  @include disabled-mixin() {
+    cursor: default;
+  };
+
+  @include active-mixin() {
+    transform: translateY(2px);
+  };
+}
+

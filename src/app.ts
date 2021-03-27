@@ -17,13 +17,21 @@ import { progressRingExample } from './examples/rx-dom/progress-ring/progress-ri
 import { composeExample } from './examples/rx-js-light/compose.example';
 import { progressRingLazyExample } from './examples/rx-dom/progress-ring/progress-ring.lazy.example';
 import { guidelineExample } from './examples/rx-dom/guideline/guideline.example';
+import { formControlDebug } from './debug/rx-js-light/form-control/form-control.debug';
+import { commonPitfallExample } from './examples/rx-js-light/common-pitfall/common-pitfall.example';
+import { fileTransferExample } from './examples/rx-dom/file-transfer/file-transfer.example';
+import { pipeExample } from './examples/rx-js-light/pipe.example';
+import { i18nExample } from './examples/rx-js-light/i18n/i18n.example';
 
 function run() {
+  // debugObservableV5();
+  // debugI18N();
+  // debugReactiveDOM();
+
+
   // console.log('started');
   // dynamicDateExample();
   // mousePositionExample();
-  // debugObservableV5();
-  // debugI18N();
   // modalComponentExample();
   // infinitePostsExample();
   // progressBarExample();
@@ -35,11 +43,16 @@ function run() {
   // matchMediaExample();
   // helloWorldExample();
   // routerExample();
-  guidelineExample();
+  // guidelineExample();
+  // formControlDebug();
   // composeExample();
+  // pipeExample();
   // autoUpdateExample();
-  // debugReactiveDOM();
+  commonPitfallExample();
+  // fileTransferExample();
+  // i18nExample();
 }
+// TODO example that randomly toggle half items of an *for loop => to show perf
 
 run();
 

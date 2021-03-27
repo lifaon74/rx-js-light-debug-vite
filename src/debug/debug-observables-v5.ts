@@ -1,5 +1,7 @@
 import {
-  composeEmitPipeFunctions, createMulticastSource, createUnicastReplayLastSource, debounceTimeSubscribePipe,
+  composeEmitPipeFunctions, createMulticastReplayLastSource, createMulticastSource, createSubscribeFunctionProxy,
+  createUnicastReplayLastSource,
+  debounceTimeSubscribePipe,
   distinctEmitPipe, distinctSubscribePipe, fromEventTarget, fromFetch, fromPromise,
   ISubscribeFunctionFromFetchNotifications, IUnsubscribeFunction, mapEmitPipe, mapSubscribePipe, mergeMapSubscribePipe,
   mergeMapSubscribePipeWithNotifications, of, pipeSubscribeFunction, pipeSubscribePipeFunctions
@@ -379,12 +381,11 @@ async function debugReplayLastSource1() {
 
 async function debugSourcePerf1() {
   const test1 = () => {
-    // same time to subscribe => 2845.319091796875ms
-    // const source = createSourceUsingFastArrayIterator<void>();
+    // 1447.72802734375 ms
     const source = createMulticastSource<void>();
     console.time('perf');
     let j: number = 0;
-    for (let i = 0; i < 1e5; i++) {
+    for (let i = 0; i < 1e7; i++) {
       source.subscribe(() => {
         j++;
       });
@@ -395,8 +396,7 @@ async function debugSourcePerf1() {
   };
 
   const test2 = () => {
-    // 816.326171875 vs 577.4970703125
-    // const source = createSourceUsingFastArrayIterator<void>();
+    // 604.277099609375
     const source = createMulticastSource<void>();
     for (let i = 0; i < 1e6; i++) {
       source.subscribe(() => {
@@ -413,41 +413,41 @@ async function debugSourcePerf1() {
     console.log(j);
   };
 
-  // test1();
-  test2();
+  test1();
+  // test2();
 }
 
 
-// async function debugSubscribeFunctionProxy() {
-//   const data = {
-//     a: {
-//       b: {
-//         c: 'c'
-//       },
-//       ba: 'b1',
-//     },
-//     a1: 3,
-//     a2: () => {
-//       return 5;
-//     }
-//   };
-//
-//   const $data$ = createMulticastReplayLastSource({ initialValue: data });
-//
-//   const proxy = createSubscribeFunctionProxy($data$.subscribe);
-//
-//   // (proxy.a1 as number) = 5;
-//   // // console.log(data);
-//   // console.log(proxy.a1 + 2);
-//   // console.log(proxy.a2());
-//
-//
-//   proxy.a.b.c.$((value: any) => {
-//     console.log('c', value);
-//   });
-//
-//   (window as any).setData = $data$.emit;
-// }
+async function debugSubscribeFunctionProxy() {
+  const data = {
+    a: {
+      b: {
+        c: 'c'
+      },
+      ba: 'b1',
+    },
+    a1: 3,
+    a2: () => {
+      return 5;
+    }
+  };
+
+  const $data$ = createMulticastReplayLastSource({ initialValue: data });
+
+  const proxy = createSubscribeFunctionProxy($data$.subscribe);
+
+  // (proxy.a1 as number) = 5;
+  // // console.log(data);
+  // console.log(proxy.a1 + 2);
+  // console.log(proxy.a2());
+
+
+  proxy.a.b.c.$((value: any) => {
+    console.log('c', value);
+  });
+
+  (window as any).setData = $data$.emit;
+}
 
 
 export async function debugObservableV5() {
@@ -466,11 +466,11 @@ export async function debugObservableV5() {
   // await debugObservable9();
   // await debugObservable10();
   // await debugObservable11();
-  await debugObservable12();
+  // await debugObservable12();
 
 
   // await debugMulticastSource1();
   // await debugReplayLastSource1();
-  // await debugSourcePerf1();
+  await debugSourcePerf1();
   // await debugSubscribeFunctionProxy();
 }

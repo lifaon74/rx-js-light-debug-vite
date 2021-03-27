@@ -1,3 +1,6 @@
+// import aot from './plugins/aot/aot.js';
+// import optimizeFunctionalPlugin from './plugins/functional/functional.bundled.mjs';
+
 /**
  * @type {import('vite').UserConfig}
  */
@@ -25,6 +28,10 @@ const config = {
       }
     },
   },
+  plugins: [
+    // aot(),
+    // optimizeFunctionalPlugin(),
+  ]
 };
 
 export default config;

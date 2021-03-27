@@ -1,16 +1,33 @@
 {
   "name": "rx-js-light-debug-vite",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "__plugins__": "",
+    "plugins:tsc:watch": "tsc -p plugins/tsconfig.json -w",
+    "plugins:functional:debug": "node --experimental-specifier-resolution=node plugins/functional/helpers/debug-functional.js",
+    "plugins:functional:rollup": "rollup --input plugins/functional/functional.js --file plugins/functional/functional.bundled.mjs --format es --plugin @rollup/plugin-node-resolve --watch",
+    "plugins:aot:aot": "node --experimental-specifier-resolution=node plugins/aot/aot",
+    "plugins:aot:rollup": "rollup --input plugins/aot/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format umd --name compiler --plugin @rollup/plugin-node-resolve --watch",
+    "_dev:rollup": "rollup --input plugins/aot/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format es --plugin @rollup/plugin-node-resolve --watch"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^11.2.0",
     "@types/dompurify": "^2.2.1",
+    "@types/requestidlecallback": "^0.3.1",
+    "@types/resize-observer-browser": "^0.1.5",
+    "btoa": "^1.2.1",
+    "puppeteer": "^8.0.0",
     "sass": "^1.32.8",
     "typescript": "^4.2.3",
-    "vite": "^2.1.2"
+    "vite": "^2.1.2",
+    "acorn": "^8.1.0",
+    "acorn-walk": "^8.0.2",
+    "@types/estree": "^0.0.47",
+    "astring": "^1.7.0"
   },
   "__dependencies": {
     "@lifaon/rx-js-light": "lastest",
