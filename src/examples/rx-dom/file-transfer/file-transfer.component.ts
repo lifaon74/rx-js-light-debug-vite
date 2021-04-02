@@ -18,7 +18,7 @@ import { downloadBlob, extractFileNameFromResponse } from './helpers';
 
 
 export const APP_FILE_TRANSFER_CUSTOM_ELEMENTS = [
-  AppProgressRingComponent
+  AppProgressRingComponent,
 ];
 
 /** COMPONENT **/

@@ -22,12 +22,13 @@ import { commonPitfallExample } from './examples/rx-js-light/common-pitfall/comm
 import { fileTransferExample } from './examples/rx-dom/file-transfer/file-transfer.example';
 import { pipeExample } from './examples/rx-js-light/pipe.example';
 import { i18nExample } from './examples/rx-js-light/i18n/i18n.example';
+import { rxjsLightShortcutsExample } from './examples/rx-js-light/shortcuts/rx-js-light-shortcuts.example';
 
 function run() {
   // debugObservableV5();
   // debugI18N();
   // debugReactiveDOM();
-
+  formControlDebug();
 
   // console.log('started');
   // dynamicDateExample();
@@ -44,13 +45,13 @@ function run() {
   // helloWorldExample();
   // routerExample();
   // guidelineExample();
-  // formControlDebug();
   // composeExample();
   // pipeExample();
   // autoUpdateExample();
-  commonPitfallExample();
   // fileTransferExample();
+  // commonPitfallExample();
   // i18nExample();
+  // rxjsLightShortcutsExample();
 }
 // TODO example that randomly toggle half items of an *for loop => to show perf
 
