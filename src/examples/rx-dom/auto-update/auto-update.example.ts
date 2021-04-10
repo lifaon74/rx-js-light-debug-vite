@@ -1,6 +1,6 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_ARITHMETIC_CONSTANTS_TO_IMPORT,
-  DEFAULT_CONSTANTS_TO_IMPORT, HTMLElementConstructor, nodeAppendChild, OnCreate, DEFAULT_CASTING_CONSTANTS_TO_IMPORT, bootstrap
+  bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_ARITHMETIC_CONSTANTS_TO_IMPORT,
+  DEFAULT_CASTING_CONSTANTS_TO_IMPORT, DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
 import {
   createSubscribeFunctionProxy, idle, ISubscribeFunctionProxy, mapSubscribePipe, pipeSubscribeFunction,

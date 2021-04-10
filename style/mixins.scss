@@ -1,6 +1,6 @@
 
 @mixin aspect-ratio-mixin($width, $height) {
-  $ratio: '#{$width} / ${$height}';
+  $ratio: '#{$width} / #{$height}';
 
   // https://codepen.io/una/pen/BazyaOM
   // https://css-tricks.com/aspect-ratio-boxes/

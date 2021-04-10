@@ -1,21 +1,17 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
-  DEFAULT_FROM_CONSTANTS_TO_IMPORT,
-  OnConnect, OnCreate, OnDisconnect
+  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
+  DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_FROM_CONSTANTS_TO_IMPORT, OnConnect, OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
 import {
-  createMulticastReplayLastSource, filterSubscribePipe, IDefaultNotificationsUnion, IGenericSource,
-  IMulticastReplayLastSource, IReplayLastSource, ISubscribeFunction, of, pipeSubscribeFunction, Subscription,
-  SubscriptionManager
+  IDefaultNotificationsUnion, IGenericSource, IReplayLastSource, ISubscribeFunction, Subscription, SubscriptionManager
 } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './tiles-list.component.scss';
 // @ts-ignore
 import html from './tiles-list.component.html?raw';
 import { createInfiniteScrollSubscribeFunction } from '../helpers/infinite-scroll';
-import {
-  fetchMonkeyUsersPosts, IMonkeyUserResponse, IResource, IResourceKind
-} from '../services/fetch-monkey-user-posts';
+import { fetchMonkeyUsersPosts, IMonkeyUserResponse, IResource } from '../services/fetch-monkey-user-posts';
+import { filter$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 
@@ -54,8 +50,8 @@ interface ITile {
 
 
 interface IData {
-  readonly $tiles$: IMulticastReplayLastSource<readonly ITile[]>;
-  readonly $loading$: IMulticastReplayLastSource<boolean>;
+  readonly tiles: ISubscribeFunction<readonly ITile[]>;
+  readonly loading: ISubscribeFunction<boolean>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -81,17 +77,17 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
     this.subscriptions = new SubscriptionManager();
     this.next = void 0;
 
-    this.data = {
-      $tiles$: createMulticastReplayLastSource<readonly ITile[]>({ initialValue: [] }),
-      $loading$: createMulticastReplayLastSource<boolean>({ initialValue: false }),
-    };
+    const $tiles$ = let$$<readonly ITile[]>([]);
+    const $loading$ = let$$<boolean>(false);
+
 
     this.subscriptions.set('infinite-scroll', new Subscription(
-      pipeSubscribeFunction(createInfiniteScrollSubscribeFunction({ scrollElement: this }), [
-        filterSubscribePipe(() => !this.data.$loading$.getValue())
-      ]),
+      filter$$(
+        createInfiniteScrollSubscribeFunction({ scrollElement: this }),
+        () => !$loading$.getValue()
+      ),
       () => {
-        this.data.$loading$.emit(true);
+        $loading$.emit(true);
 
         this.subscriptions.set('fetch', new Subscription(
           fetchMonkeyUsersPosts({ next: this.next as (string | undefined) }),
@@ -101,7 +97,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
             switch (notification.name) {
               case 'next': {
                 this.next = notification.value.next;
-                mutateReadonlyReplayLastSourceArray(this.data.$tiles$, (items: ITile[]) => {
+                mutateReadonlyReplayLastSourceArray($tiles$, (items: ITile[]) => {
                   items.push({
                     title: '',
                     resource: notification.value.resource,
@@ -111,7 +107,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
                 break;
               case 'complete':
                 this.subscriptions.delete('fetch');
-                this.data.$loading$.emit(false);
+                $loading$.emit(false);
                 break;
               case 'error':
                 throw notification.value;
@@ -120,6 +116,11 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
         ).activate());
       }),
     );
+
+    this.data = {
+      tiles: $tiles$.subscribe,
+      loading: $loading$.subscribe,
+    };
   }
 
   onCreate(): IData {

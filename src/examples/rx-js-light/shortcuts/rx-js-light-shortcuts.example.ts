@@ -1,6 +1,4 @@
-import { andM$$, const$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
-
-const createAndAppendElement = <K extends keyof HTMLElementTagNameMap>(tagName: K) => document.body.appendChild(document.createElement(tagName));
+import { andM$$, const$$, let$$, map$$, share$$ } from '@lifaon/rx-js-light-shortcuts';
 
 function rxjsLightShortcutsExample1() {
   const $inputA$ = let$$('abc');
@@ -18,7 +16,7 @@ function rxjsLightShortcutsExample1() {
   //   return isInputCValid && isInputBValid && isInputCValid;
   // }, [isInputAValid$, isInputBValid$, isInputCValid$]);
 
-  const isFormValidText$ = map$$(isFormValid$, (valid: boolean) => `Form is ${ valid ? 'valid' : 'invalid' }`);
+  const isFormValidText$ = share$$(map$$(isFormValid$, (valid: boolean) => `Form is ${ valid ? 'valid' : 'invalid' }`));
 
   isFormValidText$(console.log.bind(console));
 

@@ -25,6 +25,6 @@ import { reactiveVariableCustomElementExample } from './custom-element.example';
 
 export function reactiveVariableExample() {
   // reactiveVariableMinMaxExample();
-  reactiveVariableCustomElementExample();
-  // reactiveVariableFormExample();
+  // reactiveVariableCustomElementExample();
+  reactiveVariableFormExample();
 }

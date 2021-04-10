@@ -2,22 +2,17 @@
 # yarn lockfile v1
 
 
-"@lifaon/rx-dom@1.0.0-alpha.2":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom/-/rx-dom-1.0.0-beta.1.tgz#f32de1a2b897a5ae516b4463170ea802667edc4e"
-  integrity sha512-4KDymMJomFB2sj+MCKGwN5a4bAWLq5uoi95vKASyOdlkJSI/w8vbU2D1VO0mCFcW/RMKZNW9fhYsRXYiD/L6Bw==
+"@lifaon/rx-dom@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom/-/rx-dom-1.0.0.tgz#40391569d5c89f9042d4f0e6e95b5f537ad3e046"
+  integrity sha512-VknEzcG7h1pOGLdO7HZeJW/qWVYy0Ad+c69R8cPmfpPlI992n1jYfQxsvaik/V9QG+zd+/2y1tDmJ6fdEchARA==
   dependencies:
-    "@lifaon/rx-js-light" "^1.0.0-beta.1"
+    "@lifaon/rx-js-light" "1.0.0"
 
-"@lifaon/rx-js-light@1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.0.0-beta.2.tgz#9955925342178125998382c48a8e300332f5bcc2"
-  integrity sha512-Pn0X9hGJLsaaCW5zIjN+CTW0QmCfPNxQ7iKl5MgVXt7V25+56LCYgxvaUDssSo48kGEG4w/iOflRNxjdd7kWBw==
-
-"@lifaon/rx-js-light@^1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.0.0-beta.1.tgz#647c5df49e8f9596f12189e35aaa17ad280bfcce"
-  integrity sha512-1Q5rZIOmP4iE6EFHAGwXBJ1dL81RYVW3YymE+8WwC9JvUAEsdt0VGqPdY2RC35P++Yq8jbY7V/mWBSNk2VGeDw==
+"@lifaon/rx-js-light@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.0.0.tgz#75a19c561c72f27dcb61d6b854aef2a3fcc6f18b"
+  integrity sha512-n2EOEPfxvRwJDOEuadJC4v6mmyyzb2dEyrbvu9nktCQ5i64AbAewPgZ0W5rzJUTy/SUY0Q3SXJqOnB0dQLxpRw==
 
 "@rollup/plugin-node-resolve@^11.2.0":
   version "11.2.0"
@@ -580,6 +575,13 @@ rollup@^2.38.5:
   optionalDependencies:
     fsevents "~2.3.1"
 
+rxjs@^6.6.7:
+  version "6.6.7"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
+  integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
+  dependencies:
+    tslib "^1.9.0"
+
 safe-buffer@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
@@ -636,6 +638,11 @@ to-regex-range@^5.0.1:
   integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
   dependencies:
     is-number "^7.0.0"
+
+tslib@^1.9.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tslib@^2.1.0:
   version "2.1.0"

@@ -1,4 +1,4 @@
-import { createMulticastReplayLastSource, of, reactiveFunction } from '@lifaon/rx-js-light';
+import { createMulticastReplayLastSource, of, reactiveFunction, reactiveTemplateString } from '@lifaon/rx-js-light';
 
 /** MIN - MAX EXAMPLE **/
 

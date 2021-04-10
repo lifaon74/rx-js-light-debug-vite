@@ -1,9 +1,7 @@
 
-## TODO
+## RX-JS-LITE / RX-DOM - example git
 
-default vite index size: 628B
+The gist hosts some examples to start-up your [rx-dom](https://github.com/lifaon74/rx-dom) projects
 
-compiler size: 
- - minified: ~13KB
- - minified + brotli: ~3KB
+It's totally in progress, so nothing is clean. It may be used as a seed, but code cleanup must be done on your side.
 

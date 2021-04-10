@@ -1,5 +1,5 @@
 // import aot from './plugins/aot/aot.js';
-// import optimizeFunctionalPlugin from './plugins/functional/functional.bundled.mjs';
+import optimizeFunctionalPlugin from './plugins/functional/functional.bundled.mjs';
 
 /**
  * @type {import('vite').UserConfig}

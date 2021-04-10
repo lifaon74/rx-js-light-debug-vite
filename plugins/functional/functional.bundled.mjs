@@ -509,7 +509,7 @@ var Parser = function Parser(options, input, startPos) {
   // Its type
   this.type = types.eof;
   // For tokens that include more information than their type, the value
-  this._value = null;
+  this.value = null;
   // Its start and end offset
   this.start = this.end = this.pos;
   // And, if locations are used, the {line, column} object
@@ -4424,7 +4424,7 @@ pp$8.regexp_eatFixedHexDigits = function(state, length) {
 
 var Token = function Token(p) {
   this.type = p.type;
-  this._value = p.value;
+  this.value = p.value;
   this.start = p.start;
   this.end = p.end;
   if (p.options.locations)
@@ -4594,7 +4594,7 @@ pp$9.finishToken = function(type, val) {
   if (this.options.locations) { this.endLoc = this.curPosition(); }
   var prevType = this.type;
   this.type = type;
-  this._value = val;
+  this.value = val;
 
   this.updateContext(prevType);
 };

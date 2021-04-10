@@ -1,7 +1,10 @@
 import {
-  conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, mapSubscribePipe,
-  pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
+  conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, ISubscribeFunction,
+  ISubscribePipeFunction, mapSubscribePipe, pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
 } from '@lifaon/rx-js-light';
+import {
+  distinct$$$, distinctShared$$, function$$, let$$, map$$, map$$$, pipe$$, pipe$$$, share$$, share$$$
+} from '@lifaon/rx-js-light-shortcuts';
 
 /** FORM EXAMPLE **/
 
@@ -152,9 +155,96 @@ function withObservable() {
   });
 }
 
+
+function withObservableAndShortcuts() {
+
+  /** CREATE SOME ELEMENTS **/
+
+  const form = document.createElement('form');
+  document.body.appendChild(form);
+
+  const inputA = document.createElement('input');
+  form.appendChild(inputA);
+
+  const inputB = document.createElement('input');
+  form.appendChild(inputB);
+
+  const stateText = document.createElement('div');
+  form.appendChild(stateText);
+
+  const button = document.createElement('button');
+  button.innerText = 'submit';
+  form.appendChild(button);
+
+  /** CREATE OUR REACTIVE VARIABLES **/
+
+    // creates an observable which reflects the value of inputA
+  const inputAValue = pipe$$(fromEventTarget(inputA, 'input'), [ // creates an observable from an event
+      map$$$<Event, string>(() => inputA.value), // maps the event to return the input value
+      share$$$<string>( // shares the observable
+        () => let$$<string>(inputA.value) // initial observable value
+      ),
+    ]);
+
+  // creates an observable which reflects the value of inputB
+  const inputBValue = pipe$$(fromEventTarget(inputB, 'input'), [
+    map$$$<Event, string>(() => inputB.value),
+    share$$$<string>(() => let$$<string>(inputB.value)),
+  ]);
+
+  // creates a reactive function with listen to inputAValue and inputBValue,
+  // and maps the result (returns true if the form is valid)
+  const isFormValid = distinctShared$$(function$$((
+    inputAValue: string,
+    inputBValue: string,
+  ): boolean => {
+    return (inputAValue.length < 10)
+      && (inputBValue.length < 10);
+  }, [
+    inputAValue,
+    inputBValue,
+  ]));
+
+  // creates a shared observable which emits an Event when the form is submitted
+  const formSubmit = share$$(fromEventTarget(form, 'submit'));
+
+  // subscribes to formSubmit to prevent form submit
+  formSubmit((event: Event) => event.preventDefault());
+
+  // creates an observable which triggers when the form is submitted and is valid
+  const formSubmitValid = pipe$$(formSubmit, [
+    conditionalSubscribePipe(isFormValid), // pipe which subscribes to formSubmit if isFormValid is true
+  ]);
+
+  // creates an observable that outputs the value to display into 'stateText'
+  const stateTextValue = map$$(isFormValid, (valid: boolean) => {
+    return valid ? 'valid' : 'invalid';
+  });
+
+  inputAValue(() => {
+    console.log('inputA changed');
+    // do some actions #1
+  });
+
+  inputBValue(() => {
+    console.log('inputB changed');
+    // do some actions #2
+  });
+
+  stateTextValue((value: string) => {
+    stateText.innerText = value;
+  });
+
+  formSubmitValid(() => {
+    console.log('valid');
+    // do some actions #3
+  });
+}
+
 /*-------------*/
 
 export function reactiveVariableFormExample() {
   // withoutObservable();
-  withObservable();
+  // withObservable();
+  withObservableAndShortcuts();
 }

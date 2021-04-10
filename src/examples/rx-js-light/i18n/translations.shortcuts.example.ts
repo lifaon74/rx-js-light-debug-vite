@@ -1,7 +1,7 @@
 import {
-  combineLatest, createMulticastReplayLastSource, currencyFormatSubscribePipe, dateTimeShortcutFormatSubscribePipe,
-  ICurrencyFormatOptions, ILocales, ILocaleToTranslationKeyToTranslationValueMap, ISubscribeFunction,
-  ITranslationKeyToTranslationValueMap, listFormatSubscribePipe, localesToStringArray, numberFormatSubscribePipe,
+  combineLatest, currencyFormatSubscribePipe, dateTimeShortcutFormatSubscribePipe, ICurrencyFormatOptions, ILocales,
+  ILocaleToTranslationKeyToTranslationValueMap, ISubscribeFunction, ITranslationKeyToTranslationValueMap,
+  listFormatSubscribePipe, localesToStringArray, numberFormatSubscribePipe,
   pluralRulesResultToTranslationKeySubscribePipe, pluralRulesSubscribePipe, translateSubscribeFunction
 } from '@lifaon/rx-js-light';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
@@ -57,20 +57,18 @@ export function translationsShortcutsExample() {
   }
 
   function generateProductSource(): ISubscribeFunction<IReactiveProduct[]> {
-    return createMulticastReplayLastSource({
-      initialValue: [
-        {
-          name: 'apple',
-          price: const$$(2),
-          quantity: const$$(3),
-        },
-        {
-          name: 'banana',
-          price: const$$(1.5),
-          quantity: const$$(1),
-        },
-      ]
-    }).subscribe;
+    return const$$([
+      {
+        name: 'apple',
+        price: const$$(2),
+        quantity: const$$(3),
+      },
+      {
+        name: 'banana',
+        price: const$$(1.5),
+        quantity: const$$(1),
+      },
+    ]);
   }
 
   const products$ = generateProductSource();
@@ -139,168 +137,3 @@ export function translationsShortcutsExample() {
   });
 
 }
-
-
-// export function translationsExample() {
-//
-//   function getTranslationValueFromTranslationKeyToTranslationValueMap(
-//     translationKeyToTranslationValueMap: ITranslationKeyToTranslationValueMap,
-//     key: string,
-//   ): string {
-//     return translationKeyToTranslationValueMap.has(key)
-//       ? translationKeyToTranslationValueMap.get(key) as string
-//       : key;
-//   }
-//
-//   // function getTranslationKeyToTranslationValueMapFromLocaleToTranslationKeyToTranslationValueMap(
-//   //   localeToTranslationKeyToTranslationValueMap: ILocaleToTranslationKeyToTranslationValueMap,
-//   //   locales: ILocales,
-//   // ): ITranslationKeyToTranslationValueMap {
-//   //   const _locales: string[] = localesToStringArray(locales);
-//   //   // TODO locale matcher
-//   //   for (let i = 0, l = _locales.length; i < l; i++) {
-//   //     const locale: string = _locales[i];
-//   //     if (localeToTranslationKeyToTranslationValueMap.has(locale)) {
-//   //       return localeToTranslationKeyToTranslationValueMap.get(locale) as ITranslationKeyToTranslationValueMap;
-//   //     }
-//   //   }
-//   //   // TODO improve => return null ? accept a default locale as param ? throw ? etc...
-//   //   return localeToTranslationKeyToTranslationValueMap.get('en') as ITranslationKeyToTranslationValueMap;
-//   // }
-//
-//   // function getTranslationValueFromLocaleToTranslationKeyToTranslationValueMap(
-//   //   localeToTranslationKeyToTranslationValueMap: ILocaleToTranslationKeyToTranslationValueMap,
-//   //   locales: ILocales,
-//   //   key: string,
-//   // ): string | null {
-//   //   return getTranslationValueFromTranslationKeyToTranslationValueMap(
-//   //     getTranslationKeyToTranslationValueMapFromLocaleToTranslationKeyToTranslationValueMap(
-//   //       localeToTranslationKeyToTranslationValueMap,
-//   //       locales,
-//   //     ),
-//   //     key,
-//   //   );
-//   // }
-//
-//   function localeMatcher(
-//     requestedLocales: string[],
-//     availableLocales: string[],
-//     defaultLocale: string,
-//   ): string {
-//     const _availableLocales: Set<string> = new Set<string>(availableLocales.map((availableLocales: string) => (new (Intl as any).Locale(availableLocales)).language));
-//     for (let i = 0, l = requestedLocales.length; i < l; i++) {
-//       const requestedLocale: string = (new (Intl as any).Locale(requestedLocales[i]).language);
-//       if (_availableLocales.has(requestedLocale)) {
-//         return requestedLocale;
-//       }
-//     }
-//     return (new (Intl as any).Locale(defaultLocale)).language;
-//   }
-//
-//
-//   function translate(
-//     locales: ILocales,
-//     localeToTranslationKeyToTranslationValueMap: ILocaleToTranslationKeyToTranslationValueMap,
-//     key: string,
-//     parameters: { [key: string]: string } = {},
-//   ): string {
-//     // TODO use Intl.LocaleMatcher.match when available
-//     const locale: string = localeMatcher(
-//       localesToStringArray(locales),
-//       Array.from(localeToTranslationKeyToTranslationValueMap.keys()),
-//       'en',
-//     );
-//
-//     if (localeToTranslationKeyToTranslationValueMap.has(locale)) {
-//       const translationKeyToTranslationValueMap: ITranslationKeyToTranslationValueMap = localeToTranslationKeyToTranslationValueMap.get(locale) as ITranslationKeyToTranslationValueMap;
-//       if (translationKeyToTranslationValueMap.has(key)) {
-//         const { texts, variables } = extractReactiveStringParts(translationKeyToTranslationValueMap.get(key) as string);
-//         let output: string = '';
-//         const length: number = variables.length;
-//         for (let i = 0; i < length; i++) {
-//           output += texts[i];
-//           const variable: string = variables[i];
-//           if (variable in parameters) {
-//             output += parameters[variable];
-//           } else {
-//             output += `{{ ${ variable } }}`;
-//           }
-//         }
-//         output += texts[length];
-//         return output;
-//       } else {
-//         return key;
-//       }
-//     } else {
-//       return key;
-//     }
-//   }
-//
-//   interface IProduct {
-//     name: string;
-//     price: number;
-//     quantity: number;
-//   }
-//
-//   interface IData {
-//     products: IProduct[];
-//   }
-//
-//   const data: IData = {
-//     products: [
-//       {
-//         name: 'apple',
-//         price: 2,
-//         quantity: 3,
-//       },
-//       {
-//         name: 'banana',
-//         price: 1.5,
-//         quantity: 1,
-//       },
-//     ]
-//   };
-//
-//   const $dataSource$ = createMulticastReplayLastSource({ initialValue: data });
-//
-//   // const proxy = createSubscribeFunctionProxy(dataSource.subscribe);
-//
-//   createLocaleFormatContext((locales$: ISubscribeFunction<ILocales>) => {
-//
-//     const $currency$ = createMulticastReplayLastSource<string>({ initialValue: 'EUR' });
-//     document.body.appendChild(createCurrencySelectElement($currency$));
-//
-//     const $translation$ = createMulticastReplayLastSource({ initialValue: TRANSLATIONS });
-//
-//     const translated$ = reactiveFunction((
-//       translations: ILocaleToTranslationKeyToTranslationValueMap,
-//       locales: ILocales,
-//       currency: string,
-//       data: IData,
-//     ): string => {
-//       return translate(locales, translations, 'translate.product.list', {
-//         list: new (Intl as any).ListFormat(locales, { style: 'long', type: 'conjunction' }).format(
-//           data.products.map((product: IProduct) => {
-//             return translate(locales, translations, 'translate.product.price', {
-//               product: translate(locales, translations, `translate.${ product.name }[${ new Intl.PluralRules(locales as string[]).select(product.quantity) }]`),
-//               quantity: new Intl.NumberFormat(locales as string[]).format(product.quantity),
-//               price: new Intl.NumberFormat(locales as string[], {
-//                 style: 'currency',
-//                 currency: currency
-//               }).format(product.quantity),
-//             });
-//           }),
-//         ),
-//       });
-//     }, [
-//       $translation$.subscribe,
-//       locales$,
-//       $currency$.subscribe,
-//       $dataSource$.subscribe,
-//     ]);
-//
-//
-//     return translated$;
-//   });
-//
-// }

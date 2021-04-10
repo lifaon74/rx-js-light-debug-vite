@@ -23,12 +23,16 @@ import { fileTransferExample } from './examples/rx-dom/file-transfer/file-transf
 import { pipeExample } from './examples/rx-js-light/pipe.example';
 import { i18nExample } from './examples/rx-js-light/i18n/i18n.example';
 import { rxjsLightShortcutsExample } from './examples/rx-js-light/shortcuts/rx-js-light-shortcuts.example';
+import { forLoopExample } from './examples/rx-dom/for-loop/for-loop.example';
+import { rxJSLightPerformancesExample } from './examples/rx-js-light/performances/performances.example';
 
 function run() {
   // debugObservableV5();
   // debugI18N();
   // debugReactiveDOM();
-  formControlDebug();
+  // formControlDebug();
+
+  rxJSLightPerformancesExample();
 
   // console.log('started');
   // dynamicDateExample();
@@ -43,6 +47,7 @@ function run() {
   // intersectionObserverExample();
   // matchMediaExample();
   // helloWorldExample();
+  // forLoopExample();
   // routerExample();
   // guidelineExample();
   // composeExample();
@@ -53,7 +58,6 @@ function run() {
   // i18nExample();
   // rxjsLightShortcutsExample();
 }
-// TODO example that randomly toggle half items of an *for loop => to show perf
 
 run();
 
