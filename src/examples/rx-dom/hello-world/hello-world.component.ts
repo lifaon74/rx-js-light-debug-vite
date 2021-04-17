@@ -9,7 +9,6 @@ import {
   createMulticastReplayLastSource, IMulticastReplayLastSource, ISubscribeFunction, mapSubscribePipe,
   pipeSubscribeFunction
 } from '@lifaon/rx-js-light';
-import { helloWorldDebug } from './hello-world.debug';
 
 import template from './hello-world.component.module';
 
@@ -51,7 +50,7 @@ const CONSTANTS_TO_IMPORT = {
       Length: {{ $.remaining }} / 10
     </div>
   `, CONSTANTS_TO_IMPORT),
-  // template: (data: IData) => template(data, CONSTANTS_TO_IMPORT),
+  // template: (data: IData, content: DocumentFragment) => template(data, content, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
@@ -61,6 +60,7 @@ const CONSTANTS_TO_IMPORT = {
       color: red;
     }
   `),
+  useShadowDOM: true,
 })
 export class AppHelloWorldComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;

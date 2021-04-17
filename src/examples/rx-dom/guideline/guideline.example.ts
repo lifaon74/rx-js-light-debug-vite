@@ -1,4 +1,5 @@
 import {
+  bootstrap,
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
@@ -79,5 +80,5 @@ class AppGuideLineComponent extends HTMLElement implements OnCreate<IData> {
 /** BOOTSTRAP FUNCTION **/
 
 export function guidelineExample() {
-  // bootstrap(new AppGuideLineComponent());
+  bootstrap(new AppGuideLineComponent());
 }

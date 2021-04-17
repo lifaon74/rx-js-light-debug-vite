@@ -9,7 +9,8 @@ import {
 } from '@lifaon/rx-js-light';
 import {
   bootstrap,
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component, createElementNode,
+  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
+  createDocumentFragment, createElementNode,
   DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, nodeAppendChild, OnConnect, OnCreate,
   OnDisconnect, uuid,
 } from '@lifaon/rx-dom';
@@ -245,7 +246,7 @@ async function debugReactiveDOMCompiler1() {
     clickCondition: clickSource.subscribe,
     content: $of(compileAndEvaluateReactiveHTMLAsComponentTemplate(`
       hello world
-    `, {})({})),
+    `, {})({}, createDocumentFragment())),
     switchValue: $of(3)
   };
 
@@ -355,7 +356,7 @@ async function debugReactiveDOMCompiler2() {
     </button>
   `;
 
-  nodeAppendChild(document.body, compileAndEvaluateReactiveHTMLAsComponentTemplate(html.trim(), DEFAULT_CONSTANTS_TO_IMPORT)(data));
+  nodeAppendChild(document.body, compileAndEvaluateReactiveHTMLAsComponentTemplate(html.trim(), DEFAULT_CONSTANTS_TO_IMPORT)(data, createDocumentFragment()));
 
   // const module = compileHTMLAsModule(html).join('\n');
   // console.log(await minify(module));

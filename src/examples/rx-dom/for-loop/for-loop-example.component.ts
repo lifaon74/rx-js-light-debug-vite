@@ -3,7 +3,7 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
 import { ISubscribeFunction } from '@lifaon/rx-js-light';
-import { const$$, let$$, map$$ } from '../../../../../rx-js-light-shortcuts/dist';
+import { const$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 function shuffleArray<GArray extends any[]>(array: GArray): GArray {
   for (let i = array.length - 1; i > 0; i--) {

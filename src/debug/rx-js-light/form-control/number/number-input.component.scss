@@ -1,0 +1,74 @@
+
+$number-input-border-color: #aaa;
+$number-input-border-color-invalid: #e80000;
+
+$number-input-validity-container-color: #e80000;
+
+:host {
+  display: block;
+  height: 40px;
+  width: 100%;
+
+
+  & > input {
+    height: 100%;
+    width: 100%;
+    border: 1px solid $number-input-border-color;
+
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    //&:required {
+    //  border: 1px solid red;
+    //
+    //  & ~ .validity-container {
+    //    display: none;
+    //  }
+    //}
+  }
+
+  & > .validity-container {
+    color: $number-input-validity-container-color;
+    font-size: 11px;
+    padding: 2px;
+  }
+
+  /*--*/
+
+  &.required {
+
+  }
+
+  &.valid,
+  &.pristine {
+    & > .validity-container {
+      display: none;
+    }
+  }
+
+  &:not(.pristine) {
+    $validity-classes: 'bad-input', 'range-underflow', 'range-overflow', 'step-mismatch', 'value-missing';
+
+    @each $validity-class in $validity-classes {
+      &:not(.#{$validity-class}) {
+        & > .validity-container {
+          & > .#{$validity-class} {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &:not(.valid) {
+      & > input {
+        border-color: $number-input-border-color-invalid;
+      }
+    }
+  }
+}
+

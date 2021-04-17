@@ -25,14 +25,17 @@ import { i18nExample } from './examples/rx-js-light/i18n/i18n.example';
 import { rxjsLightShortcutsExample } from './examples/rx-js-light/shortcuts/rx-js-light-shortcuts.example';
 import { forLoopExample } from './examples/rx-dom/for-loop/for-loop.example';
 import { rxJSLightPerformancesExample } from './examples/rx-js-light/performances/performances.example';
+import { helloWorldDebug } from './examples/rx-dom/hello-world/hello-world.debug';
+import { lazyLoadExample } from './examples/rx-dom/lazy-load/lazy-load.example';
 
 function run() {
   // debugObservableV5();
   // debugI18N();
   // debugReactiveDOM();
   // formControlDebug();
+  // helloWorldDebug();
 
-  rxJSLightPerformancesExample();
+  // rxJSLightPerformancesExample();
 
   // console.log('started');
   // dynamicDateExample();
@@ -46,7 +49,7 @@ function run() {
   // trustedTypesExample();
   // intersectionObserverExample();
   // matchMediaExample();
-  // helloWorldExample();
+  helloWorldExample();
   // forLoopExample();
   // routerExample();
   // guidelineExample();
@@ -57,6 +60,7 @@ function run() {
   // commonPitfallExample();
   // i18nExample();
   // rxjsLightShortcutsExample();
+  // lazyLoadExample();
 }
 
 run();

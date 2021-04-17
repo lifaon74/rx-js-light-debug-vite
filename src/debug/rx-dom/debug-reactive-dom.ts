@@ -3,7 +3,8 @@ import {
   mapSubscribePipe, pipeSubscribeFunction, shareSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
-  attachDocumentFragmentWithAttachEvent, attachNode, attachNodeWithEvent, createDocumentFragment, createElementNode,
+  attachDocumentFragmentToStandardNode,
+  attachNode, attachNodeWithEvent, createDocumentFragment, createElementNode,
   createReactiveForLoopNode, createReactiveIfNode, createReactiveSwitchNode, createReactiveTextNode, createTextNode,
   detachNodeWithEvent, moveNodeWithEvent, nodeAppendChild, onNodeConnectedTo,
 } from '@lifaon/rx-dom';
@@ -201,7 +202,7 @@ async function debugOnNodeConnectedTo1() {
     () => moveNodeWithEvent(text1, container1), // false
     () => detachNodeWithEvent(text1), // -
     () => attachNode(text1, fragment), // -
-    () => attachDocumentFragmentWithAttachEvent(fragment, document.body), // true
+    () => attachDocumentFragmentToStandardNode(fragment, document.body), // true
   ];
 
   // const steps = [

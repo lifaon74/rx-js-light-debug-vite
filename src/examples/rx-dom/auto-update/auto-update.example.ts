@@ -23,6 +23,15 @@ interface IComponentData<GComponent extends HTMLElement> {
   readonly self: GComponent;
 }
 
+function generateComponentData<GComponent extends HTMLElement>(
+  instance: GComponent,
+): IComponentData<GComponent> {
+  return {
+    self: instance,
+    proxy: createComponentProxy<GComponent>(instance),
+  };
+}
+
 /** COMPONENT **/
 
 type IData = IComponentData<AppMainComponent>;
@@ -63,21 +72,14 @@ class AppMainComponent extends HTMLElement implements OnCreate<IData> {
   inputA: string | number;
   inputB: string | number;
 
-  protected readonly proxy: ISubscribeFunctionProxy<AppMainComponent>;
-
   constructor() {
     super();
     this.inputA = 1;
     this.inputB = 2;
-
-    this.proxy = createComponentProxy<AppMainComponent>(this);
   }
 
   public onCreate(): IData {
-    return {
-      self: this,
-      proxy: this.proxy,
-    };
+    return generateComponentData(this);
   }
 }
 

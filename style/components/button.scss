@@ -1,4 +1,5 @@
 @import '../variables';
+@import '../functions';
 
 $button-color-default: $color-gray-04;
 $button-background-color-default: $color-gray-02;
@@ -25,13 +26,9 @@ $button-colors-default: (
   );
 }
 
-$button-config-default: (
-  color: $color-gray-04,
-  background-color: $color-gray-02,
-  border-color: $color-gray-03,
-
+$button-config-default: map-merge-recursive($button-colors-default, (
   disabled: generate-button-colors-disabled-function($button-colors-default),
-);
+));
 
 
 /*---*/
@@ -65,7 +62,7 @@ $button-config-default: (
 }
 
 @mixin setup-button-mixin(
-  $config
+  $config,
 ) {
   @include setup-button-colors-mixin($config);
   @include disabled-mixin() {

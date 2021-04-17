@@ -12,7 +12,7 @@ import { AppModalComponent } from '../../modal/modal.component';
 
 
 interface IInputData {
-  readonly message: string;
+  readonly message: ISubscribeFunction<string>;
 }
 
 interface IData {
@@ -41,7 +41,7 @@ export class AppAlertModalComponent extends AppModalComponent implements OnCreat
     super(manager);
 
     this.data = {
-      message: of(data.message),
+      message: data.message,
       closeButtonText: of('close'),
       onClickClose: () => {
         this.close();

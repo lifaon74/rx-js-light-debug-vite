@@ -1,4 +1,4 @@
-export default ($: any, constantsToImport: any) => {
+export default ($: any, $content: any, constantsToImport: any) => {
   return (
     (
       {
@@ -6,40 +6,58 @@ export default ($: any, constantsToImport: any) => {
         createDocumentFragment,
         createTextNode,
         createReactiveTextNode,
-        createElementNode,
+        createElement,
         setAttributeValue,
         setReactiveProperty,
         setReactiveClass,
         setReactiveEventListener,
         $,
+        $content,
       }
     ) => {
       const parentNode = createDocumentFragment();
       {
-        const node = createElementNode("div");
+        // element 'div'
+        const node = createElement('div');
         nodeAppendChild(parentNode, node);
-        setAttributeValue(node, "class", "input-container");
+        // attributes
+        // static attribute 'class'
+        setAttributeValue(node, 'class', 'input-container');
         {
+          // child nodes
           const parentNode = node;
           {
-            const node = createElementNode("input");
+            // element 'input'
+            const node = createElement('input');
             nodeAppendChild(parentNode, node);
+            // attributes
+            // reference 'input'
             var input = node;
-            setReactiveProperty($.input.subscribe, node, "value");
-            setReactiveEventListener(() => $.input.emit(input.value), node, "input");
+            // reactive property 'value'
+            setReactiveProperty($.input.subscribe, node, 'value');
+            // reactive event listener 'input'
+            setReactiveEventListener(() => $.input.emit(input.value), node, 'input');
           }
         }
       }
       {
-        const node = createElementNode("div");
+        // element 'div'
+        const node = createElement('div');
         nodeAppendChild(parentNode, node);
-        setAttributeValue(node, "class", "max-length-container");
-        setReactiveClass($.valid, node, "valid");
+        // attributes
+        // static attribute 'class'
+        setAttributeValue(node, 'class', 'max-length-container');
+        // reactive class 'valid'
+        setReactiveClass($.valid, node, 'valid');
         {
+          // child nodes
           const parentNode = node;
-          nodeAppendChild(parentNode, createTextNode("Length: "));
+          // static text node
+          nodeAppendChild(parentNode, createTextNode('Length: '));
+          // reactive text node
           nodeAppendChild(parentNode, createReactiveTextNode($.remaining));
-          nodeAppendChild(parentNode, createTextNode(" / 10"));
+          // static text node
+          nodeAppendChild(parentNode, createTextNode(' / 10'));
         }
       }
       return parentNode;
@@ -47,5 +65,6 @@ export default ($: any, constantsToImport: any) => {
   )({
     ...constantsToImport,
     $,
+    $content,
   });
-};
+}

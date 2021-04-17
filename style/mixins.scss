@@ -5,9 +5,7 @@
   // https://codepen.io/una/pen/BazyaOM
   // https://css-tricks.com/aspect-ratio-boxes/
 
-  // sass-lint:disable-all
   aspect-ratio: #{$ratio};
-  // sass-lint:enable-all
 
   @supports not (aspect-ratio: #{$ratio}) {
     &::before {

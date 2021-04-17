@@ -73,7 +73,6 @@ export class NumberInputValidity extends InputValidity {
 
     const valid$ = function$$(
       (...values: boolean[]): boolean => {
-        console.log('run it');
         for (let i = 0, l = values.length; i < l; i++) {
           if (values[i]) {
             return false;
