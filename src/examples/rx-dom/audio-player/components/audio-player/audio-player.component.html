@@ -1,0 +1,91 @@
+
+
+
+<div class="player-bar">
+
+  <div
+    class="progress-bar"
+    (mouseup)="$.onMouseUpProgressBar"
+    (mousemove)="$.onMouseMoveProgressBar"
+  >
+    <div class="loaded-buffer-chunks">
+      <div
+        class="buffer-chunk"
+        *for="let chunk of $.loadedChunks$"
+        [style.left]="chunk.left"
+        [style.width]="chunk.width"
+      ></div>
+    </div>
+    <div
+      class="progress"
+      [style.width]="$.trackProgressWidth$"
+    ></div>
+
+    <div
+      class="cursor-time-tooltip"
+      [style.left]="$.cursorTimeTooltipLeftPosition$"
+    >
+      {{ $.cursorTimeTooltipText$ }}
+    </div>
+  </div>
+
+  <div class="controls">
+
+    <div class="track-controls">
+      <div
+        class="previous-track-button"
+        [title]="$.previousTrackButtonTitle$"
+        [class.disabled]="$.previousTrackButtonDisabled$"
+      >
+        <div class="icon-jump-left"></div>
+      </div>
+
+
+      <div
+        class="pause-button"
+        *if="$.pauseButtonVisible$"
+        [title]="$.pauseButtonTitle$"
+        (click)="$.onClickPauseButton"
+      >
+        <div class="icon-playback-pause"></div>
+      </div>
+
+      <div
+        class="play-button"
+        *if="$.playButtonVisible$"
+        [title]="$.playButtonTitle$"
+        (click)="$.onClickPlayButton"
+      >
+        <div class="icon-playback-play"></div>
+      </div>
+
+      <div
+        class="loader"
+        *if="$.loaderVisible$"
+        [title]="$.loaderTitle$"
+      >
+        <div class="dual-ring-loader"></div>
+      </div>
+
+      <div
+        class="next-track-button"
+        [title]="$.nextTrackButtonTitle$"
+        [class.disabled]="$.nextTrackButtonDisabled$"
+      >
+        <div class="icon-jump-right"></div>
+      </div>
+    </div>
+
+    <div class="sound-controls">
+      sound
+    </div>
+
+    <div class="track-details">
+      details
+    </div>
+
+  </div>
+
+
+</div>
+

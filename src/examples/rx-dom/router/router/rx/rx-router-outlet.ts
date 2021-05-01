@@ -2,7 +2,7 @@ import {
   createAbortError, createTimeout, fromEventTarget, idle, wrapPromiseFactoryWithAbortSignal
 } from '@lifaon/rx-js-light';
 import { createElementNode } from '@lifaon/rx-dom';
-import { createRXDomRouterError } from './create-rx-dom-router-error';
+import { createRXDOMRouterError } from './create-rx-dom-router-error';
 
 export const ROUTER_OUTLET_TAG_NAME = 'rx-router-outlet';
 
@@ -53,7 +53,7 @@ export function locateRouterOutletElement(
       };
 
       const unsubscribeTimeout = createTimeout(() => {
-        _reject(createRXDomRouterError(1, `Not able to locate the router outlet '${ routerOutletSelector }'`));
+        _reject(createRXDOMRouterError(1, `Not able to locate the router outlet '${ routerOutletSelector }'`));
       }, timeout);
 
       const unsubscribeAbort = fromEventTarget(signal, 'abort')(() => {

@@ -1,8 +1,9 @@
 import {
   fromFetch, fromPromise, IDefaultNotificationsUnion, ISubscribeFunction, ISubscribeFunctionFromFetchNotifications,
-  mergeMapSubscribePipeWithNotifications, pipeSubscribeFunction, mapSubscribePipeWithNotifications
+  mapSubscribePipeWithNotifications, mergeMapSubscribePipeWithNotifications, pipeSubscribeFunction
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../../misc/no-cors';
+import { IImageResource, IResource, IYoutubeResource } from './resource.type';
 
 
 /** REQUEST **/
@@ -11,22 +12,7 @@ export interface IMonkeyUserRequest {
   next?: string;
 }
 
-
 /** RESPONSE **/
-
-export type IResourceKind = 'image' | 'youtube';
-
-export interface IResource {
-  kind: IResourceKind;
-}
-
-export interface IImageResource extends IResource {
-  url: string;
-}
-
-export interface IYoutubeResource extends IResource {
-  url: string;
-}
 
 export interface IMonkeyUserResponse {
   resource: IResource;

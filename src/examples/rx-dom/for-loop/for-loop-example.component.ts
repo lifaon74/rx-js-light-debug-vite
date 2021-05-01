@@ -5,24 +5,17 @@ import {
 import { ISubscribeFunction } from '@lifaon/rx-js-light';
 import { const$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
-function shuffleArray<GArray extends any[]>(array: GArray): GArray {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
 
 /** COMPONENT **/
 
 interface IItem {
-  text: ISubscribeFunction<string>;
+  readonly text$: ISubscribeFunction<string>;
 }
 
 interface IData {
-  count: ISubscribeFunction<number>;
-  time: ISubscribeFunction<number>;
-  items: ISubscribeFunction<IItem[]>;
+  readonly count$: ISubscribeFunction<number>;
+  readonly time$: ISubscribeFunction<number>;
+  readonly items$: ISubscribeFunction<IItem[]>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -33,13 +26,13 @@ const CONSTANTS_TO_IMPORT = {
   name: 'app-hello-world',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <div class="count">
-      count: {{ $.count }} in {{ $.time }}ms
+      count: {{ $.count$ }} in {{ $.time$ }}ms
     </div>
     <div
       class="item"
-      *for="let item of $.items; index as index"
+      *for="let item of $.items$"
     >
-      {{ item.text }}
+      {{ item.text$ }}
     </div>
   `, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(`
@@ -63,10 +56,15 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
   constructor() {
     super();
     const $time$ = let$$<number>(0);
-    const $items$ = let$$<IItem[]>([]);
+    const time$ =  $time$.subscribe;
 
-    const items = Array.from({ length: 1e4 }, (v: any, index: number) => ({
-      text: const$$(`#${ index }`),
+    const $items$ = let$$<IItem[]>([]);
+    const items$ = $items$.subscribe;
+
+    const count$ = map$$($items$.subscribe, (items: IItem[]) => items.length);
+
+    const items = Array.from({ length: 1e4 }, (v: any, index: number): IItem => ({
+      text$: const$$(`#${ index }`),
     }));
 
 
@@ -96,10 +94,21 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
 
     loop();
 
+    // setTimeout(() => {
+    //   updateItems(items);
+    //   setTimeout(() => {
+    //     updateItems([]);
+    //   }, 500);
+    // }, 500);
+
+    // (window as any).items = items;
+    // (window as any).$items$ = $items$;
+    // (window as any).updateItems = updateItems;
+
     this.data = {
-      count: map$$($items$.subscribe, (items: IItem[]) => items.length),
-      time: $time$.subscribe,
-      items: $items$.subscribe,
+      count$,
+      time$,
+      items$,
     };
   }
 

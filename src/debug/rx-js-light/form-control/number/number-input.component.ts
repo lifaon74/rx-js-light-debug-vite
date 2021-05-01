@@ -37,7 +37,7 @@ const CONSTANTS_TO_IMPORT = {
       #input
       type="number"
       [value]="$.$value$.subscribe"
-      (input)="() => $.$value$.emit(input.value)"
+      (input)="() => $.$value$.emit(getNodeReference('input').value)"
       [disabled]="$.disabled$"
       [required]="$.required$"
       [min]="$.min$"

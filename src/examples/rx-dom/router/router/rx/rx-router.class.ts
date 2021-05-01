@@ -10,7 +10,7 @@ import {
 import { resolveRXRoute } from './resolve-rx-route';
 import { injectRXRoute } from './inject-rx-route';
 import { getDocument } from '@lifaon/rx-dom';
-import { createRXDomRouterError } from './create-rx-dom-router-error';
+import { createRXDOMRouterError } from './create-rx-dom-router-error';
 
 export interface IRXRouterUpdateOptions {
   signal?: AbortSignal;
@@ -59,6 +59,17 @@ export class RXRouter {
     return this._resolvedRoutes;
   }
 
+  getCurrentPath(): Path {
+    const currentPathName: string = getLocation().pathname;
+    const baseURIPathName: string = new URL(getBaseURI()).pathname;
+    // getLocation().pathname.replace(new URL(getBaseURI()).pathname, '')
+    return new Path(
+      currentPathName.startsWith(baseURIPathName)
+        ? currentPathName.slice(baseURIPathName.length)
+        : currentPathName,
+    );
+  }
+
   refreshAndCatch(
     options?: IRXRouterUpdateOptions,
   ): Promise<void> {
@@ -73,8 +84,7 @@ export class RXRouter {
   refresh(
     options?: IRXRouterUpdateOptions,
   ): Promise<IInjectedRXRoutes> {
-    // TODO verify if it's correct
-    return this.update(new Path(getLocation().pathname.replace(getBaseURI(), '')), options);
+    return this.update(this.getCurrentPath(), options);
   }
 
   update(
@@ -101,7 +111,7 @@ export class RXRouter {
 
       const timeoutPromise: Promise<never> = new Promise<never>((resolve: any, reject: any) => {
         unsubscribeTimeout = createTimeout(() => {
-          reject(createRXDomRouterError(2, `Router timeout: not able to resolve the route '${ path.toString() }'`));
+          reject(createRXDOMRouterError(2, `Router timeout: not able to resolve the route '${ path.toString() }'`));
           controller.abort();
         }, timeout);
       });

@@ -10,8 +10,10 @@ import style from './tiles-list.component.scss';
 // @ts-ignore
 import html from './tiles-list.component.html?raw';
 import { createInfiniteScrollSubscribeFunction } from '../helpers/infinite-scroll';
-import { fetchMonkeyUsersPosts, IMonkeyUserResponse, IResource } from '../services/fetch-monkey-user-posts';
+import { fetchMonkeyUsersPosts, IMonkeyUserResponse} from '../services/fetch-monkey-user-posts';
 import { filter$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
+import { fetchNineGagPosts } from '../services/fetch-nine-gag-posts';
+import { IResource } from '../services/resource.type';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 
@@ -23,6 +25,16 @@ import { filter$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
 //
 // console.log(styleUrl);
 // console.log(await loadCSS());
+
+function debugNineGag(): void {
+  const subNineGag = fetchNineGagPosts({
+    section: 'hot',
+  });
+
+  subNineGag((result) => {
+    console.log(result);
+  });
+}
 
 export function mutateReadonlyReplayLastSourceArray<GItem>(
   source: IReplayLastSource<readonly GItem[], IGenericSource>,
@@ -50,8 +62,8 @@ interface ITile {
 
 
 interface IData {
-  readonly tiles: ISubscribeFunction<readonly ITile[]>;
-  readonly loading: ISubscribeFunction<boolean>;
+  readonly tiles$: ISubscribeFunction<readonly ITile[]>;
+  readonly loading$: ISubscribeFunction<boolean>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -118,8 +130,8 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
     );
 
     this.data = {
-      tiles: $tiles$.subscribe,
-      loading: $loading$.subscribe,
+      tiles$: $tiles$.subscribe,
+      loading$: $loading$.subscribe,
     };
   }
 
@@ -128,7 +140,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
   }
 
   onConnect(): void {
-    this.subscriptions.activateAll();
+    // this.subscriptions.activateAll();
   }
 
   onDisconnect(): void {

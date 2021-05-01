@@ -35,8 +35,8 @@ const CONSTANTS_TO_IMPORT = {
 //     generateConstantsToImportForComponentTemplateFromObject(CONSTANTS_TO_IMPORT),
 //   );
 // }
-export function compile(html, constantsToImport, dataName) {
-    return compileReactiveHTMLAsComponentTemplateFunctionOptimized(html, constantsToImport, dataName)
+export function compile(html, constantsToImport) {
+    return compileReactiveHTMLAsComponentTemplateFunctionOptimized(html, constantsToImport)
         .then((lines) => {
         return linesToString(lines);
     });

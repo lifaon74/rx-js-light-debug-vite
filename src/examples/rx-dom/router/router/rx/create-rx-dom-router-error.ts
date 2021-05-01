@@ -1,5 +1,5 @@
 
-export function createRXDomRouterError(
+export function createRXDOMRouterError(
   id: number,
   message: string,
 ): Error {

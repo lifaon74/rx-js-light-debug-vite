@@ -5,9 +5,9 @@ import {
 } from '@lifaon/rx-dom';
 import { AppProgressRingComponent } from '../progress-ring/progress-ring.component';
 import {
-  createMulticastReplayLastSource, createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IEmitFunction,
-  IProgress, ISubscribeFunction, ISubscribeFunctionFromPromiseNotifications, ISubscribeFunctionFromXHRNotifications,
-  IUnsubscribeFunction, mapSubscribePipe, noop, notificationObserver, pipeSubscribeFunction
+  createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IEmitFunction, IProgress, ISubscribeFunction,
+  ISubscribeFunctionFromPromiseNotifications, ISubscribeFunctionFromXHRNotifications, IUnsubscribeFunction, noop,
+  notificationObserver
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../misc/no-cors';
 // @ts-ignore
@@ -15,6 +15,7 @@ import html from './file-transfer.component.html?raw';
 // @ts-ignore
 import style from './file-transfer.component.scss';
 import { downloadBlob, extractFileNameFromResponse } from './helpers';
+import { let$$, letU$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 
 export const APP_FILE_TRANSFER_CUSTOM_ELEMENTS = [
@@ -26,9 +27,9 @@ export const APP_FILE_TRANSFER_CUSTOM_ELEMENTS = [
 type IStatus = 'awaiting' | 'loading' | 'complete' | 'error';
 
 interface IData {
-  status: ISubscribeFunction<IStatus>;
-  progress: ISubscribeFunction<number>;
-  error: ISubscribeFunction<Error>;
+  status$: ISubscribeFunction<IStatus>;
+  progress$: ISubscribeFunction<number>;
+  errorMessage$: ISubscribeFunction<string>;
 
   onClickStartDownload: IEmitFunction<Event>;
   onClickCancelDownload: IEmitFunction<Event>;
@@ -39,6 +40,8 @@ const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
   createElement: generateCreateElementFunctionWithCustomElements(APP_FILE_TRANSFER_CUSTOM_ELEMENTS)
 };
+
+const NO_PROGRESS = createProgress(0, Number.POSITIVE_INFINITY);
 
 @Component({
   name: 'app-file-transfer',
@@ -63,13 +66,13 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
     const request = new Request(noCORS(url));
 
     const startDownload$ = fromXHR(request, void 0, { useReadableStream: false });
-    const $status$ = createMulticastReplayLastSource<IStatus>({ initialValue: 'awaiting' });
-    const $error$ = createMulticastReplayLastSource<Error>();
-    const $progress$ = createMulticastReplayLastSource<IProgress>();
+    const $status$ = let$$<IStatus>('awaiting');
+    const $error$ = letU$$<Error>();
+    const $progress$ = letU$$<IProgress>();
 
-    const progressAsNumber$ = pipeSubscribeFunction($progress$.subscribe, [
-      mapSubscribePipe<IProgress, number>((progress: IProgress) => (progress.loaded / progress.total)),
-    ]);
+    const status$ = $status$.subscribe;
+    const progress$ = map$$($progress$.subscribe, (progress: IProgress) => (progress.loaded / progress.total));
+    const errorMessage$ = map$$($error$.subscribe, (error) => error.message);
 
     this.unsubscribeStartDownload = noop;
 
@@ -80,7 +83,7 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
 
     const onClickStartDownload = () => {
       $status$.emit('loading');
-      $progress$.emit(createProgress(0, Number.POSITIVE_INFINITY));
+      $progress$.emit(NO_PROGRESS);
 
       this.unsubscribeStartDownload = startDownload$(notificationObserver<ISubscribeFunctionFromXHRNotifications>({
         next: (response: Response) => {
@@ -108,9 +111,9 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
     };
 
     this.data = {
-      status: $status$.subscribe,
-      progress: progressAsNumber$,
-      error: $error$.subscribe,
+      status$,
+      progress$,
+      errorMessage$,
 
       onClickStartDownload,
       onClickCancelDownload,

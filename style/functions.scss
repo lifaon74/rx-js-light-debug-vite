@@ -23,3 +23,15 @@
   }
   @return $result;
 }
+
+@function map-get-default($map, $key, $default) {
+  @return default-value(map-get($map, $key), $default);
+}
+
+@function default-value($value, $default) {
+  @if $value == null {
+    @return $default;
+  } @else {
+    @return $value;
+  }
+}

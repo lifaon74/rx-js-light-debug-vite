@@ -50,13 +50,13 @@ const CONSTANTS_TO_IMPORT = {
         #input-a
         type="number"
         [value]="$.proxy.inputA.$"
-        (input)="() => $.self.inputA = inputA.value"
+        (input)="() => $.self.inputA = getNodeReference('input-a').value"
       >
       <input
         #input-b
         type="number"
         [value]="$.proxy.inputB.$"
-        (input)="() => $.self.inputB = inputB.value"
+        (input)="() => $.self.inputB = getNodeReference('input-b').value"
       >
     </div>
     <div>

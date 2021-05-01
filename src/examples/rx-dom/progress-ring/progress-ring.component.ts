@@ -3,7 +3,9 @@ import {
   ISubscribeFunction, mapSubscribePipe, pipeSubscribeFunction, reactiveFunction, tapEmitPipe
 } from '@lifaon/rx-js-light';
 import {
-  compileReactiveCSSAsComponentStyle, Component, DEFAULT_CONSTANTS_TO_IMPORT, Input, OnCreate,
+  compileAndEvaluateReactiveHTMLAsComponentTemplate,
+  compileReactiveCSSAsComponentStyle, Component, DEFAULT_CONSTANTS_TO_IMPORT,
+  ICompiledComponentTemplateFunctionVariables, Input, OnCreate,
   syncAttributeWithNumberSource
 } from '@lifaon/rx-dom';
 
@@ -31,25 +33,25 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-progress-ring',
-  // template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-  //    <svg
-  //     [attr.width]="$.diameter"
-  //     [attr.height]="$.diameter"
-  //    >
-  //      <circle
-  //        stroke="red"
-  //        fill="transparent"
-  //        [attr.r]="$.innerRadius"
-  //        [attr.cx]="$.radius"
-  //        [attr.cy]="$.radius"
-  //        [attr.stroke-width]="$.strokeWidth"
-  //        [attr.stroke-dasharray]="$.strokeDashArray"
-  //        [style.stroke-dashoffset]="$.strokeDashOffset"
-  //        [attr.transform]="$.transform"
-  //     />
-  //   </svg>
-  // `, CONSTANTS_TO_IMPORT),
-  template: (data: IData) => template(data, CONSTANTS_TO_IMPORT),
+  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
+     <svg
+      [attr.width]="$.diameter"
+      [attr.height]="$.diameter"
+     >
+       <circle
+         stroke="red"
+         fill="transparent"
+         [attr.r]="$.innerRadius"
+         [attr.cx]="$.radius"
+         [attr.cy]="$.radius"
+         [attr.stroke-width]="$.strokeWidth"
+         [attr.stroke-dasharray]="$.strokeDashArray"
+         [style.stroke-dashoffset]="$.strokeDashOffset"
+         [attr.transform]="$.transform"
+      />
+    </svg>
+  `, CONSTANTS_TO_IMPORT),
+  // template: (variables: ICompiledComponentTemplateFunctionVariables<IData>) => template(variables, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(`
     :host {
       display: inline-block;

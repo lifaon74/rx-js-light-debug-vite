@@ -1,5 +1,5 @@
 import { bootstrap } from '@lifaon/rx-dom';
-import { fromEventTarget } from '@lifaon/rx-js-light';
+import { fromEventTarget, of } from '@lifaon/rx-js-light';
 import { AppModalManagerComponent } from './modal/manager/modal-manager.component';
 import { AppAlertModalComponent } from './build-in/alert/alert-modal.component';
 
@@ -24,7 +24,7 @@ export function modalComponentExample() {
 
   const openAlert = (message: string): AppAlertModalComponent => {
     return manager.open(AppAlertModalComponent, {
-      message,
+      message: of(message),
     });
   };
 

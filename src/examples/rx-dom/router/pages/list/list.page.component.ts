@@ -6,9 +6,9 @@ import { INavigation, NAVIGATION } from '../../navigation/navigation';
 import { idle, ISubscribeFunction } from '@lifaon/rx-js-light';
 import { map$$ } from '@lifaon/rx-js-light-shortcuts';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
-import { generateRouterOutletHTML } from '../../router/rx/rx-router-outlet';
+import { generateRouterOutletHTML, ROUTER_OUTLET_TAG_NAME } from '../../router/rx/rx-router-outlet';
 
-export const APP_LIST_PAGE_CUSTOM_ELEMENTS = [
+const APP_LIST_PAGE_CUSTOM_ELEMENTS = [
   AppMenuPageComponent,
 ];
 
@@ -21,7 +21,7 @@ interface IData {
 
 const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
-  createElement: generateCreateElementFunctionWithRouterOutlet('rx-router-outlet', generateCreateElementFunctionWithCustomElements(APP_LIST_PAGE_CUSTOM_ELEMENTS)),
+  createElement: generateCreateElementFunctionWithRouterOutlet(ROUTER_OUTLET_TAG_NAME, generateCreateElementFunctionWithCustomElements(APP_LIST_PAGE_CUSTOM_ELEMENTS)),
 };
 
 @Component({

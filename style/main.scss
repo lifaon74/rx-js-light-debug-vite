@@ -1,4 +1,6 @@
-@import './components/button';
+@import './components/index';
+
+@import './icons';
 
 * {
   &,
@@ -24,6 +26,7 @@ body {
   top: 0;
   right: 0;
   overflow: hidden;
+  font-size: 0;
   font-family: Hevetica, Arial, sans-serif;
 }
 

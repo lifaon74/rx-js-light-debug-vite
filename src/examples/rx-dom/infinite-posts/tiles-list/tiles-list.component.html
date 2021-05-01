@@ -1,7 +1,7 @@
 <div class="tiles-list">
   <div
     class="tile"
-    *for="let tile of $.tiles"
+    *for="let tile of $.tiles$"
   >
     <div
       class="title"
@@ -23,8 +23,9 @@
           *switch-case="'youtube'"
           [src]="of(tile.resource.url)"
           frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowfullscreen
+          referrerpolicy="no-referrer"
         ></iframe>
       </rx-switch>
     </div>

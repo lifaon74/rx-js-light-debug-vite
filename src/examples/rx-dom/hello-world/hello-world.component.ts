@@ -1,6 +1,6 @@
 import {
   bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  createDocumentFragment, createElementNode,
+  createDocumentFragment, createElement, createElementNode,
   createReactiveTextNode, createTextNode, DEFAULT_CONSTANTS_TO_IMPORT, nodeAppendChild, OnCreate, setAttributeValue,
   setReactiveClass,
   setReactiveEventListener, setReactiveProperty
@@ -26,7 +26,7 @@ const CONSTANTS_TO_IMPORT = {
   // createDocumentFragment,
   // createTextNode,
   // createReactiveTextNode,
-  // createElementNode,
+  // createElement,
   // setAttributeValue,
   // setReactiveProperty,
   // setReactiveClass,
@@ -40,7 +40,7 @@ const CONSTANTS_TO_IMPORT = {
       <input
         #input
         [value]="$.input.subscribe"
-        (input)="() => $.input.emit(input.value)"
+        (input)="() => $.input.emit(getNodeReference('input').value)"
       >
     </div>
     <div
@@ -50,17 +50,18 @@ const CONSTANTS_TO_IMPORT = {
       Length: {{ $.remaining }} / 10
     </div>
   `, CONSTANTS_TO_IMPORT),
-  // template: (data: IData, content: DocumentFragment) => template(data, content, CONSTANTS_TO_IMPORT),
+  // template: (variables: any) => template(variables, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
+      /* all: inherit; */
     }
 
     :host > .max-length-container:not(.valid) {
       color: red;
     }
   `),
-  useShadowDOM: true,
+  // useShadowDOM: true,
 })
 export class AppHelloWorldComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;

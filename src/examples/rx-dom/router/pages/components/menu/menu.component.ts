@@ -4,7 +4,7 @@ import {
 } from '@lifaon/rx-dom';
 import { AppVirtualLinkComponent } from '../../../components/virtual-link/virtual-link.component';
 
-export const APP_MENU_PAGE_CUSTOM_ELEMENTS = [
+const APP_MENU_PAGE_CUSTOM_ELEMENTS = [
   AppVirtualLinkComponent,
 ];
 
@@ -23,13 +23,13 @@ const CONSTANTS_TO_IMPORT = {
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <ul>
        <li>
-         <a is="v-link" href="/home">Home</a>
+         <a is="v-link" href="./home">Home</a>
       </li>
       <li>
-         <a is="v-link" href="/list">List</a>
+         <a is="v-link" href="./list">List</a>
       </li>
       <li>
-         <a is="v-link" href="/list/sub">Sub-list</a>
+         <a is="v-link" href="./list/sub">Sub-list</a>
       </li>
 <!--      <li>-->
 <!--         <a is="v-link" href="/list" target="_blank">List page (new tab)</a>-->

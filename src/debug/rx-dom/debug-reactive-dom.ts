@@ -3,13 +3,10 @@ import {
   mapSubscribePipe, pipeSubscribeFunction, shareSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
-  attachDocumentFragmentToStandardNode,
-  attachNode, attachNodeWithEvent, createDocumentFragment, createElementNode,
+  attachNode, attachNodeRaw, attachShadow, createDocumentFragment, createElementNode,
   createReactiveForLoopNode, createReactiveIfNode, createReactiveSwitchNode, createReactiveTextNode, createTextNode,
-  detachNodeWithEvent, moveNodeWithEvent, nodeAppendChild, onNodeConnectedTo,
+  detachNode, nodeAppendChild, onNodeConnectedTo,
 } from '@lifaon/rx-dom';
-
-import { debugReactiveDOMCompiler } from './debug-reactive-dom-compiler';
 
 
 /*---*/
@@ -176,59 +173,50 @@ import { debugReactiveDOMCompiler } from './debug-reactive-dom-compiler';
 
 
 async function debugOnNodeConnectedTo1() {
+
   const text1 = createTextNode('abc');
   const text2 = createTextNode('123');
+
   const container1 = createElementNode('span');
   const container2 = createElementNode('div');
   const container3 = createElementNode('a');
+  const container4 = createElementNode('div');
+
   const fragment = createDocumentFragment();
+  const shadowRoot = attachShadow(container4);
 
   onNodeConnectedTo(text1, document.body)((connected: boolean) => {
     console.log('connected', connected);
   });
 
 
-  const steps = [
-    () => attachNodeWithEvent(text1, document.body), // true
-    () => detachNodeWithEvent(text1), // false
-    () => attachNodeWithEvent(text1, container1), // -
-    () => attachNodeWithEvent(text2, container1), // -
-    () => attachNodeWithEvent(container1, container2),// -
-    () => attachNodeWithEvent(container2, document.body), // true
-    () => detachNodeWithEvent(container1), // false
-    () => attachNodeWithEvent(container3, document.body), // -
-    () => moveNodeWithEvent(text1, document.body), // true
-    () => moveNodeWithEvent(text1, document.body), // false & true (if triggerOnMove === true)
-    () => moveNodeWithEvent(text1, container1), // false
-    () => detachNodeWithEvent(text1), // -
-    () => attachNode(text1, fragment), // -
-    () => attachDocumentFragmentToStandardNode(fragment, document.body), // true
-  ];
-
   // const steps = [
-  //   () => attachNodeWithEvent(text1, container1), // -
-  //   () => moveNodeWithEvent(text1, document.body), // true
-  //   () => moveNodeWithEvent(text1, document.body), // --
-  //   // () => moveNodeWithEvent(text1, document.body), // false -> true if triggerOnMove === true
+  //   () => attachNode(text1, document.body), // true
+  //   () => detachNode(text1), // false
+  //   () => attachNode(text1, container1), // -
+  //   () => attachNode(text2, container1), // -
+  //   () => attachNode(container1, container2),// -
+  //   () => attachNode(container2, document.body), // true
+  //   () => detachNode(container1), // false
+  //   () => attachNode(container3, document.body), // -
+  //   () => attachNode(text1, document.body), // true
+  //   () => attachNode(text1, document.body), // -
+  //   () => attachNode(text1, container1), // false
+  //   () => detachNode(text1), // -
+  //   () => attachNode(text1, fragment), // -
+  //   () => attachNode(fragment, document.body), // true
   // ];
 
-  steps.forEach((step, index: number) => {
-    console.warn('step', index, step.toString());
-    step();
-  });
-
-}
-
-async function debugOnNodeConnectedTo2() {
-  const text1 = createTextNode('abc');
-
-  onNodeConnectedTo(text1, document)((connected: boolean) => {
-    console.log('connected', connected);
-  });
-
+  // const steps = [
+  //   () => attachNode(text1, container1), // -
+  //   () => attachNode(text1, document.body), // true
+  //   () => attachNode(text1, document.body), // --
+  // ];
 
   const steps = [
-    () => attachNodeWithEvent(text1, document.body), // true
+    () => attachNode(text1, document.body), // true
+    () => attachNode(text1, shadowRoot), // false
+    () => attachNode(container4, document.body), // true
   ];
 
   steps.forEach((step, index: number) => {
@@ -237,6 +225,26 @@ async function debugOnNodeConnectedTo2() {
   });
 
 }
+
+// async function debugOnNodeConnectedTo2() {
+//   const text1 = createTextNode('abc');
+//
+//   // debugger;
+//   onNodeConnectedTo(text1, document)((connected: boolean) => {
+//     console.log('connected', connected);
+//   });
+//
+//
+//   const steps = [
+//     () => attachNode(text1, document.body), // true
+//   ];
+//
+//   steps.forEach((step, index: number) => {
+//     console.info('step', index, step.toString());
+//     step();
+//   });
+//
+// }
 
 async function debugReactiveIfNode1() {
   let value: boolean = false;
@@ -412,6 +420,10 @@ async function debugReactiveSwitchNode1() {
 }
 
 
+async function debugReactiveDOM1() {
+  console.log('hello');
+}
+
 /*----*/
 
 
@@ -437,5 +449,7 @@ export async function debugReactiveDOM() {
   // await debugReactiveForLoopNode2();
   // await debugReactiveSwitchNode1();
 
-  await debugReactiveDOMCompiler();
+  // await debugReactiveDOMCompiler();
+
+  // await debugReactiveDOM1();
 }

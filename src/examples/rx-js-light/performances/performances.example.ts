@@ -3,6 +3,7 @@ import { fromArray } from '@lifaon/rx-js-light';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { distinct$$$, map$$$, pipe$$, filter$$$ } from '@lifaon/rx-js-light-shortcuts';
 
+// https://blog.asayer.io/hyperapp-is-it-the-lightweight-react-killer
 
 function rxJSLightPerformancesExample1() {
   const values = Array.from({ length: 1e5 }, (v: any, index: number) => index);

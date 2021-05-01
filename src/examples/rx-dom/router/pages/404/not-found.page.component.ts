@@ -4,7 +4,7 @@ import {
 } from '@lifaon/rx-dom';
 import { AppVirtualLinkComponent } from '../../components/virtual-link/virtual-link.component';
 
-export const APP_NOT_FOUND_PAGE_CUSTOM_ELEMENTS = [
+const APP_NOT_FOUND_PAGE_CUSTOM_ELEMENTS = [
   AppVirtualLinkComponent,
 ];
 
@@ -24,7 +24,7 @@ const CONSTANTS_TO_IMPORT = {
     <div class="header">
        404 not found
     </div>
-    <a is="v-link" href="/home">
+    <a is="v-link" href="./home">
       Home
     </a>
   `, CONSTANTS_TO_IMPORT),

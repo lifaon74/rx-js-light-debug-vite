@@ -22,7 +22,7 @@ export async function helloWorldDebug() {
       <input
         #input
         [value]="$.input.subscribe"
-        (input)="() => $.input.emit(input.value)"
+        (input)="() => $.input.emit(getNodeReference('input').value)"
       >
     </div>
     <div

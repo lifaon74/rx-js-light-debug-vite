@@ -1,0 +1,18 @@
+@import '../../../functions';
+
+@mixin dual-ring-loader-mixin(
+  $config: ()
+) {
+  $size: map-get-default($config, 'size', 60px);
+  $stroke-size: map-get-default($config, 'stroke-size', $size / 10);
+  $color: map-get-default($config, 'color', #fff);
+
+  width: $size;
+  height: $size;
+
+  &::after {
+    border-width: $stroke-size;
+    border-color: $color transparent $color transparent;
+  }
+}
+

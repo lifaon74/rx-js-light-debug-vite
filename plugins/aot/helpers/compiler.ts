@@ -45,12 +45,10 @@ const CONSTANTS_TO_IMPORT = {
 export function compile(
   html: string,
   constantsToImport?: IObjectProperties,
-  dataName?: string,
 ): Promise<string> {
   return compileReactiveHTMLAsComponentTemplateFunctionOptimized(
     html,
     constantsToImport,
-    dataName,
   )
     .then((lines: ILines) => {
       return linesToString(lines);

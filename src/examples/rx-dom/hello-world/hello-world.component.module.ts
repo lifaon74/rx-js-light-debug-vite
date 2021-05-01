@@ -1,16 +1,29 @@
-export default ($: any, $content: any, constantsToImport: any) => {
+export default (variables: any, constants: any) => {
   return (
     (
       {
         nodeAppendChild,
+        attachTemplate,
         createDocumentFragment,
         createTextNode,
         createReactiveTextNode,
         createElement,
         setAttributeValue,
         setReactiveProperty,
+        setReactiveAttribute,
         setReactiveClass,
+        setReactiveClassList,
+        setReactiveStyle,
+        setReactiveStyleList,
         setReactiveEventListener,
+        createReactiveIfNode,
+        createReactiveForLoopNode,
+        createReactiveSwitchNode,
+        createReactiveContentNode,
+        getNodeReference,
+        setNodeReference,
+        getTemplateReference,
+        setTemplateReference,
         $,
         $content,
       }
@@ -31,12 +44,12 @@ export default ($: any, $content: any, constantsToImport: any) => {
             const node = createElement('input');
             nodeAppendChild(parentNode, node);
             // attributes
-            // reference 'input'
-            var input = node;
+            // reference "input"
+            setNodeReference('input', node);
             // reactive property 'value'
             setReactiveProperty($.input.subscribe, node, 'value');
             // reactive event listener 'input'
-            setReactiveEventListener(() => $.input.emit(input.value), node, 'input');
+            setReactiveEventListener(() => $.input.emit(getNodeReference('input').value), node, 'input');
           }
         }
       }
@@ -63,8 +76,9 @@ export default ($: any, $content: any, constantsToImport: any) => {
       return parentNode;
     }
   )({
-    ...constantsToImport,
-    $,
-    $content,
+    ...constants,
+    ...variables,
+    $: variables.data,
+    $content: variables.content,
   });
 }

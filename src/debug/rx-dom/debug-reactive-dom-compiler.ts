@@ -244,9 +244,12 @@ async function debugReactiveDOMCompiler1() {
     items: $of([1, 2, 3].map($of)),
     trackByFn: (_: any) => _,
     clickCondition: clickSource.subscribe,
-    content: $of(compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-      hello world
-    `, {})({}, createDocumentFragment())),
+    // content: $of(compileAndEvaluateReactiveHTMLAsComponentTemplate(`
+    //   hello world
+    // `, {})({
+    //   data: {},
+    //   content: createDocumentFragment(),
+    // })),
     switchValue: $of(3)
   };
 
@@ -356,7 +359,7 @@ async function debugReactiveDOMCompiler2() {
     </button>
   `;
 
-  nodeAppendChild(document.body, compileAndEvaluateReactiveHTMLAsComponentTemplate(html.trim(), DEFAULT_CONSTANTS_TO_IMPORT)(data, createDocumentFragment()));
+  // nodeAppendChild(document.body, compileAndEvaluateReactiveHTMLAsComponentTemplate(html.trim(), DEFAULT_CONSTANTS_TO_IMPORT)(data, createDocumentFragment()));
 
   // const module = compileHTMLAsModule(html).join('\n');
   // console.log(await minify(module));

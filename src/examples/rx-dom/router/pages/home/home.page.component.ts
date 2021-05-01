@@ -4,7 +4,7 @@ import {
 } from '@lifaon/rx-dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
 
-export const APP_HOME_PAGE_CUSTOM_ELEMENTS = [
+const APP_HOME_PAGE_CUSTOM_ELEMENTS = [
   AppMenuPageComponent,
 ];
 

@@ -1,7 +1,7 @@
 import {
   IInjectedRXRoute, IInjectedRXRoutes, IResolvedRXRoute, IResolvedRXRoutes, IRXRouteExtra, IRXRouteExtraProp
 } from './rx-route.type';
-import { HTMLElementConstructor, IParentNode, nodeAppendChild, nodeRemoveChildren, OnInit } from '@lifaon/rx-dom';
+import { HTMLElementConstructor, IParentNode, nodeAppendChild, OnInit, removeNodeChildren } from '@lifaon/rx-dom';
 import { locateRouterOutletElement, normalizeRouterOutletSelector } from './rx-router-outlet';
 import {
   abortSignalPromiseBranching, createAbortError, fromEventTarget, wrapPromiseFactoryWithAbortSignal
@@ -102,7 +102,7 @@ export async function injectRXRoute(
     for (; i < previousRoutesLength; i++) {
       const routerOutletElement: HTMLElement | null = previousRoutes[i].routerOutletElement;
       if (routerOutletElement !== null) {
-        nodeRemoveChildren(routerOutletElement);
+        removeNodeChildren(routerOutletElement);
         break;
       }
     }
