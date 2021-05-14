@@ -3,13 +3,9 @@ import {
   ISubscribeFunction, mapSubscribePipe, pipeSubscribeFunction, reactiveFunction, tapEmitPipe
 } from '@lifaon/rx-js-light';
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate,
-  compileReactiveCSSAsComponentStyle, Component, DEFAULT_CONSTANTS_TO_IMPORT,
-  ICompiledComponentTemplateFunctionVariables, Input, OnCreate,
-  syncAttributeWithNumberSource
+  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
+  DEFAULT_CONSTANTS_TO_IMPORT, Input, OnCreate, syncAttributeWithNumberSource
 } from '@lifaon/rx-dom';
-
-import template from './progress-ring.component.module';
 
 
 /** COMPONENT **/
@@ -129,30 +125,30 @@ export class AppProgressRingComponent extends HTMLElement implements OnCreate<ID
 
     /** SETUP SUBSCRIBE FUNCTIONS **/
 
-    const strokeWidth: ISubscribeFunction<number> = reactiveFunction((stroke: number, radius: number): number => {
-      return Math.min(stroke, radius);
-    }, [
-      stroke.subscribe,
-      radius.subscribe,
-    ]);
+    const strokeWidth: ISubscribeFunction<number> = reactiveFunction(
+      [stroke.subscribe, radius.subscribe],
+      (stroke: number, radius: number): number => {
+        return Math.min(stroke, radius);
+      },
+    );
 
-    const innerRadius: ISubscribeFunction<number> = reactiveFunction((radius: number, stroke: number): number => {
-      return Math.max(0, radius - (stroke / 2));
-    }, [
-      radius.subscribe,
-      strokeWidth,
-    ]);
+    const innerRadius: ISubscribeFunction<number> = reactiveFunction(
+      [radius.subscribe, strokeWidth],
+      (radius: number, stroke: number): number => {
+        return Math.max(0, radius - (stroke / 2));
+      },
+    );
 
     const circumference: ISubscribeFunction<number> = pipeSubscribeFunction(innerRadius, [
       mapSubscribePipe<number, number>((radius: number): number => (radius * 2 * Math.PI)),
     ]);
 
-    const strokeDashOffset: ISubscribeFunction<number> = reactiveFunction((circumference: number, progress: number): number => {
-      return circumference * (1 - progress);
-    }, [
-      circumference,
-      progress.subscribe,
-    ]);
+    const strokeDashOffset: ISubscribeFunction<number> = reactiveFunction(
+      [circumference, progress.subscribe],
+      (circumference: number, progress: number): number => {
+        return circumference * (1 - progress);
+      },
+    );
 
     const strokeDashArray: ISubscribeFunction<string> = pipeSubscribeFunction(circumference, [
       mapSubscribePipe<number, string>((circumference: number): string => `${ circumference } ${ circumference }`),

@@ -1,5 +1,5 @@
-import { combineLatest, ISubscribeFunction } from '@lifaon/rx-js-light';
-import { const$$, function$$, map$$, notOrM$$ } from '@lifaon/rx-js-light-shortcuts';
+import { ISubscribeFunction } from '@lifaon/rx-js-light';
+import { const$$, function$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 import { isStepValid } from '../misc/number-helpers';
 import { distinctDebouncedShared$$ } from '../misc/rx-js-light-helpers';
 import { IInputValidityOptions, InputValidity } from '../shared/input-validity';
@@ -15,7 +15,7 @@ export interface INumberInputValidityOptions extends IInputValidityOptions {
 }
 
 export class NumberInputValidity extends InputValidity {
-  readonly valid$: ISubscribeFunction<boolean>
+  readonly valid$: ISubscribeFunction<boolean>;
 
   readonly badInput$: ISubscribeFunction<boolean>;
   readonly rangeUnderflow$: ISubscribeFunction<boolean>;
@@ -42,44 +42,36 @@ export class NumberInputValidity extends InputValidity {
     this.badInput$ = distinctDebouncedShared$$(badInput$);
 
     const rangeUnderflow$ = function$$(
-      (value: INumberInputValue, min: number): boolean => ((value !== null) && (value < min)),
       [value$, min$],
+      (value: INumberInputValue, min: number): boolean => ((value !== null) && (value < min)),
     );
     this.rangeUnderflow$ = distinctDebouncedShared$$(rangeUnderflow$);
 
     const rangeOverflow$ = function$$(
-      (value: INumberInputValue, max: number): boolean => ((value !== null) && (value > max)),
       [value$, max$],
+      (value: INumberInputValue, max: number): boolean => ((value !== null) && (value > max)),
     );
     this.rangeOverflow$ = distinctDebouncedShared$$(rangeOverflow$);
 
     const stepMismatch$ = function$$(
+      [value$, step$, stepBase$],
       (value: INumberInputValue, step: number, stepBase: number): boolean => {
         return (
           (value !== null)
           && !isStepValid(value, step, stepBase)
         );
       },
-      [value$, step$, stepBase$],
     );
     this.stepMismatch$ = distinctDebouncedShared$$(stepMismatch$);
 
     const valueMissing$ = function$$(
-      (value: INumberInputValue, required: boolean): boolean => (required && (value === null)),
       [value$, required$],
+      (value: INumberInputValue, required: boolean): boolean => (required && (value === null)),
     );
     this.valueMissing$ = distinctDebouncedShared$$(valueMissing$);
 
 
     const valid$ = function$$(
-      (...values: boolean[]): boolean => {
-        for (let i = 0, l = values.length; i < l; i++) {
-          if (values[i]) {
-            return false;
-          }
-        }
-        return true;
-      },
       [
         // badInput$,
         // rangeUnderflow$,
@@ -92,6 +84,14 @@ export class NumberInputValidity extends InputValidity {
         this.stepMismatch$,
         this.valueMissing$,
       ],
+      (...values: boolean[]): boolean => {
+        for (let i = 0, l = values.length; i < l; i++) {
+          if (values[i]) {
+            return false;
+          }
+        }
+        return true;
+      },
     );
     this.valid$ = distinctDebouncedShared$$(valid$);
   }

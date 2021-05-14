@@ -2,17 +2,13 @@ import {
   createDragSubscribeFunction, IDragObject, IDragSubscribeFunctionNotifications
 } from './create-drag-subscribe-function';
 import {
-  compileReactiveCSSAsComponentStyle, compileAndEvaluateReactiveHTMLAsComponentTemplate,
-  Component,
-  DEFAULT_CONSTANTS_TO_IMPORT,
-  DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, getParentNode, loadAndCompileReactiveCSSAsComponentStyle,
-  OnConnect, OnCreate, OnDisconnect,
-  OnInit, querySelectorOrThrow, loadCompileAndEvaluateReactiveHTMLAsComponentTemplate
+  compileReactiveCSSAsComponentStyle, Component, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
+  getParentNode, loadCompileAndEvaluateReactiveHTMLAsComponentTemplate, OnConnect, OnCreate, OnDisconnect, OnInit,
+  querySelectorOrThrow
 } from '@lifaon/rx-dom';
 import {
-  createMulticastReplayLastSource, IEmitFunction,
-  IMulticastReplayLastSource, ISubscribeFunction, IUnsubscribeFunction, noop, reactiveFunction, Subscription,
-  SubscriptionManager, freeze,
+  createMulticastReplayLastSource, freeze, IEmitFunction, IMulticastReplayLastSource, ISubscribeFunction,
+  IUnsubscribeFunction, noop, reactiveFunction, Subscription, SubscriptionManager,
 } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './window.component.scss';
@@ -233,11 +229,10 @@ export interface IUserBordersResize {
 }
 
 
-
 export const DEFAULT_USER_BORDERS_RESIZE: IUserBordersResize = freeze({
   width: createMinMaxRange(0.1, Number.POSITIVE_INFINITY),
   height: createMinMaxRange(0.1, Number.POSITIVE_INFINITY),
-})
+});
 
 
 /*---*/
@@ -295,7 +290,7 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
     this.left = createMulticastReplayLastSource<number>({ initialValue: 0.1 });
     this.width = createMulticastReplayLastSource<number>({ initialValue: 0.8 });
 
-    this.right = reactiveFunction(computeRightFromLeftAndWidth, [this.left.subscribe, this.width.subscribe]);
+    this.right = reactiveFunction([this.left.subscribe, this.width.subscribe], computeRightFromLeftAndWidth);
 
     this.subscriptions.set('left', new Subscription(this.left.subscribe, (left: number) => {
       this.style.left = `${ left * 100 }%`;
@@ -310,7 +305,7 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
     this.top = createMulticastReplayLastSource<number>({ initialValue: 0.1 });
     this.height = createMulticastReplayLastSource<number>({ initialValue: 0.8 });
 
-    this.bottom = reactiveFunction(computeBottomFromTopAndHeight, [this.top.subscribe, this.height.subscribe]);
+    this.bottom = reactiveFunction([this.top.subscribe, this.height.subscribe], computeBottomFromTopAndHeight);
 
     this.subscriptions.set('top', new Subscription(this.top.subscribe, (top: number) => {
       this.style.top = `${ top * 100 }%`;
@@ -327,7 +322,12 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
       initialValue: DEFAULT_USER_BORDERS_RESIZE
     });
 
-    this.isMaximised = reactiveFunction((
+    this.isMaximised = reactiveFunction([
+      this.left.subscribe,
+      this.width.subscribe,
+      this.top.subscribe,
+      this.height.subscribe,
+    ], (
       left: number,
       width: number,
       top: number,
@@ -337,22 +337,17 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
         && (width === 1)
         && (top === 0)
         && (height === 1);
-    }, [
-      this.left.subscribe,
-      this.width.subscribe,
-      this.top.subscribe,
-      this.height.subscribe,
-    ]);
+    });
 
     // *if="$and($not(data.$isMaximized), data.$enableUserResize)"
-    const maximizeButtonVisible = reactiveFunction((isMaximized: boolean) => {
+    const maximizeButtonVisible = reactiveFunction([this.isMaximised], (isMaximized: boolean) => {
       return !isMaximized;
-    }, [this.isMaximised]);
+    });
 
     // *if="$and(data.$isMaximized, data.$enableUserResize)"
-    const reduceButtonVisible = reactiveFunction((isMaximized: boolean) => {
+    const reduceButtonVisible = reactiveFunction([this.isMaximised], (isMaximized: boolean) => {
       return isMaximized;
-    }, [this.isMaximised]);
+    });
 
     /** DATA **/
 
@@ -523,7 +518,6 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
     this.subscriptions.deactivateAll();
   }
 }
-
 
 
 /**

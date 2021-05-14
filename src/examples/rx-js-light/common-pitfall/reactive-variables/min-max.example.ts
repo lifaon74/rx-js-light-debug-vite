@@ -1,4 +1,4 @@
-import { createMulticastReplayLastSource, of, reactiveFunction, reactiveTemplateString } from '@lifaon/rx-js-light';
+import { createMulticastReplayLastSource, of, reactiveFunction } from '@lifaon/rx-js-light';
 
 /** MIN - MAX EXAMPLE **/
 
@@ -32,9 +32,12 @@ function minMaxWithObservable() {
   const min$ = of(0); // constant
   const max$ = of(10); // constant
 
-  const isValid$ = reactiveFunction((min: number, max: number, value: number): boolean => {
-    return (min <= value) && (value <= max);
-  }, [min$, max$, $value$.subscribe]);
+  const isValid$ = reactiveFunction(
+    [min$, max$, $value$.subscribe],
+    (min: number, max: number, value: number): boolean => {
+      return (min <= value) && (value <= max);
+    },
+  );
 
   isValid$((valid: boolean) => {
     console.log(valid ? 'valid' : 'invalid');

@@ -61,12 +61,12 @@ function run() {
   // autoUpdateExample();
   // fileTransferExample();
   // commonPitfallExample();
-  // i18nExample();
+  i18nExample();
   // rxjsLightShortcutsExample();
   // lazyLoadExample();
   // injectContentExample();
   // sensorsExample();
-  audioPlayerExample();
+  // audioPlayerExample();
 }
 
 run();

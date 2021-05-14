@@ -8,11 +8,9 @@ import {
   reactiveFunction, sourceSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
-  bootstrap,
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  createDocumentFragment, createElementNode,
-  DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, nodeAppendChild, OnConnect, OnCreate,
-  OnDisconnect, uuid,
+  bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
+  createElementNode, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, nodeAppendChild, OnConnect,
+  OnCreate, OnDisconnect, uuid,
 } from '@lifaon/rx-dom';
 import { AppWindowComponent } from './window-component/window.component';
 import { noCORS } from '../../examples/misc/no-cors';
@@ -311,11 +309,12 @@ async function debugReactiveDOMCompiler2() {
     mapSubscribePipe<string, number>(Number),
   ]);
 
-  const isInvalid = reactiveFunction((value: number): boolean => {
-    return Number.isNaN(value);
-  }, [
-    inputValueAsNumber,
-  ]);
+  const isInvalid = reactiveFunction(
+    [inputValueAsNumber],
+    (value: number): boolean => {
+      return Number.isNaN(value);
+    },
+  );
 
   const currencyText = pipeSubscribeFunction(inputValueAsNumber, [
     numberFormatSubscribePipe(locales.subscribe, of({

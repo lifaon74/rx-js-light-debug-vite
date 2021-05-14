@@ -1,9 +1,9 @@
 import {
-  conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, ISubscribeFunction,
-  ISubscribePipeFunction, mapSubscribePipe, pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
+  conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, mapSubscribePipe,
+  pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
 } from '@lifaon/rx-js-light';
 import {
-  distinct$$$, distinctShared$$, function$$, let$$, map$$, map$$$, pipe$$, pipe$$$, share$$, share$$$
+  distinctShared$$, function$$, let$$, map$$, map$$$, pipe$$, share$$, share$$$
 } from '@lifaon/rx-js-light-shortcuts';
 
 /** FORM EXAMPLE **/
@@ -101,16 +101,16 @@ function withObservable() {
   // creates a reactive function with listen to inputAValue and inputBValue,
   // and maps the result (returns true if the form is valid)
   const isFormValid = pipeSubscribeFunction(
-    reactiveFunction((
+    reactiveFunction([
+      inputAValue,
+      inputBValue,
+    ], (
       inputAValue: string,
       inputBValue: string,
     ): boolean => {
       return (inputAValue.length < 10)
         && (inputBValue.length < 10);
-    }, [
-      inputAValue,
-      inputBValue,
-    ]), [
+    }), [
       distinctSubscribePipe<boolean>(), // let's emit only distinct values, for better efficiency
       shareSubscribePipe<boolean>(),
     ]);
@@ -194,16 +194,16 @@ function withObservableAndShortcuts() {
 
   // creates a reactive function with listen to inputAValue and inputBValue,
   // and maps the result (returns true if the form is valid)
-  const isFormValid = distinctShared$$(function$$((
+  const isFormValid = distinctShared$$(function$$([
+    inputAValue,
+    inputBValue,
+  ], (
     inputAValue: string,
     inputBValue: string,
   ): boolean => {
     return (inputAValue.length < 10)
       && (inputBValue.length < 10);
-  }, [
-    inputAValue,
-    inputBValue,
-  ]));
+  }));
 
   // creates a shared observable which emits an Event when the form is submitted
   const formSubmit = share$$(fromEventTarget(form, 'submit'));

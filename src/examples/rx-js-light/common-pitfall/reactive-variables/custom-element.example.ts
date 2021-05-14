@@ -90,17 +90,17 @@ function customElementWithObservable() {
       this._$lastName$ = createMulticastReplayLastSource<string>({ initialValue: '' });
 
       // fulName is a computed variable so we use a reactiveFunction
-      this._fullName$ = reactiveFunction((
+      this._fullName$ = reactiveFunction([
+        this._$prefix$.subscribe,
+        this._$firstName$.subscribe,
+        this._$lastName$.subscribe,
+      ], (
         prefix: string,
         firstName: string,
         lastName: string,
       ): string => {
         return `${ prefix } ${ firstName } ${ lastName }`;
-      }, [
-        this._$prefix$.subscribe,
-        this._$firstName$.subscribe,
-        this._$lastName$.subscribe,
-      ]);
+      });
 
       this._fullName$((value: string) => {
         this.innerText = value;

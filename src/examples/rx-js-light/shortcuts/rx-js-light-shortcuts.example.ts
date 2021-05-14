@@ -12,9 +12,11 @@ function rxjsLightShortcutsExample1() {
   const isFormValid$ = andM$$(isInputAValid$, isInputBValid$, isInputCValid$);
 
   // EQUIVALENT
-  // const isFormValid$ = function$$((isInputCValid, isInputBValid, isInputCValid) => {
+  // const isFormValid$ = function$$(
+  //   [isInputAValid$, isInputBValid$, isInputCValid$],
+  //   (isInputCValid, isInputBValid, isInputCValid) => {
   //   return isInputCValid && isInputBValid && isInputCValid;
-  // }, [isInputAValid$, isInputBValid$, isInputCValid$]);
+  // });
 
   const isFormValidText$ = share$$(map$$(isFormValid$, (valid: boolean) => `Form is ${ valid ? 'valid' : 'invalid' }`));
 

@@ -2,7 +2,7 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, querySelectorOrThrow, subscribeOnNodeConnectedTo
 } from '@lifaon/rx-dom';
-import { defer, fromEventTarget, IEmitFunction, ISubscribeFunction, merge, noop, of } from '@lifaon/rx-js-light';
+import { fromEventTarget, IEmitFunction, ISubscribeFunction, merge, noop, of } from '@lifaon/rx-js-light';
 // @ts-ignore
 import html from './audio-player.component.html?raw';
 // @ts-ignore
@@ -110,15 +110,15 @@ export class RXMediaPlayer<GElement extends HTMLMediaElement> implements IRXMedi
       ]),
     );
 
-    this.progress$ = distinctSharedR$$(function$$((
+    this.progress$ = distinctSharedR$$(function$$([
+      this.currentTime$,
+      this.duration$,
+    ], (
       currentTime: number,
       duration: number,
     ): number => {
       return currentTime / duration;
-    }, [
-      this.currentTime$,
-      this.duration$,
-    ]));
+    }));
 
     this.volume$ = distinctSharedR$$(
       merge([
@@ -209,13 +209,12 @@ export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IDa
     const $mouseUpProgressBar$ = letU$$<MouseEvent>();
     const mouseUpProgressBar$ = $mouseUpProgressBar$.subscribe;
 
-    function$$((audio: TAudio, duration: number, event: MouseEvent): void => {
-      audio.$currentTime(getMouseCursorProgress(event) * duration);
-    }, [
-      audio$,
-      duration$,
-      mouseUpProgressBar$,
-    ])(noop);
+    function$$(
+      [audio$, duration$, mouseUpProgressBar$],
+      (audio: TAudio, duration: number, event: MouseEvent): void => {
+        audio.$currentTime(getMouseCursorProgress(event) * duration);
+      },
+    )(noop);
 
     const $mouseMoveProgressBar$ = letU$$<MouseEvent>();
     const mouseMoveProgressBar$ = $mouseMoveProgressBar$.subscribe;
@@ -241,12 +240,12 @@ export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IDa
       }
     );
 
-    const cursorTimeTooltipText$ = function$$((duration: number, event: MouseEvent): string => {
-      return formatDuration(getMouseCursorProgress(event) * duration);
-    }, [
-      duration$,
-      mouseMoveProgressBar$,
-    ]);
+    const cursorTimeTooltipText$ = function$$(
+      [duration$, mouseMoveProgressBar$],
+      (duration: number, event: MouseEvent): string => {
+        return formatDuration(getMouseCursorProgress(event) * duration);
+      },
+    );
 
 
     const previousTrackButtonTitle$ = const$$('Previous track');
