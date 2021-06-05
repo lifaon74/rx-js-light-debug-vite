@@ -19,7 +19,7 @@ export function createInfiniteScrollSubscribeFunction(
 
   return pipeSubscribeFunction(
     merge([
-      pipeSubscribeFunction(fromEventTarget(scrollElement, 'scroll'), [
+      pipeSubscribeFunction(fromEventTarget(scrollElement, 'scroll', { passive: true }), [
         mapSubscribePipe<Event, void>(() => void 0),
       ]),
       interval(refreshRate),

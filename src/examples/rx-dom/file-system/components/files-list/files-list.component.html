@@ -1,0 +1,37 @@
+<rx-script>
+  const isLoading$ = map$$($.state$, state => (state === 'loading'));
+  const isErrored$ = map$$($.state$, state => (state === 'errored'));
+  const isNotErrored$ = map$$($.state$, state => (state !== 'errored'));
+</rx-script>
+
+<div
+  class="file-list"
+  *if="isNotErrored$"
+>
+  <div
+    class="file"
+    *for="let file of $.files$"
+  >
+    <div
+      class="preview-image"
+      [style.background-image]="of(`url(${ file.previewURL })`)"
+    ></div>
+    <div class="file-name">
+      {{ of(file.name) }}
+    </div>
+  </div>
+</div>
+
+<div
+  class="loader"
+  *if="isLoading$"
+>
+  <div class="dual-ring-loader"></div>
+</div>
+
+<div
+  class="error-message"
+  *if="isErrored$"
+>
+  {{ $.errorMessage$ }}
+</div>

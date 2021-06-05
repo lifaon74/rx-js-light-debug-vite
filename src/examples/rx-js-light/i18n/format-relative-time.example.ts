@@ -3,7 +3,6 @@ import {
   IRelativeTimeFormatValue, ISubscribeFunction,
   mapSubscribePipe, of,
   pipeSubscribeFunction, relativeTimeFormatSubscribePipe, ISubscribePipeFunction, IListFormatOptions,
-  advancedRelativeTimeFormatSubscribePipe
 } from '@lifaon/rx-js-light';
 import { createLocaleFormatContext } from './shared-functions';
 import { pipe$$ } from '../../../../../rx-js-light-shortcuts/dist';
@@ -33,25 +32,23 @@ import { pipe$$ } from '../../../../../rx-js-light-shortcuts/dist';
 // }
 
 export function formatRelativeTimeExample() {
+  createLocaleFormatContext((locales$: ISubscribeFunction<ILocales>) => {
+    // const currentDate = new Date();
+    // const targetDate = new Date();
+    //
+    // targetDate.setFullYear(currentDate.getFullYear() - 1);
 
+    // decomposeDuration(currentDate.getTime() - targetDate.getTime());
+    //
+    //
+    // return pipeSubscribeFunction(of<IAdvancedRelativeTimeFormatValue>(5), [
+    //   advancedRelativeTimeFormatSubscribePipe(locales$),
+    // ]);
 
-  // createLocaleFormatContext((locales$: ISubscribeFunction<ILocales>) => {
-  //   const currentDate = new Date();
-  //   const targetDate = new Date();
-  //
-  //   targetDate.setFullYear(currentDate.getFullYear() - 1);
-  //
-  //   decomposeDuration(currentDate.getTime() - targetDate.getTime());
-  //
-  //
-  //   return pipeSubscribeFunction(of<IAdvancedRelativeTimeFormatValue>(5), [
-  //     advancedRelativeTimeFormatSubscribePipe(locales$),
-  //   ]);
-  //
-  //   // return pipeSubscribeFunction(interval(1000), [
-  //   //   mapSubscribePipe<void, IRelativeTimeFormatValueAndUnit>(() => ({ value: Date.now(), unit: 'day' })),
-  //   //   relativeTimeFormatSubscribePipe(locales$, of<IRelativeTimeFormatOptions>({ style: 'long' })),
-  //   // ]);
-  // });
+    return pipeSubscribeFunction(interval(1000), [
+      mapSubscribePipe<void, IRelativeTimeFormatValueAndUnit>(() => ({ value: Date.now(), unit: 'day' })),
+      relativeTimeFormatSubscribePipe(locales$, of<IRelativeTimeFormatOptions>({ style: 'long' })),
+    ]);
+  });
 }
 

@@ -1,11 +1,11 @@
 import {
   createUnicastReplayLastSource, debounceFrameSubscribePipe, interval, ISubscribeFunction, logStateSubscribePipe,
-  mapSubscribePipe, pipeSubscribeFunction, shareSubscribePipe,
+  mapSubscribePipe, of, pipeSubscribeFunction, shareSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
   attachNode, attachNodeRaw, attachShadow, createDocumentFragment, createElementNode,
   createReactiveForLoopNode, createReactiveIfNode, createReactiveSwitchNode, createReactiveTextNode, createTextNode,
-  detachNode, nodeAppendChild, onNodeConnectedTo,
+  detachNode, nodeAppendChild, onNodeConnectedTo, onNodePositionChangeListener,
 } from '@lifaon/rx-dom';
 
 
@@ -182,13 +182,17 @@ async function debugOnNodeConnectedTo1() {
   const container3 = createElementNode('a');
   const container4 = createElementNode('div');
 
-  const fragment = createDocumentFragment();
+  const fragment1 = createDocumentFragment();
+  const fragment2 = createDocumentFragment();
   const shadowRoot = attachShadow(container4);
 
   onNodeConnectedTo(text1, document.body)((connected: boolean) => {
-    console.log('connected', connected);
+    console.log('text1', connected);
   });
 
+  onNodeConnectedTo(text2, document.body)((connected: boolean) => {
+    console.log('text2', connected);
+  });
 
   // const steps = [
   //   () => attachNode(text1, document.body), // true
@@ -203,8 +207,8 @@ async function debugOnNodeConnectedTo1() {
   //   () => attachNode(text1, document.body), // -
   //   () => attachNode(text1, container1), // false
   //   () => detachNode(text1), // -
-  //   () => attachNode(text1, fragment), // -
-  //   () => attachNode(fragment, document.body), // true
+  //   () => attachNode(text1, fragment1), // -
+  //   () => attachNode(fragment1, document.body), // true
   // ];
 
   // const steps = [
@@ -213,11 +217,26 @@ async function debugOnNodeConnectedTo1() {
   //   () => attachNode(text1, document.body), // --
   // ];
 
+  // const steps = [
+  //   () => attachNode(text1, document.body), // true
+  //   () => attachNode(text1, shadowRoot), // false
+  //   () => attachNode(container4, document.body), // true
+  // ];
+
   const steps = [
-    () => attachNode(text1, document.body), // true
-    () => attachNode(text1, shadowRoot), // false
-    () => attachNode(container4, document.body), // true
+    () => attachNode(text1, container1), // -
+    () => attachNode(text2, container1), // -
+    () => attachNode(container1, fragment1), // -
+    // () => attachNode(fragment1, fragment2), // -
+    () => attachNode(container1, document.body), // true
   ];
+
+  // const steps = [
+  //   () => attachNode(text1, container1), // -
+  //   () => attachNode(text2, container1), // -
+  //   () => attachNode(container1, container2), // -
+  //   () => attachNode(container1, document.body), // true
+  // ];
 
   steps.forEach((step, index: number) => {
     console.warn('step', index, step.toString());
@@ -286,8 +305,10 @@ async function debugReactiveForLoopNode1() {
     const _index = pipeSubscribeFunction(index, [mapSubscribePipe<number, string>(String)]);
     const fragment = createDocumentFragment();
     const container = createElementNode('div');
-    nodeAppendChild(container, createTextNode(`node: ${ item } - `));
-    nodeAppendChild(container, createReactiveTextNode(_index));
+    // nodeAppendChild(container, createTextNode(`node: ${ item } - `));
+    // nodeAppendChild(container, createReactiveTextNode(_index));
+    nodeAppendChild(container, createReactiveTextNode(of('a')));
+    nodeAppendChild(container, createReactiveTextNode(of('b')));
     nodeAppendChild(fragment, container);
     return fragment;
   });
@@ -439,7 +460,7 @@ export async function debugReactiveDOM() {
   // await debugObservableReactive9();
   // await debugObservableReactive10();
 
-  // await debugOnNodeConnectedTo1();
+  await debugOnNodeConnectedTo1();
   // await debugOnNodeConnectedTo2();
 
   // await debugContainerNode1();

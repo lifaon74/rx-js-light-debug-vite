@@ -1,0 +1,63 @@
+@import '../../../../../../style/mixins';
+
+
+
+:host {
+  /* VARIABLES */
+
+  $files-list-color: #333;
+
+
+  $files-list-file-name-color: create-var('files-list-file-name-color-list-progress-bar-background-color', $files-list-color);
+  @include create-css-var($files-list-file-name-color);
+
+  $files-list-color-error: create-var('files-list-color-error', #ff1f1f);
+  @include create-css-var($files-list-color-error);
+
+  /* STYLE */
+
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+
+  & > .file-list {
+    font-size: 20px;
+
+    & > * { // .file
+      padding: 15px;
+      display: inline-block;
+      vertical-align: top;
+      //transform: translateZ(0);
+      text-align: center;
+
+      & > .preview-image {
+        width: 150px;
+        height: 150px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+
+      & > .file-name {
+        font-size: 14px;
+        color: get-css-var($files-list-file-name-color);
+      }
+    }
+  }
+
+  & > .loader {
+    text-align: center;
+
+    & > .dual-ring-loader {
+      @include dual-ring-loader-mixin(( color: black ));
+    }
+  }
+
+  & > .error-message {
+    color: get-css-var($files-list-color-error);
+    font-size: 20px;
+    text-align: center;
+  }
+}
+

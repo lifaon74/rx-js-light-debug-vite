@@ -30,6 +30,8 @@ import { lazyLoadExample } from './examples/rx-dom/lazy-load/lazy-load.example';
 import { injectContentExample } from './examples/rx-dom/inject-content/inject-content.example';
 import { sensorsExample } from './examples/rx-js-light/sensors/sensors.example';
 import { audioPlayerExample } from './examples/rx-dom/audio-player/audio-player.example';
+import { fileSystemExample } from './examples/rx-dom/file-system/file-system.example';
+import { stateMachineDebug } from './debug/state-machine/state-machine.debug';
 
 function run() {
   // debugObservableV5();
@@ -37,6 +39,7 @@ function run() {
   // debugReactiveDOM();
   // formControlDebug();
   // helloWorldDebug();
+  // stateMachineDebug();
 
   // rxJSLightPerformancesExample();
 
@@ -61,12 +64,13 @@ function run() {
   // autoUpdateExample();
   // fileTransferExample();
   // commonPitfallExample();
-  i18nExample();
+  // i18nExample();
   // rxjsLightShortcutsExample();
   // lazyLoadExample();
   // injectContentExample();
   // sensorsExample();
   // audioPlayerExample();
+  fileSystemExample();
 }
 
 run();

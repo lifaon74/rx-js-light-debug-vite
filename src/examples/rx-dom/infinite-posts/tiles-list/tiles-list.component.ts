@@ -2,18 +2,17 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_FROM_CONSTANTS_TO_IMPORT, OnConnect, OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
-import {
-  IDefaultNotificationsUnion, IGenericSource, IReplayLastSource, ISubscribeFunction, Subscription, SubscriptionManager
-} from '@lifaon/rx-js-light';
+import { IDefaultNotificationsUnion, ISubscribeFunction, Subscription, SubscriptionManager } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './tiles-list.component.scss';
 // @ts-ignore
 import html from './tiles-list.component.html?raw';
 import { createInfiniteScrollSubscribeFunction } from '../helpers/infinite-scroll';
-import { fetchMonkeyUsersPosts, IMonkeyUserResponse} from '../services/fetch-monkey-user-posts';
+import { fetchMonkeyUsersPosts, IMonkeyUserResponse } from '../services/fetch-monkey-user-posts';
 import { filter$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
 import { fetchNineGagPosts } from '../services/fetch-nine-gag-posts';
 import { IResource } from '../services/resource.type';
+import { mutateReadonlyReplayLastSourceArray } from '../../../misc/mutate-readonly-replay-last-source-array';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 
@@ -34,15 +33,6 @@ function debugNineGag(): void {
   subNineGag((result) => {
     console.log(result);
   });
-}
-
-export function mutateReadonlyReplayLastSourceArray<GItem>(
-  source: IReplayLastSource<readonly GItem[], IGenericSource>,
-  callback: (items: GItem[]) => void
-): void {
-  const items: readonly GItem[] = source.getValue();
-  callback(items as GItem[]);
-  source.emit(items);
 }
 
 /*---------------------*/
