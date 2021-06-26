@@ -18,6 +18,9 @@ const CONSTANTS_TO_IMPORT = {
   createElement: generateCreateElementFunctionWithCustomElements(APP_HOME_PAGE_CUSTOM_ELEMENTS),
 };
 
+// @Page({
+//   path: new Path('/home'),
+// })
 @Component({
   name: 'app-home-page',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`

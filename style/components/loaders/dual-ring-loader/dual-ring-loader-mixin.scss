@@ -1,10 +1,11 @@
+@use 'sass:math';
 @import '../../../functions';
 
 @mixin dual-ring-loader-mixin(
   $config: ()
 ) {
   $size: map-get-default($config, 'size', 60px);
-  $stroke-size: map-get-default($config, 'stroke-size', $size / 10);
+  $stroke-size: map-get-default($config, 'stroke-size', math.div($size, 10));
   $color: map-get-default($config, 'color', #fff);
 
   width: $size;

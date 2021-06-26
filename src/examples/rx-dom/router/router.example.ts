@@ -1,167 +1,101 @@
-import { Path } from './router/path/path.class';
-import { IRXRoute } from './router/rx/rx-route.type';
-import { RXRouter } from './router/rx/rx-router.class';
-import { AppNotFoundPageComponent } from './pages/404/not-found.page.component';
-import { createRouteAliases } from './router/route/create-route-aliases';
-import { generateRouterOutletHTML } from './router/rx/rx-router-outlet';
+import { Path } from './path/path.class';
+import {
+  createDefaultInjectParentComponent, createRouteResolver, createRoutesResolver,
+  IRouteResolveInjectParentComponentFunction, IRouteResolveUndoFunction, navigateTo
+} from './router/route/route';
+import { isRedirectToError } from './router/errors/redirect-to-error/redirect-to-error';
+import { NAVIGATION } from './navigation/navigation';
+import { getLocation } from './navigation/get-location';
+import { getBaseURI } from './navigation/get-base-uri';
 
-
-/*-----------------*/
-
-// const routes: IRXRoute[] = [
-//   {
-//     path: new Path('/all'),
-//     extra: {
-//       component: AppProgressBarComponent,
-//     },
-//   },
-//   {
-//     path: new Path('/all2'),
-//     extra: {
-//       component: AppProgressBarComponent,
-//     },
-//   },
-//   {
-//     path: new Path('/single/:id'),
-//     children: [
-//       {
-//         path: new Path('/a'),
-//         extra: async () => {
-//           return {
-//             component: (await import('../progress-ring/progress-ring.component')).AppProgressRingComponent,
-//           };
-//         },
-//       },
-//       {
-//         path: new Path('/**'),
-//         extra: {
-//           component: AppProgressBarComponent,
-//         },
-//       },
-//     ],
-//   },
-//   {
-//     path: new Path('/child'),
-//     // component: AppProgressBarComponent,
-//     children: [
-//       {
-//         path: new Path('/1'),
-//         // component: AppProgressBarComponent,
-//       },
-//     ],
-//   },
-// ];
-
-/*-----------------*/
-
-const routes: IRXRoute[] = [
-  ...createRouteAliases([
-    new Path('/'),
-    new Path('/home'),
-  ], {
-    // extra: {
-    //   component: AppHomePageComponent,
-    // },
-    extra: async () => {
-      return {
-        component: (await import('./pages/home/home.page.component')).AppHomePageComponent,
-      };
-    },
-  },),
-  {
-    path: new Path('/list'),
-    extra: async () => {
-      return {
-        component: (await import('./pages/list/list.page.component')).AppListPageComponent,
-      };
-    },
-    children: [
-      {
-        path: new Path('/'),
-      },
-      {
-        path: new Path('/sub'),
-        extra: async () => {
-          return {
-            component: (await import('./pages/sub-list/sub-list.page.component')).AppSubListPageComponent,
-          };
-        },
-      },
-    ]
-  },
-  {
-    path: new Path('/**'),
-    extra: {
-      component: AppNotFoundPageComponent,
-    },
-  },
-];
-
-/*-----------------*/
 
 async function routerExample1() {
+  const routes = [
+    createRouteResolver({
+      path: new Path('/home'),
+      component: () => {
+        return import('./pages/home/home.page.component').then(_ => _.AppHomePageComponent);
+      },
+    }),
+    createRouteResolver({
+      path: new Path('/product/:productId'),
+      component: () => {
+        return import('./pages/product/product.page.component').then(_ => _.AppProductPageComponent);
+      },
+    }),
+    createRouteResolver({
+      path: new Path('/list'),
+      component: () => {
+        return import('./pages/list/list.page.component').then(_ => _.AppListPageComponent);
+      },
+      children: [
+        createRouteResolver({
+          path: new Path('/'),
+        }),
+        createRouteResolver({
+          path: new Path('/sub'),
+          component: () => {
+            return import('./pages/sub-list//sub-list.page.component').then(_ => _.AppSubListPageComponent);
+          },
+        }),
+      ],
+    }),
+    createRouteResolver({
+      path: new Path('/forbidden'),
+      canActivate: navigateTo(new Path('/home')),
+    }),
+    createRouteResolver({
+      path: new Path('/**'),
+      component: () => {
+        return import('./pages/404/not-found.page.component').then(_ => _.AppNotFoundPageComponent);
+      },
+    }),
+  ];
 
-  // debugNavigation();
+  const resolver = createRoutesResolver(routes);
 
+  let previousUndoFunction: IRouteResolveUndoFunction;
 
-  // <base href="/">
+  const DEFAULT_INJECT_PARENT_COMPONENT: IRouteResolveInjectParentComponentFunction = createDefaultInjectParentComponent();
 
-  // console.log(convertRoutePathToRegExp('/abc'));
-  // console.log(convertRoutePathToRegExp('/:id'));
-  // console.log(convertRoutePathToRegExp('/**'));
-  // console.log(convertRoutePathToRegExp('/*'));
-  // console.log(convertRoutePathToRegExp('/abc/:id/*/ijk/**'));
+  const update = async () => {
+    try {
+      previousUndoFunction = await resolver({
+        path: getCurrentPath(),
+        params: {},
+        injectParentComponent: DEFAULT_INJECT_PARENT_COMPONENT,
+        previousUndoFunction,
+      });
+    } catch (error: unknown) {
+      if (isRedirectToError(error)) {
+        NAVIGATION.navigate(error.url);
+      } else {
+        throw error;
+      }
+    }
+  };
 
-  document.body.innerHTML = `
-    ${ generateRouterOutletHTML() }
-  `;
+  const getCurrentPath = (): Path => {
+    const currentPathName: string = getLocation().pathname;
+    const baseURIPathName: string = new URL(getBaseURI()).pathname;
+    // getLocation().pathname.replace(new URL(getBaseURI()).pathname, '')
+    return new Path(
+      currentPathName.startsWith(baseURIPathName)
+        ? currentPathName.slice(baseURIPathName.length)
+        : currentPathName,
+    );
+  };
 
-  // const path = '/all';
-  // const path = '/single/abc';
-  // const path = '/single/abc/a';
-  // const path = '/single/abc/b';
-  // const path = '/child';
+  NAVIGATION.onChange(update);
+  update();
 
-  // const resolvedRoutes = await resolveRXRoute(routes, new Path(path));
-  // console.log(resolvedRoutes);
-  // await injectRXRoute(resolvedRoutes);
-
-  const router = new RXRouter(routes);
-  router.refresh();
-  // await router.update(new Path('/all'));
-  // await router.update(new Path('/all2'));
-  // await router.update(new Path('/single'));
-  // await router.update(new Path('/single/10/a'));
-  // await router.update(new Path('/single/10/a'));
-
-  // await router.navigation.navigate(new URL('/single/10/a', window.origin));
-  // await router.navigation.navigate(new URL('/all', window.origin));
-  // await router.navigate(new URL('https://developer.mozilla.org/en-US/docs/Web/API/History/pushState'));
-
-  (window as any).router = router;
-
+  console.log(new DOMParser().parseFromString(`<span [myAttr]="5"></span>`, 'text/html'));
 }
 
 /*-----------------*/
 
 
 export async function routerExample() {
-
-  // debugNavigation();
-
-  document.body.innerHTML = `
-    ${ generateRouterOutletHTML() }
-  `;
-
-  const router = new RXRouter(routes, {
-    // onError: (error: any) => {
-    //   console.error(error);
-    //   document.body.innerHTML = `An unexpected error occurred`;
-    // },
-  });
-  router.refreshAndCatch();
-
-  (window as any).router = router;
-
+  await routerExample1();
 }
 

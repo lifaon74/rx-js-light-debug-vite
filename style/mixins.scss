@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import './components/loaders/dual-ring-loader/dual-ring-loader-mixin';
 
 $icon-vertical-offset: 5%;
@@ -25,8 +27,8 @@ $icon-vertical-offset: 5%;
     text-align: center;
     left: 50%;
     top: 50% + $icon-vertical-offset;
-    margin-left: -($icon-size-inner / 2);
-    margin-top: -($icon-size-inner / 2);
+    margin-left: -($icon-size-inner * 0.5);
+    margin-top: -($icon-size-inner * 0.5);
     width: $icon-size-inner;
     height: $icon-size-inner;
     font-size: $icon-size-inner;
@@ -55,7 +57,7 @@ $icon-vertical-offset: 5%;
   @supports not (aspect-ratio: #{$ratio}) {
     &::before {
       float: left;
-      padding-top: ($width / $height) * 100%;
+      padding-top: math.div($width, $height) * 100%;
       content: '';
     }
 

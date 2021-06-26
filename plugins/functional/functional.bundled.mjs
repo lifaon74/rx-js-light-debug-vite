@@ -1354,7 +1354,7 @@ pp$1.parseClassElement = function(constructorAllowsSuper) {
     if (method.key) { this$1.unexpected(); }
     method.computed = false;
     method.key = this$1.startNodeAt(start, startLoc);
-    method.key.name = k;
+    method.key.type = k;
     this$1.finishNode(method.key, "Identifier");
     return false
   };

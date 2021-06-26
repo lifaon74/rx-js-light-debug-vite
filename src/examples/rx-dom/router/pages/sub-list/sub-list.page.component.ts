@@ -11,6 +11,9 @@ const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
 };
 
+// @Page({
+//   path: new Path('/sub'),
+// })
 @Component({
   name: 'app-sub-list-page',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`

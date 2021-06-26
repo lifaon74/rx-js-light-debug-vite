@@ -1,0 +1,177 @@
+
+// export interface IOfferItem {
+//   name: string;
+//   quantity: number;
+//   value: number;
+// }
+//
+// export interface IOffer {
+//   out: IOfferItem;
+//   in: IOfferItem;
+// }
+//
+// export type ITransactionState =
+//   'running'
+//   | 'fulfilled'
+//   | 'rejected'
+// ;
+//
+// export interface ITransaction {
+//   offer: IOffer;
+//   received: IOffer;
+//   state: ITransactionState;
+// }
+
+
+/*-------------*/
+
+/*
+
+ */
+
+
+
+
+/*-------------*/
+
+
+interface ITransaction {
+  weight: number;
+  score: number; // [0, 1]
+  // date: number;
+}
+
+// interface IReputationAlgorithm {
+//   (transactions: ITransaction[]): number; // [0, 1]
+// }
+
+/*-------------*/
+
+interface IWeightedScore {
+  weight: number;
+  score: number; // [0, 1]
+}
+
+interface ITransactionToWeightedScoreAlgorithm {
+  (transaction: ITransaction): IWeightedScore;
+}
+
+/*-------------*/
+
+function transactionToWeightedScore(
+  transaction: ITransaction,
+): IWeightedScore {
+  return transaction;
+}
+
+function weightedScoresToReputationScore(
+  weightedScores: IWeightedScore[],
+): number {
+  let totalWeight: number = 0;
+  let score: number = 0;
+
+  for (let i = 0, l = weightedScores.length; i < l; i++) {
+    const weightedScore: IWeightedScore = weightedScores[i];
+    totalWeight += weightedScore.weight;
+    score += weightedScore.score * weightedScore.weight;
+  }
+
+  return score / totalWeight;
+}
+
+/*-------------*/
+
+class Agent {
+  cheatRatio: number;
+  pastTransactions: Map<Agent, ITransaction[]>;
+
+  constructor(
+    cheatRatio: number,
+  ) {
+   this.cheatRatio = cheatRatio;
+   this.pastTransactions = new Map<Agent, ITransaction[]>();
+  }
+
+  getTransactionsFor(
+    agent: Agent,
+  ): ITransaction[] {
+    let transactions: ITransaction[] | undefined = this.pastTransactions.get(agent);
+    if (transactions === void 0) {
+      transactions = [];
+      this.pastTransactions.set(agent, transactions);
+    }
+    return transactions;
+  }
+
+  appendTransactionsFor(
+    agent: Agent,
+    transaction: ITransaction,
+  ): void {
+    this.getTransactionsFor(agent).push(transaction);
+  }
+
+  getReputationScoreFor(
+    agent: Agent,
+  ): number {
+    return weightedScoresToReputationScore(this.getTransactionsFor(agent));
+  }
+}
+
+/*-------------*/
+
+
+function run(): void {
+  const rand = (start: number, end: number): number => {
+    return (Math.random() * (end - start)) + start;
+  };
+
+  // const cheatRatio = () => 0; // no cheater
+  // const cheatRatio = () => 0.5; // half cheater
+  // const cheatRatio = () => 1; // complete cheater
+
+  const cheatRatio = () => rand(0, 0.1); // ~5% cheaters
+
+  const agents: Agent[] = Array.from({ length: 1e1 }, () => new Agent(cheatRatio()));
+
+
+  // const trade = () => {
+  //   for (let i = 0, l = agents.length; i < l; i++) {
+  //     const agent: Agent = agents[i];
+  //     const transaction: ITransaction = {
+  //       weight: rand(0, 1000),
+  //       score: 0,
+  //     };
+  //
+  //
+  //     const target: Agent = agents[Math.floor(rand(0, l))];
+  //
+  //
+  //     // const score = agent.getReputationScoreFor(target);
+  //   }
+  // };
+
+  const trade = (agent: Agent) => {
+    const transaction: ITransaction = {
+      weight: rand(0, 1000),
+      score: 0,
+    };
+
+    for (let i = 0, l = agents.length; i < l; i++) {
+      const target: Agent = agents[i];
+      if (target !== agent) {
+
+      }
+    }
+  };
+
+}
+
+
+
+/*-------------*/
+
+export function webRTCDebug() {
+  console.log('ok');
+  run();
+}
+

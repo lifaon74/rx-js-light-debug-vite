@@ -1,0 +1,29 @@
+
+
+export interface IResolvableTreeResolveFunction<GArguments extends any[]> {
+  (...args: GArguments): void;
+}
+
+
+export interface IResolvableTree<GValue> {
+  value: GValue;
+  children: IResolvableTree<GValue>[];
+  resolve: IResolvableTreeResolveFunction;
+}
+
+async function resolvableTreeExample1() {
+
+  const tree = {
+
+  };
+
+
+}
+
+/*-----------------*/
+
+
+export async function resolvableTreeExample() {
+  await resolvableTreeExample1();
+}
+

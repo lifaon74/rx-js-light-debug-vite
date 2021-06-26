@@ -661,7 +661,8 @@ async function debugReactiveDOMCompiler5() {
     interface IProxyData {
       name: string;
       email: string;
-      items: string[];
+      // items: string[];
+      items: { id: string }[];
     }
 
     interface IData {
@@ -675,8 +676,11 @@ async function debugReactiveDOMCompiler5() {
         <div>{{ $.proxy.name.$ }}</div>
         <div>{{ $.proxy.email.$ }}</div>
         <div>{{ $.proxy.items.length.$ }}</div>
-        <div *for="let item of $.proxy.items.$">
-          {{ of(item) }}
+<!--        <div *for="let item of $.proxy.items.$">-->
+<!--          {{ of(item) }}-->
+<!--        </div>-->
+        <div *for="let item of $.proxy.items.$array">
+          <span>{{ item.id.$ }}</span>
         </div>
       `,
         CONSTANTS_TO_IMPORT,
@@ -699,13 +703,24 @@ async function debugReactiveDOMCompiler5() {
           proxy: createSubscribeFunctionProxy<IProxyData>(data.subscribe)
         };
 
+        // setInterval(() => {
+        //   const _data = data.getValue();
+        //   data.emit({
+        //     ..._data,
+        //     // items: _data.items.concat([uuid()])
+        //     items: _data.items.concat([{ id: uuid() }])
+        //   });
+        // }, 1000);
+
         setInterval(() => {
           const _data = data.getValue();
-          data.emit({
-            ..._data,
-            items: _data.items.concat([uuid()])
-          });
+          _data.items[Math.floor(_data.items.length * Math.random())].id = uuid();
+          data.emit(_data);
         }, 1000);
+
+        _data.items = Array.from({ length: 1e2 }, (v: any, i: number) => ({ id: `id-${ i }`}));
+
+        (window as any).$data$ = data;
 
       }
 
@@ -1199,8 +1214,8 @@ export async function debugReactiveDOMCompiler() {
   // await debugReactiveDOMCompiler2();
   // await debugReactiveDOMCompiler3();
   // await debugReactiveDOMCompiler4();
-  // await debugReactiveDOMCompiler5();
+  await debugReactiveDOMCompiler5();
   // await debugReactiveDOMCompiler6();
   // await debugReactiveDOMCompiler7();
-  await debugReactiveDOMCompiler8();
+  // await debugReactiveDOMCompiler8();
 }

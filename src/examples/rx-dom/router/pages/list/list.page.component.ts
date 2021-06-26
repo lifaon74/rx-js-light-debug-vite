@@ -6,7 +6,7 @@ import { INavigation, NAVIGATION } from '../../navigation/navigation';
 import { idle, ISubscribeFunction } from '@lifaon/rx-js-light';
 import { map$$ } from '@lifaon/rx-js-light-shortcuts';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
-import { generateRouterOutletHTML, ROUTER_OUTLET_TAG_NAME } from '../../router/rx/rx-router-outlet';
+import { generateRouterOutletHTML, ROUTER_OUTLET_TAG_NAME } from '../../router/router-outlet/rx-router-outlet';
 
 const APP_LIST_PAGE_CUSTOM_ELEMENTS = [
   AppMenuPageComponent,
@@ -24,6 +24,15 @@ const CONSTANTS_TO_IMPORT = {
   createElement: generateCreateElementFunctionWithRouterOutlet(ROUTER_OUTLET_TAG_NAME, generateCreateElementFunctionWithCustomElements(APP_LIST_PAGE_CUSTOM_ELEMENTS)),
 };
 
+// @Page({
+//   path: new Path('/list'),
+//   isEndPoint: true,
+//   children: () => {
+//     return Promise.all([
+//       import('../sub-list/sub-list.page.component').then(_ => _.AppSubListPageComponent),
+//     ]);
+//   },
+// })
 @Component({
   name: 'app-list-page',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`

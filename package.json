@@ -14,20 +14,21 @@
     "plugins:aot:rollup": "rollup --input plugins/aot/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format umd --name compiler --plugin @rollup/plugin-node-resolve --watch",
     "_dev:rollup": "rollup --input plugins/aot/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format es --plugin @rollup/plugin-node-resolve --watch"
   },
+  "sideEffects": false,
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^11.2.0",
-    "@types/dompurify": "^2.2.1",
-    "@types/estree": "^0.0.47",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@types/dompurify": "^2.2.2",
+    "@types/estree": "^0.0.48",
     "@types/requestidlecallback": "^0.3.1",
     "@types/resize-observer-browser": "^0.1.5",
-    "acorn": "^8.1.0",
-    "acorn-walk": "^8.0.2",
-    "astring": "^1.7.0",
+    "acorn": "^8.4.1",
+    "acorn-walk": "^8.1.0",
+    "astring": "^1.7.5",
     "btoa": "^1.2.1",
-    "puppeteer": "^8.0.0",
-    "sass": "^1.32.8",
-    "typescript": "^4.2.3",
-    "vite": "^2.1.2"
+    "puppeteer": "^10.0.0",
+    "sass": "^1.35.1",
+    "typescript": "^4.3.4",
+    "vite": "^2.3.8"
   },
   "__dependencies": {
     "@lifaon/rx-js-light": "lastest",
@@ -35,11 +36,11 @@
     "@lifaon/rx-js-light-shortcuts": "1.0.0"
   },
   "dependencies": {
-    "@lifaon/rx-dom": "1.0.0",
-    "@lifaon/rx-js-light": "1.0.0",
-    "@lifaon/rx-js-light-shortcuts": "1.0.0",
-    "dompurify": "^2.2.7",
-    "rxjs": "^6.6.7",
-    "tslib": "^2.1.0"
+    "@lifaon/rx-dom": "1.1.0",
+    "@lifaon/rx-js-light": "1.1.2",
+    "@lifaon/rx-js-light-shortcuts": "1.1.2",
+    "dompurify": "^2.2.9",
+    "rxjs": "^7.1.0",
+    "tslib": "^2.3.0"
   }
 }

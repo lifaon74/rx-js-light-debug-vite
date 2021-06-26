@@ -2,7 +2,7 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
-import { ISubscribeFunction } from '@lifaon/rx-js-light';
+import { IMulticastReplayLastSource, ISubscribeFunction } from '@lifaon/rx-js-light';
 import { const$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 
@@ -10,12 +10,15 @@ import { const$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 interface IItem {
   readonly text$: ISubscribeFunction<string>;
+  readonly $selected$: IMulticastReplayLastSource<boolean>;
 }
 
 interface IData {
   readonly count$: ISubscribeFunction<number>;
   readonly time$: ISubscribeFunction<number>;
   readonly items$: ISubscribeFunction<IItem[]>;
+
+  readonly onClickItem: (item: IItem) => void;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -23,7 +26,7 @@ const CONSTANTS_TO_IMPORT = {
 };
 
 @Component({
-  name: 'app-hello-world',
+  name: 'app-for-loop-example',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <div class="count">
       count: {{ $.count$ }} in {{ $.time$ }}ms
@@ -31,6 +34,8 @@ const CONSTANTS_TO_IMPORT = {
     <div
       class="item"
       *for="let item of $.items$"
+      (click)="() => $.onClickItem(item)"
+      [class.selected]="item.$selected$.subscribe"
     >
       {{ item.text$ }}
     </div>
@@ -41,12 +46,20 @@ const CONSTANTS_TO_IMPORT = {
       padding: 20px;
     }
 
+    :host > .count {
+      font-size: 14px;
+    }
+    
     :host > .item {
       border: 1px solid #ccc;
       padding: 10px;
       font-size: 14px;
       border-radius: 5px;
       margin: 5px 0;
+    }
+    
+    :host > .item.selected {
+      background-color: #ddd;
     }
   `),
 })
@@ -65,7 +78,14 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
 
     const items = Array.from({ length: 1e4 }, (v: any, index: number): IItem => ({
       text$: const$$(`#${ index }`),
+      $selected$: let$$<boolean>(false),
     }));
+
+    const onClickItem = (item: IItem): void => {
+      console.time('select-item');
+      item.$selected$.emit(!item.$selected$.getValue());
+      console.timeEnd('select-item');
+    };
 
 
     let count: number = 1;
@@ -101,6 +121,8 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
     //   }, 500);
     // }, 500);
 
+    // updateItems(items);
+
     // (window as any).items = items;
     // (window as any).$items$ = $items$;
     // (window as any).updateItems = updateItems;
@@ -109,6 +131,8 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
       count$,
       time$,
       items$,
+
+      onClickItem,
     };
   }
 

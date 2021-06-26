@@ -2,8 +2,9 @@ import {
   composeEmitPipeFunctions, createMulticastReplayLastSource, createMulticastSource, createSubscribeFunctionProxy,
   createUnicastReplayLastSource,
   debounceTimeSubscribePipe,
-  distinctEmitPipe, distinctSubscribePipe, fromEventTarget, fromFetch, fromPromise,
-  ISubscribeFunctionFromFetchNotifications, IUnsubscribeFunction, mapEmitPipe, mapSubscribePipe, mergeMapSubscribePipe,
+  distinctEmitPipe, distinctSubscribePipe, fromEventTarget, fromFetch, fromPromise, ISubscribeFunction,
+  ISubscribeFunctionFromFetchNotifications, ISubscribeFunctionProxy, IUnsubscribeFunction, mapEmitPipe,
+  mapSubscribePipe, mergeMapSubscribePipe,
   mergeMapSubscribePipeWithNotifications, of, pipeSubscribeFunction, pipeSubscribePipeFunctions
 } from '@lifaon/rx-js-light';
 
@@ -418,7 +419,11 @@ async function debugSourcePerf1() {
 }
 
 
-async function debugSubscribeFunctionProxy() {
+async function debugSubscribeFunctionProxy1() {
+  interface IArrayItem {
+    value: number;
+  }
+
   const data = {
     a: {
       b: {
@@ -429,7 +434,12 @@ async function debugSubscribeFunctionProxy() {
     a1: 3,
     a2: () => {
       return 5;
-    }
+    },
+    array: Array.from({ length: 5 }, (v: any, i: any): IArrayItem => {
+      return {
+        value: i,
+      };
+    }),
   };
 
   const $data$ = createMulticastReplayLastSource({ initialValue: data });
@@ -440,15 +450,105 @@ async function debugSubscribeFunctionProxy() {
   // // console.log(data);
   // console.log(proxy.a1 + 2);
   // console.log(proxy.a2());
+  console.log(proxy.a === proxy.a); // false
 
+  // proxy.a.b.c.$((value: any) => {
+  //   console.log('c', value);
+  // });
 
-  proxy.a.b.c.$((value: any) => {
-    console.log('c', value);
+  const unsubscriptions: IUnsubscribeFunction[] = [];
+
+  proxy.array.$array((items: readonly ISubscribeFunctionProxy<any>[]) => {
+    const itemsLength = items.length;
+    const unsubscriptionsLength = unsubscriptions.length;
+    if (unsubscriptionsLength < items.length) {
+      unsubscriptions.length = unsubscriptionsLength;
+      for (let i = unsubscriptionsLength; i < itemsLength; i++) {
+        unsubscriptions[i] = items[i].value.$((value: any) => {
+          console.log('value', value);
+        });
+      }
+    }
   });
+
+
+  // proxy.array.$$((items: IArrayItem[]) => {
+  //   // console.log(items);
+  //   debugger;
+  //   for (let i = 0, l = items.length; i < l; i++) {
+  //     console.log(items[i]);
+  //   }
+  //   // items.value.$((value: any) => {
+  //   //   console.log('value', value);
+  //   // });
+  // });
 
   (window as any).setData = $data$.emit;
 }
 
+async function debugSubscribeFunctionProxy2() {
+  const data: any = {
+    array: [{ value: 1 }, { value: 2 }],
+  };
+
+  const dataSource = createMulticastReplayLastSource({ initialValue: data });
+
+  const proxy = createSubscribeFunctionProxy(dataSource.subscribe);
+
+  /* THE IMPORTANT PART */
+
+// list of unsubscriptions for the received array
+  const unsubscriptions: IUnsubscribeFunction[] = [];
+
+  proxy.array.$array((items: readonly ISubscribeFunctionProxy<any>[]) => {
+
+    const itemsLength = items.length;
+    const unsubscriptionsLength = unsubscriptions.length;
+
+    // if the received array's length is larger than the subscriptions we've already done
+    if (unsubscriptionsLength < items.length) {
+      // increase 'unsubscriptions' size
+      unsubscriptions.length = itemsLength;
+      // and only subscribe to the new ones
+      for (let i = unsubscriptionsLength; i < itemsLength; i++) {
+        // note that 'items[i]' is a proxy
+        unsubscriptions[i] = items[i].value.$((value: any) => {
+          console.log('value', value);
+        });
+      }
+    } else { // if the received array's length is smaller than the subscriptions we've already done
+      // unsubscribe from the old ones
+      for (let i = itemsLength; i < unsubscriptionsLength; i++) {
+        unsubscriptions[i]();
+      }
+      // decrease 'unsubscriptions' size
+      unsubscriptions.length = itemsLength;
+    }
+  });
+  // outputs:
+  // value: 1
+  // value: 2
+
+  dataSource.emit({ array: [{ value: 5 }, { value: 8 }] });
+  // outputs:
+  // value: 5
+  // value: 8
+
+  dataSource.emit({ array: [{}, { value: 9 }] });
+  // outputs:
+  // value: undefined
+  // value: 9
+
+  dataSource.emit({ array: [{ value: 0 }] });
+  // outputs:
+  // value: 0
+
+  dataSource.emit({ array: [{ value: 0 }, { value: 1 }, { value: 2 }] });
+  // outputs:
+  // value: 0
+  // value: 1
+  // value: 2
+}
 
 export async function debugObservableV5() {
   // await test();
@@ -471,6 +571,7 @@ export async function debugObservableV5() {
 
   // await debugMulticastSource1();
   // await debugReplayLastSource1();
-  await debugSourcePerf1();
-  // await debugSubscribeFunctionProxy();
+  // await debugSourcePerf1();
+  // await debugSubscribeFunctionProxy1();
+  await debugSubscribeFunctionProxy2();
 }

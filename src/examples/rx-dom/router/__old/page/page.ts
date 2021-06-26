@@ -1,0 +1,286 @@
+import { Path } from '../../path/path.class';
+import { HTMLElementConstructor, nodeAppendChild, nodeRemove } from '../../../../../../../rx-dom/dist';
+import { convertRoutePathToRegExp } from '../../path/convert/convert-route-path-to-reg-exp';
+import { locateRouterOutletElement, ROUTER_OUTLET_TAG_NAME } from '../../router/router-outlet/rx-router-outlet';
+import { nodeRemoveChildren } from '../../../../../../../rx-dom/dist/src/light-dom/node/move/devired/batch/node-remove-children';
+import {
+  createNotAValidPathForThisRouteError, isNotAValidPathForThisRouteError
+} from '../../router/errors/not-a-valid-path-for-this-route-error/not-a-valid-path-for-this-route-error';
+
+
+
+/* RESOLVE */
+
+export interface IPageResolveInjectParentComponentFunction {
+  (): Promise<Element>; // Returns the router outlet
+}
+
+export interface IPageResolveOptions {
+  path: Path;
+  params: IRouteParams;
+  injectParentComponent: IPageResolveInjectParentComponentFunction,
+  // parentNode: Element;
+}
+
+export interface IPageResolveFunction {
+  (options: IPageResolveOptions): Promise<void>;
+}
+
+export interface IRouteParams {
+  [key: string]: string;
+}
+
+
+/* PAGE */
+
+export interface IPageProperties {
+  readonly path: Path;
+  readonly resolve: IPageResolveFunction;
+  // readonly children: IPageChildrenOrLoadPageChildrenFunction;
+}
+
+export type IPage<GClass extends HTMLElementConstructor = HTMLElementConstructor> = GClass & IPageProperties;
+
+// CHILDREN
+export type IPageChildren = HTMLElementConstructor[];
+
+export interface ILoadPageChildrenFunction {
+  (): Promise<IPageChildren>;
+}
+
+export type IPageChildrenOrLoadPageChildrenFunction =
+  IPageChildren
+  | ILoadPageChildrenFunction
+  ;
+
+// LOCATE ROUTER OUTLET
+export interface ILocateRouterOutletFunction {
+  (parentElement: Element): Promise<Element>;
+}
+
+export const DEFAULT_LOCATE_ROUTER_OUTLET: ILocateRouterOutletFunction = (parentElement: Element) => {
+  return locateRouterOutletElement(ROUTER_OUTLET_TAG_NAME, parentElement, new AbortController().signal); // TODO signal
+};
+
+
+// CAN ACTIVATE
+export interface ICanActivateFunction {
+  (): Promise<Path | void>;
+}
+
+export const DEFAULT_CAN_ACTIVATE_FUNCTION: ICanActivateFunction = () => Promise.resolve();
+
+// OPTIONS
+export interface IPageOptions {
+  path: Path;
+  isEndPoint?: boolean;
+  children?: IPageChildrenOrLoadPageChildrenFunction;
+  canActivate?: ICanActivateFunction;
+  locateRouterOutletElement?: ILocateRouterOutletFunction;
+}
+
+
+/* FACTORY */
+
+export function pageFactory<GClass extends HTMLElementConstructor>(
+  target: GClass,
+  {
+    path,
+    isEndPoint = false,
+    children,
+    canActivate = DEFAULT_CAN_ACTIVATE_FUNCTION,
+    locateRouterOutletElement = DEFAULT_LOCATE_ROUTER_OUTLET,
+  }: IPageOptions,
+): IPage<GClass> {
+
+  const loadChildren: ILoadPageChildrenFunction = (children === void 0)
+    ? () => Promise.resolve<IPageChildren>([])
+    : (
+      Array.isArray(children)
+        ? () => Promise.resolve<IPageChildren>(children)
+        : (children as ILoadPageChildrenFunction)
+    );
+
+  const resolve: IPageResolveFunction = async (
+    {
+      path: pathToResolve,
+      params,
+      injectParentComponent,
+    }: IPageResolveOptions,
+  ): Promise<void> => {
+
+    const injectPage = (parentNode: Element): Element => {
+      const routerOutletInjectedElement: Element | null = parentNode.firstElementChild;
+
+      // TODO provide 'params' as SubscribeFunction in the constructor
+      if (routerOutletInjectedElement === null) {
+        return nodeAppendChild(parentNode, new target());
+      } else {
+        if (routerOutletInjectedElement.constructor === target) {
+          return routerOutletInjectedElement;
+        } else {
+          nodeRemoveChildren(parentNode);
+          return nodeAppendChild(parentNode, new target());
+        }
+      }
+    };
+
+    const injectParentComponentAndPage = async (): Promise<Element> => {
+      const parentNode: Element = await injectParentComponent();
+      return injectPage(parentNode);
+    };
+
+    const injectPageAndLocateRouterOutletElement = async (): Promise<Element> => {
+      return locateRouterOutletElement(await injectParentComponentAndPage());
+    };
+
+    const regExp: RegExp = convertRoutePathToRegExp(path);
+    const match: RegExpExecArray | null = regExp.exec(pathToResolve.toString());
+
+    if (match === null) {
+      throw createNotAValidPathForThisRouteError();
+    } else {
+      const remainingPath: Path = new Path(pathToResolve.toString().slice(match[0].length));
+      const segmentParams: IRouteParams = match.groups ?? {};
+
+      const children: IPageChildren = await loadChildren();
+      const childrenLength: number = children.length;
+
+      if (childrenLength === 0) {
+        if (remainingPath.toString() === '/') {
+          await injectParentComponentAndPage();
+        } else {
+          throw createNotAValidPathForThisRouteError();
+        }
+      } else {
+        for (let i = 0; i < childrenLength; i++) {
+          const child: HTMLElementConstructor = children[i];
+          if (isPage(child)) {
+            try {
+              await child.resolve({
+                path: remainingPath,
+                params: {
+                  ...params,
+                  ...segmentParams,
+                },
+                injectParentComponent: injectPageAndLocateRouterOutletElement,
+              });
+            } catch (error: unknown) {
+              if (isNotAValidPathForThisRouteError(error)) {
+                continue;
+              } else {
+                throw error;
+              }
+            }
+            return;
+          } else {
+            throw new Error(`Child ${ child.name } of ${ target.name } is not a Page`);
+          }
+        }
+
+        if ((remainingPath.toString() === '/') && isEndPoint) {
+          const routerOutletElement: Element = await injectPageAndLocateRouterOutletElement();
+          nodeRemoveChildren(routerOutletElement);
+        } else {
+          throw createNotAValidPathForThisRouteError();
+        }
+      }
+    }
+  };
+
+  // const resolve2: IPageResolveFunction = async (
+  //   {
+  //     path: remainingPath,
+  //     params,
+  //     routerOutletElement,
+  //   }: IPageResolveOptions,
+  // ): Promise<void> => {
+  //
+  //   const injectPage = (): Element => {
+  //     const routerOutletInjectedElement: Element | null = routerOutletElement.firstElementChild;
+  //
+  //     if (routerOutletInjectedElement === null) {
+  //       return nodeAppendChild(routerOutletElement, new target());
+  //     } else {
+  //       if (routerOutletInjectedElement.constructor === target) {
+  //         return routerOutletInjectedElement;
+  //       } else {
+  //         nodeRemove(routerOutletInjectedElement);
+  //         return nodeAppendChild(routerOutletElement, new target());
+  //       }
+  //     }
+  //   };
+  //
+  //   const children: IPageChildren = await loadChildren();
+  //   const childrenLength: number = children.length;
+  //
+  //   if (childrenLength === 0) {
+  //     if (remainingPath.toString() === '/') {
+  //       injectPage();
+  //     } else {
+  //       throw createNotAValidPathForThisRouteError();
+  //     }
+  //   } else {
+  //     const pageElement: Element = injectPage();
+  //     const routerOutletElement: Element = await locateRouterOutletElement(pageElement);
+  //
+  //     for (let i = 0; i < childrenLength; i++) {
+  //       const child: IPage = children[i];
+  //       const regExp: RegExp = convertRoutePathToRegExp(path);
+  //       const match: RegExpExecArray | null = regExp.exec(remainingPath.toString());
+  //
+  //       if (match !== null) {
+  //         const remainingPathForChild: Path = new Path(remainingPath.toString().slice(match[0].length));
+  //         const segmentParams: IRouteParams = match.groups ?? {};
+  //
+  //         try {
+  //           await child.resolve({
+  //             path: remainingPathForChild,
+  //             params: {
+  //               ...params,
+  //               ...segmentParams,
+  //             },
+  //             routerOutletElement,
+  //           });
+  //         } catch (error: unknown) {
+  //           if (isNotAValidPathForThisRouteError(error)) {
+  //             continue;
+  //           } else {
+  //             nodeRemove(pageElement);
+  //             throw error;
+  //           }
+  //         }
+  //         return;
+  //       }
+  //     }
+  //
+  //     nodeRemove(pageElement);
+  //     throw createNotAValidPathForThisRouteError();
+  //   }
+  // };
+
+  return Object.assign(target, {
+    resolve,
+    path,
+  });
+}
+
+export function isPage<GClass extends HTMLElementConstructor>(
+  value: HTMLElementConstructor,
+): value is IPage<GClass> {
+  return ('resolve' in value);
+}
+
+/**
+ * DECORATOR (CLASS)
+ */
+export function Page(
+  options: IPageOptions,
+) {
+  return <GClass extends HTMLElementConstructor>(
+    target: GClass,
+  ): IPage<GClass> => {
+    return pageFactory<GClass>(target, options);
+  };
+}
+

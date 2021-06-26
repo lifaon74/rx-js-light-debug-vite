@@ -32,14 +32,20 @@ import { sensorsExample } from './examples/rx-js-light/sensors/sensors.example';
 import { audioPlayerExample } from './examples/rx-dom/audio-player/audio-player.example';
 import { fileSystemExample } from './examples/rx-dom/file-system/file-system.example';
 import { stateMachineDebug } from './debug/state-machine/state-machine.debug';
+import { observableArrayExample } from './examples/rx-js-light/observable-array/observable-array.example';
+import { webRTCDebug } from './debug/webrtc/webrtc.debug';
+import { storeExample } from './examples/rx-js-light/store/store.example';
+import { debugReactiveDOMCompiler } from './debug/rx-dom/debug-reactive-dom-compiler';
 
 function run() {
   // debugObservableV5();
   // debugI18N();
   // debugReactiveDOM();
+  // debugReactiveDOMCompiler();
   // formControlDebug();
   // helloWorldDebug();
   // stateMachineDebug();
+  // webRTCDebug();
 
   // rxJSLightPerformancesExample();
 
@@ -57,7 +63,7 @@ function run() {
   // matchMediaExample();
   // helloWorldExample();
   // forLoopExample();
-  // routerExample();
+  routerExample();
   // guidelineExample();
   // composeExample();
   // pipeExample();
@@ -70,7 +76,9 @@ function run() {
   // injectContentExample();
   // sensorsExample();
   // audioPlayerExample();
-  fileSystemExample();
+  // fileSystemExample();
+  // observableArrayExample();
+  // storeExample();
 }
 
 run();

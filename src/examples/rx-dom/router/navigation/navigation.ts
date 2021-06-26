@@ -62,7 +62,8 @@ export function createNavigation(
 
 
   // const log = (...args: any[]) => console.log(...args);
-  const log = (...args: any[]) => {};
+  const log = (...args: any[]) => {
+  };
 
   const $onNavigation$ = createMulticastSource<INavigationNotification>();
 
@@ -82,8 +83,8 @@ export function createNavigation(
     index = -1;
   };
 
-  const getState = (_index: number = 0): INavigationState | null => {
-    const historyIndex: number = index + _index;
+  const getState = (relativeIndex: number = 0): INavigationState | null => {
+    const historyIndex: number = index + relativeIndex;
     return (
       (0 <= historyIndex)
       && (historyIndex < states.length)
@@ -218,18 +219,18 @@ export function createNavigation(
     // if (popstateDetected) {
     //   popstateDetected = false;
     // } else {
-      const currentURL: string = location.href;
-      const previousState: INavigationState | null = getState(-1);
-      const nextState: INavigationState | null = getState(1);
+    const currentURL: string = location.href;
+    const previousState: INavigationState | null = getState(-1);
+    const nextState: INavigationState | null = getState(1);
 
-      if ((previousState !== null) && (previousState.url.href === currentURL)) {
-        onBack();
-      } else if ((nextState !== null) && (nextState.url.href === currentURL)) {
-        onForward();
-      } else {
-        onIntegrityError(`popstate out of bound`);
-        onPush(createCurrentNavigationState());
-      }
+    if ((previousState !== null) && (previousState.url.href === currentURL)) {
+      onBack();
+    } else if ((nextState !== null) && (nextState.url.href === currentURL)) {
+      onForward();
+    } else {
+      onIntegrityError(`popstate out of bound`);
+      onPush(createCurrentNavigationState());
+    }
     // }
   });
 

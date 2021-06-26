@@ -12,7 +12,7 @@ import {
 } from '@lifaon/rx-js-light-shortcuts';
 import { toPercent, toPercent$$ } from '../../../../rx-js-light/helpers/to-percent-subscribe-pipe';
 import { formatDuration } from '../../../../rx-js-light/helpers/format-duration';
-
+// import { formatDuration } from '@lifaon/rx-js-light';
 
 /** MEDIA **/
 

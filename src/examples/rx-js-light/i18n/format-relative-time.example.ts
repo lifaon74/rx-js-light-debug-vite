@@ -5,7 +5,6 @@ import {
   pipeSubscribeFunction, relativeTimeFormatSubscribePipe, ISubscribePipeFunction, IListFormatOptions,
 } from '@lifaon/rx-js-light';
 import { createLocaleFormatContext } from './shared-functions';
-import { pipe$$ } from '../../../../../rx-js-light-shortcuts/dist';
 
 // const MS_TO_SEC = 1e-3;
 // const MS_TO_MIN = MS_TO_SEC / 60;

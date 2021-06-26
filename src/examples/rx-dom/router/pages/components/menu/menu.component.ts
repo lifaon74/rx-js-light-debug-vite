@@ -3,6 +3,7 @@ import {
   generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
 import { AppVirtualLinkComponent } from '../../../components/virtual-link/virtual-link.component';
+import { single } from '@lifaon/rx-js-light';
 
 const APP_MENU_PAGE_CUSTOM_ELEMENTS = [
   AppVirtualLinkComponent,
@@ -16,6 +17,7 @@ interface IData {
 const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
   createElement: generateCreateElementFunctionWithCustomElements(APP_MENU_PAGE_CUSTOM_ELEMENTS),
+  single,
 };
 
 @Component({
@@ -23,13 +25,19 @@ const CONSTANTS_TO_IMPORT = {
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <ul>
        <li>
-         <a is="v-link" href="./home">Home</a>
+         <a is="v-link" href="./home" [replaceState]="single(true)">Home</a>
+      </li>
+      <li>
+         <a is="v-link" href="./product/0" [replaceState$]="single(single(true))">Products</a>
       </li>
       <li>
          <a is="v-link" href="./list">List</a>
       </li>
       <li>
          <a is="v-link" href="./list/sub">Sub-list</a>
+      </li>
+      <li>
+         <a is="v-link" href="./forbidden">Forbidden</a>
       </li>
 <!--      <li>-->
 <!--         <a is="v-link" href="/list" target="_blank">List page (new tab)</a>-->

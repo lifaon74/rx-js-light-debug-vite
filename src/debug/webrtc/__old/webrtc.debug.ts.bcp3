@@ -1,0 +1,199 @@
+import { ISubscribeFunction } from '@lifaon/rx-js-light';
+
+function arraySum(
+  values: ArrayLike<number>,
+): number {
+  let score: number = 0;
+  for (let i = 0, l = values.length; i < l; i++) {
+    score += values[i];
+  }
+  return score;
+}
+
+/*-------------*/
+
+interface IOfferItem {
+  id: string;
+  quantity: number;
+  universalValue: number;
+}
+
+interface IOffer {
+  id: string;
+  inItems: IOfferItem[];
+  outItems: IOfferItem[];
+}
+
+interface ITransaction {
+  id: string;
+  offer: IOffer;
+  state: IOffer;
+}
+
+/*-------------*/
+
+function computeOfferItemScore(
+  offerItem: IOfferItem,
+): number {
+  return offerItem.universalValue;
+}
+
+function computeOfferItemsScore(
+  offerItems: IOfferItem[],
+): number {
+  let score: number = 0;
+  for (let i = 0, l = offerItems.length; i < l; i++) {
+    score += computeOfferItemScore(offerItems[i]);
+  }
+  return score;
+}
+
+function computeOfferScore(
+  offer: IOffer,
+): number {
+  return (computeOfferItemsScore(offer.inItems) - computeOfferItemsScore(offer.outItems));
+}
+
+function computeTransactionScore(
+  transaction: ITransaction,
+): number {
+  return computeOfferScore(transaction.state);
+}
+
+function computeTransactionsScore(
+  transactions: ITransaction[],
+): number {
+  let score: number = 0;
+  for (let i = 0, l = transactions.length; i < l; i++) {
+    score += computeTransactionScore(transactions[i]);
+  }
+  return score;
+}
+
+
+/*-------------*/
+
+interface IOfferAnswer {
+  agent: Agent;
+}
+
+interface IOfferProposals {
+  send(
+    offer: IOffer,
+  ): void;
+
+  subscribeOfferAnswer: ISubscribeFunction<IOfferAnswer>;
+}
+
+// const TRANSACTIONS = {
+//   emit: IEmitFunction<any>;
+// }
+
+/*-------------*/
+
+class Agent {
+  resources: number[];
+  cheatRatio: number;
+  pastTransactions: Map<Agent, ITransaction[]>;
+
+  peers: Agent[];
+
+  constructor(
+    cheatRatio: number,
+  ) {
+    this.resources = [];
+    this.cheatRatio = cheatRatio;
+    this.pastTransactions = new Map<Agent, ITransaction[]>();
+    this.peers = [];
+  }
+
+  getTransactionsFor(
+    agent: Agent,
+  ): ITransaction[] {
+    let transactions: ITransaction[] | undefined = this.pastTransactions.get(agent);
+    if (transactions === void 0) {
+      transactions = [];
+      this.pastTransactions.set(agent, transactions);
+    }
+    return transactions;
+  }
+
+  appendTransactionsFor(
+    agent: Agent,
+    transaction: ITransaction,
+  ): void {
+    this.getTransactionsFor(agent).push(transaction);
+  }
+
+  getReputationScoreFor(
+    agent: Agent,
+  ): number {
+    return computeTransactionsScore(this.getTransactionsFor(agent));
+  }
+}
+
+/*-------------*/
+
+
+function run(): void {
+  const rand = (start: number, end: number): number => {
+    return (Math.random() * (end - start)) + start;
+  };
+
+  // const cheatRatio = () => 0; // no cheater
+  // const cheatRatio = () => 0.5; // half cheater
+  // const cheatRatio = () => 1; // complete cheater
+
+  const cheatRatio = () => rand(0, 0.1); // ~5% cheaters
+  const maxLost = 100; // how much I may lost until I stop exchange with this agent
+
+  const agents: Agent[] = Array.from({ length: 1e1 }, () => new Agent(cheatRatio()));
+
+  const assignPeers = (agents: Agent[]): void => {
+    for (let i = 0, l = agents.length; i < l; i++) {
+      assignAgentPeers(agents[i], agents);
+    }
+  };
+
+  const assignAgentPeers = (agent: Agent, peers: Agent[]): void => {
+    for (let i = 0, l = peers.length; i < l; i++) {
+      const peer: Agent = peers[i];
+      if ((peer !== agent) && (Math.random() < 0.5)) {
+        agent.peers.push(peer);
+      }
+    }
+  };
+
+  assignPeers(agents);
+
+
+  const trade = (agent: Agent) => {
+    const value = rand(0, maxLost);
+    // const transaction: ITransaction = {
+    //   score: 0,
+    // };
+
+    const findBestAgent = (agents: Agent[]): Agent => {
+      for (let i = 0, l = agents.length; i < l; i++) {
+        const target: Agent = agents[i];
+        if (target !== agent) {
+          const score: number = agent.getReputationScoreFor(target);
+        }
+      }
+    };
+
+    console.log(findBestAgent);
+
+
+  };
+
+}
+
+
+/*-------------*/
+
+export function webRTCDebug() {
+  console.log('ok');
+  run();
+}
+
