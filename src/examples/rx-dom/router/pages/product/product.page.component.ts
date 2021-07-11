@@ -4,7 +4,7 @@ import {
 } from '@lifaon/rx-dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
 import { IReadonlyMulticastReplayLastSource, ISubscribeFunction, single } from '@lifaon/rx-js-light';
-import { let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { eq$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 const APP_PRODUCT_PAGE_CUSTOM_ELEMENTS = [
   AppMenuPageComponent,
@@ -21,6 +21,7 @@ const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
   createElement: generateCreateElementFunctionWithCustomElements(APP_PRODUCT_PAGE_CUSTOM_ELEMENTS),
   single,
+  eq$$,
 };
 
 @Component({
@@ -40,8 +41,13 @@ const CONSTANTS_TO_IMPORT = {
          <a
            is="v-link"
            [href]="single('./product/' + productId)"
-           [attr.replace-state]="single(true)"
-         >Product: {{ single(productId) }}</a>
+           [replaceState]="single(true)"
+         >
+          Product: {{ single(productId) }}
+          <rx-container *if="eq$$(single(productId), $.productId$)">
+            Selected
+          </rx-container>
+         </a>
       </li>
     </ul>
   `, CONSTANTS_TO_IMPORT),

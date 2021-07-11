@@ -10,6 +10,7 @@ import { getBaseURI } from './navigation/get-base-uri';
 
 
 async function routerExample1() {
+  // TODO finish
   const routes = [
     createRouteResolver({
       path: new Path('/home'),

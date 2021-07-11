@@ -8,6 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/__old" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/router/__old" />
+      <excludeFolder url="file://$MODULE_DIR$/plugins/aot/dist" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

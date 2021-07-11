@@ -5,7 +5,7 @@ import {
 } from '@lifaon/rx-dom';
 import { AppInjectContentComponent } from './inject-content.component';
 import { interval, ISubscribeFunction, of } from '@lifaon/rx-js-light';
-import { const$$, map$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
+import { single$$, map$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
 import { shuffleArray } from '../../misc/shuffle-array';
 
 export const APP_INJECT_CONTENT_PARENT_CUSTOM_ELEMENTS = [
@@ -67,7 +67,7 @@ export class AppInjectContentParentComponent extends HTMLElement implements OnCr
     super();
     const items = Array.from({ length: 10 }, (v: any, index: number): IItem => {
       return {
-        name$: const$$(`#${ index }`),
+        name$: single$$(`#${ index }`),
       };
     });
 

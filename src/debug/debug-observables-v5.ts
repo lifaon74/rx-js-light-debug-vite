@@ -550,6 +550,9 @@ async function debugSubscribeFunctionProxy2() {
   // value: 2
 }
 
+
+/*----------------------------*/
+
 export async function debugObservableV5() {
   // await test();
 

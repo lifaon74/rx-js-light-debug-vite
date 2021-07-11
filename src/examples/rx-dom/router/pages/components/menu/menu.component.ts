@@ -25,10 +25,10 @@ const CONSTANTS_TO_IMPORT = {
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <ul>
        <li>
-         <a is="v-link" href="./home" [replaceState]="single(true)">Home</a>
+         <a is="v-link" href="./home">Home</a>
       </li>
       <li>
-         <a is="v-link" href="./product/0" [replaceState$]="single(single(true))">Products</a>
+         <a is="v-link" href="./product/0">Products</a>
       </li>
       <li>
          <a is="v-link" href="./list">List</a>

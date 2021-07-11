@@ -3,7 +3,7 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, Input, OnCreate, OnInit, setReactiveClass
 } from '@lifaon/rx-dom';
-import { const$$, let$$, map$$, map$$$, mergeAll$$, pipe$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
+import { single$$, let$$, map$$, map$$$, mergeAll$$, pipe$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
 import { INumberInputValue, NumberInputValidity } from './number-input-validity';
 // @ts-ignore
 import style from './number-input.component.scss';
@@ -118,19 +118,19 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
       shareR$$$<boolean>(),
     ]);
 
-    this._$required$ = let$$(const$$<boolean>(false));
+    this._$required$ = let$$(single$$<boolean>(false));
     const required$ = mergeAll$$(this._$required$.subscribe, 1);
 
-    this._$disabled$ = let$$(const$$<boolean>(false));
+    this._$disabled$ = let$$(single$$<boolean>(false));
     const disabled$ = mergeAll$$(this._$disabled$.subscribe, 1);
 
-    this._$min$ = let$$(const$$<number>(Number.NEGATIVE_INFINITY));
+    this._$min$ = let$$(single$$<number>(Number.NEGATIVE_INFINITY));
     const min$ = mergeAll$$(this._$min$.subscribe, 1);
 
-    this._$max$ = let$$(const$$<number>(Number.POSITIVE_INFINITY));
+    this._$max$ = let$$(single$$<number>(Number.POSITIVE_INFINITY));
     const max$ = mergeAll$$(this._$max$.subscribe, 1);
 
-    this._$step$ = let$$(const$$<number>(0));
+    this._$step$ = let$$(single$$<number>(0));
     const step$ = mergeAll$$(this._$step$.subscribe, 1);
 
     this.validity = new NumberInputValidity({
@@ -141,11 +141,11 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
       step$,
     });
 
-    const badInputText$ = const$$(`Bad input`);
+    const badInputText$ = single$$(`Bad input`);
     const rangeUnderflowText$ = map$$(min$, (min: number) => `Number must be greater or equal to ${ min }`);
     const rangeOverflowText$ = map$$(max$, (max: number) => `Number must be lower or equal to ${ max }`);
     const stepMismatchText$ = map$$(step$, (step: number) => `Number must be a multiple of ${ step }`);
-    const valueMissingText$ = const$$(`Missing value`);
+    const valueMissingText$ = single$$(`Missing value`);
 
     this._data = {
       $value$,
@@ -178,7 +178,7 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
   }
 
   set required(value: boolean) {
-    this._$required$.emit(const$$<boolean>(value));
+    this._$required$.emit(single$$<boolean>(value));
   }
 
   onCreate(): IData {

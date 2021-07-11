@@ -33,19 +33,19 @@ class NumberInputValidity1 {
 
   constructor() {
     /** INPUTS **/
-    this._value = let$$(const$$<INumberInputValue>(0));
+    this._value = let$$(single$$<INumberInputValue>(0));
     const value$ = mergeAll$$(this._value.subscribe, 1);
 
-    this._required = let$$(const$$<boolean>(false));
+    this._required = let$$(single$$<boolean>(false));
     const required$ = mergeAll$$(this._required.subscribe, 1);
 
-    this._min = let$$(const$$<number>(Number.NEGATIVE_INFINITY));
+    this._min = let$$(single$$<number>(Number.NEGATIVE_INFINITY));
     const min$ = mergeAll$$(this._min.subscribe, 1);
 
-    this._max = let$$(const$$<number>(Number.POSITIVE_INFINITY));
+    this._max = let$$(single$$<number>(Number.POSITIVE_INFINITY));
     const max$ = mergeAll$$(this._max.subscribe, 1);
 
-    this._step = let$$(const$$<number>(0));
+    this._step = let$$(single$$<number>(0));
     const step$ = mergeAll$$(this._step.subscribe, 1);
 
     const stepBase$ = map$$(min$, (min: number) => (Number.isFinite(min) ? min : 0));
@@ -135,16 +135,16 @@ function formControlDebug1() {
     share$$$<INumberInputValue>(),
   ]);
 
-  inputControl.min$ = const$$(5);
+  inputControl.min$ = single$$(5);
   inputElement.min = '5';
 
-  inputControl.max$ = const$$(10);
+  inputControl.max$ = single$$(10);
   inputElement.max = '10';
 
-  inputControl.step$ = const$$(0.1);
+  inputControl.step$ = single$$(0.1);
   inputElement.step = '0.1';
 
-  inputControl.required$ = const$$(true);
+  inputControl.required$ = single$$(true);
   inputElement.required = true;
 
   const checkValidityState = (propertyName: keyof ValidityState, value: boolean) => {

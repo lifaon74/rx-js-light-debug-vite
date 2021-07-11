@@ -48,7 +48,7 @@
   "files": [
     "functional/functional.ts",
     "functional/helpers/debug-functional.ts",
-    "aot/aot.ts",
-    "aot/helpers/compiler.ts"
+    "aot/__old/aot.ts",
+    "aot/__old/helpers/compiler.ts"
   ],
 }

@@ -3,7 +3,7 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
 import { IMulticastReplayLastSource, ISubscribeFunction } from '@lifaon/rx-js-light';
-import { const$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { single$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 
 /** COMPONENT **/
@@ -77,7 +77,7 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
     const count$ = map$$($items$.subscribe, (items: IItem[]) => items.length);
 
     const items = Array.from({ length: 1e4 }, (v: any, index: number): IItem => ({
-      text$: const$$(`#${ index }`),
+      text$: single$$(`#${ index }`),
       $selected$: let$$<boolean>(false),
     }));
 

@@ -8,12 +8,15 @@ import {
   reactiveFunction, sourceSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
+  attachNode,
   bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  createElementNode, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, nodeAppendChild, OnConnect,
+  createElementNode, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, getDocumentBody,
+  nodeAppendChild, OnConnect,
   OnCreate, OnDisconnect, uuid,
 } from '@lifaon/rx-dom';
 import { AppWindowComponent } from './window-component/window.component';
 import { noCORS } from '../../examples/misc/no-cors';
+import { eq$$ } from '@lifaon/rx-js-light-shortcuts';
 
 const buttonStyle = `
   min-width: 100px;
@@ -1206,6 +1209,31 @@ async function debugReactiveDOMCompiler8() {
   (window as any).win = win;
 }
 
+/**
+ * Compile debug
+ */
+async function debugReactiveDOMCompiler9() {
+  const CONSTANTS_TO_IMPORT = {
+    ...DEFAULT_CONSTANTS_TO_IMPORT,
+    eq$$,
+  };
+
+  // const code = `<div (click)="() => "></div>`;
+  // const code = `<div [attr.b]="single('a')"></div>`;
+  // const code = `<div [attr.b]="true"></div>`;
+  const code = `<div [attr.b]="eq$$($.a.l, $.b)"></div>`;
+
+  const compiled = compileAndEvaluateReactiveHTMLAsComponentTemplate<any>(
+    code,
+    CONSTANTS_TO_IMPORT,
+  );
+
+  const fragment = compiled({ data: {} } as any);
+
+  attachNode(fragment, getDocumentBody());
+
+}
+
 /*----*/
 
 
@@ -1214,8 +1242,9 @@ export async function debugReactiveDOMCompiler() {
   // await debugReactiveDOMCompiler2();
   // await debugReactiveDOMCompiler3();
   // await debugReactiveDOMCompiler4();
-  await debugReactiveDOMCompiler5();
+  // await debugReactiveDOMCompiler5();
   // await debugReactiveDOMCompiler6();
   // await debugReactiveDOMCompiler7();
   // await debugReactiveDOMCompiler8();
+  await debugReactiveDOMCompiler9();
 }

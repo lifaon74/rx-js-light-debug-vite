@@ -61,7 +61,7 @@ const CONSTANTS_TO_IMPORT = {
       color: red;
     }
   `),
-  // useShadowDOM: true,
+  useShadowDOM: true,
 })
 export class AppHelloWorldComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;

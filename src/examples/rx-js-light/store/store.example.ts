@@ -1,14 +1,8 @@
-import { createAction } from '../../store/action/create-action';
-import { mapState } from '../../store/selector/map-state';
-import { createStore } from '../../store/store/create-store';
-import { selectState } from '../../store/selector/select-state';
-import { createSelector } from '../../store/selector/create-selector';
-import { immutableArrayReplace } from '../../store/helpers/immutable/array/immutable-array-replace';
-import { immutableArrayRemove } from '../../store/helpers/immutable/array/immutable-array-remove';
-import { getState } from '../../store/selector/get-state';
-import { ImmutableArray } from '../../store/helpers/immutable/array/immutable-array.type';
-import { Immutable } from '../../store/helpers/immutable/immutable.type';
-import { immutableArrayPush } from '../../store/helpers/immutable/array/immutable-array-push';
+import {
+  createAction, createSelector, createStore, Immutable, ImmutableArray, immutableArrayPush, immutableArrayRemove,
+  immutableArrayReplace, mapState, selectState
+} from '@lifaon/rx-store';
+
 
 // export class Store<GState> {
 //   private readonly _store: IStore<GState>;
@@ -41,6 +35,7 @@ import { immutableArrayPush } from '../../store/helpers/immutable/array/immutabl
 /*------------*/
 
 /* DEFINE STORE INTERFACES */
+
 
 type IUser = Immutable<{
   name: string;

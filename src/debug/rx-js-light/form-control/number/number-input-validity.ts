@@ -1,5 +1,5 @@
 import { ISubscribeFunction } from '@lifaon/rx-js-light';
-import { const$$, function$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { single$$, function$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 import { isStepValid } from '../misc/number-helpers';
 import { distinctDebouncedShared$$ } from '../misc/rx-js-light-helpers';
 import { IInputValidityOptions, InputValidity } from '../shared/input-validity';
@@ -26,10 +26,10 @@ export class NumberInputValidity extends InputValidity {
   constructor(
     {
       value$,
-      required$ = const$$<boolean>(false),
-      min$ = const$$<number>(Number.NEGATIVE_INFINITY),
-      max$ = const$$<number>(Number.POSITIVE_INFINITY),
-      step$ = const$$<number>(0),
+      required$ = single$$<boolean>(false),
+      min$ = single$$<number>(Number.NEGATIVE_INFINITY),
+      max$ = single$$<number>(Number.POSITIVE_INFINITY),
+      step$ = single$$<number>(0),
     }: INumberInputValidityOptions,
   ) {
     super();

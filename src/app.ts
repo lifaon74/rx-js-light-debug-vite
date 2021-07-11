@@ -36,6 +36,7 @@ import { observableArrayExample } from './examples/rx-js-light/observable-array/
 import { webRTCDebug } from './debug/webrtc/webrtc.debug';
 import { storeExample } from './examples/rx-js-light/store/store.example';
 import { debugReactiveDOMCompiler } from './debug/rx-dom/debug-reactive-dom-compiler';
+import { weatherExample } from './examples/rx-dom/weather/weather.example';
 
 function run() {
   // debugObservableV5();
@@ -63,7 +64,7 @@ function run() {
   // matchMediaExample();
   // helloWorldExample();
   // forLoopExample();
-  routerExample();
+  // routerExample();
   // guidelineExample();
   // composeExample();
   // pipeExample();
@@ -79,6 +80,7 @@ function run() {
   // fileSystemExample();
   // observableArrayExample();
   // storeExample();
+  weatherExample();
 }
 
 run();

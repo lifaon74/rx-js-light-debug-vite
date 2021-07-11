@@ -1,8 +1,8 @@
-<rx-script>
+<script rx>
   const isLoading$ = map$$($.state$, state => (state === 'loading'));
   const isErrored$ = map$$($.state$, state => (state === 'errored'));
   const isNotErrored$ = map$$($.state$, state => (state !== 'errored'));
-</rx-script>
+</script>
 
 <div
   class="file-list"

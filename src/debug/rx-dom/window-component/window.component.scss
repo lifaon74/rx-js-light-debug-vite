@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $window-animation-duration: 150ms;
 $window-resize-size: 6px;
 $window-header-height: 30px;
@@ -5,8 +7,8 @@ $window-header-background-color: black;
 $window-border-color: $window-header-background-color;
 
 $window-home-button-width: $window-header-height;
-$window-home-button-box-size: ($window-header-height * 0.8) / 4;
-$window-home-button-offset: $window-home-button-box-size * (2 / 3);
+$window-home-button-box-size: math.div(($window-header-height * 0.8), 4);
+$window-home-button-offset: $window-home-button-box-size * math.div(2, 3);
 $window-home-button-color: white;
 $window-home-button-color-hover: red;
 $window-home-button-color-selected: green;
@@ -22,16 +24,16 @@ $window-buttons-close-background-color-hover: red;
 
 $window-buttons-menu-dots-size: 2px;
 $window-buttons-menu-dots-offset: $window-buttons-menu-dots-size * 3;
-$window-buttons-minimize-width: $window-buttons-width / 3;
+$window-buttons-minimize-width: math.div($window-buttons-width, 3);
 $window-buttons-minimize-height: 1px;
 $window-buttons-maximize-width: $window-buttons-minimize-width;
-$window-buttons-maximize-height: $window-buttons-maximize-width * (2 / 3);
-$window-buttons-reduce-width: $window-buttons-maximize-width * (2 / 3);
-$window-buttons-reduce-height: $window-buttons-maximize-height * (2 / 3);
+$window-buttons-maximize-height: $window-buttons-maximize-width * math.div(2, 3);
+$window-buttons-reduce-width: $window-buttons-maximize-width * math.div(2, 3);
+$window-buttons-reduce-height: $window-buttons-maximize-height * math.div(2, 3);
 $window-buttons-reduce-offset-x: 2px;
 $window-buttons-reduce-offset-y: 2px;
 $window-buttons-close-thickness: 1px;
-$window-buttons-close-length: $window-buttons-width / 3;
+$window-buttons-close-length: math.div($window-buttons-width, 3);
 
 @mixin has-nth-children($count, $selector: '*') {
   & > #{$selector}:first-child:nth-last-child(#{$count}),
@@ -203,8 +205,8 @@ $window-buttons-close-length: $window-buttons-width / 3;
               position: absolute;
               left: 50%;
               top: 50%;
-              margin-top: -($window-home-button-box-size / 2);
-              margin-left: -($window-home-button-box-size / 2);
+              margin-top: -(math.div($window-home-button-box-size, 2));
+              margin-left: -(math.div($window-home-button-box-size, 2));
               border: 1px solid $window-buttons-color;
 
               &:nth-child(1) {
@@ -268,8 +270,8 @@ $window-buttons-close-length: $window-buttons-width / 3;
               border-radius: 50%;
               left: 50%;
               top: 50%;
-              margin-left: -($window-buttons-menu-dots-size / 2);
-              margin-top: -($window-buttons-menu-dots-size / 2);
+              margin-left: -(math.div($window-buttons-menu-dots-size, 2));
+              margin-top: -(math.div($window-buttons-menu-dots-size, 2));
               background-color: $window-buttons-color;
 
               &:first-child {
@@ -291,8 +293,8 @@ $window-buttons-close-length: $window-buttons-width / 3;
               position: absolute;
               left: 50%;
               top: 50%;
-              margin-left: -($window-buttons-minimize-width / 2);
-              margin-top: -($window-buttons-minimize-height / 2);
+              margin-left: -(math.div($window-buttons-minimize-width, 2));
+              margin-top: -(math.div($window-buttons-minimize-height, 2));
               background-color: $window-buttons-color;
             }
           }
@@ -306,8 +308,8 @@ $window-buttons-close-length: $window-buttons-width / 3;
               position: absolute;
               left: 50%;
               top: 50%;
-              margin-left: -($window-buttons-maximize-width / 2);
-              margin-top: -($window-buttons-maximize-height / 2);
+              margin-left: -(math.div($window-buttons-maximize-width, 2));
+              margin-top: -(math.div($window-buttons-maximize-height, 2));
               border: 1px solid $window-buttons-color;
             }
           }
@@ -322,8 +324,8 @@ $window-buttons-close-length: $window-buttons-width / 3;
               position: absolute;
               left: 50%;
               top: 50%;
-              margin-top: -($window-buttons-reduce-width / 2);
-              margin-left: -($window-buttons-reduce-height / 2);
+              margin-top: -(math.div($window-buttons-reduce-width, 2));
+              margin-left: -(math.div($window-buttons-reduce-height, 2));
               border: 1px solid $window-buttons-color;
             }
 
@@ -348,8 +350,8 @@ $window-buttons-close-length: $window-buttons-width / 3;
               position: absolute;
               left: 50%;
               top: 50%;
-              margin-left: -($window-buttons-close-length / 2);
-              margin-top: -($window-buttons-close-thickness / 2);
+              margin-left: -(math.div($window-buttons-close-length, 2));
+              margin-top: -(math.div($window-buttons-close-thickness, 2));
               background-color: $window-buttons-color;
             }
 

@@ -8,7 +8,7 @@ import html from './audio-player.component.html?raw';
 // @ts-ignore
 import style from './audio-player.component.scss';
 import {
-  const$$, distinctSharedR$$, function$$, letU$$, map$$, mergeMapS$$, ref$$
+  single$$, distinctSharedR$$, function$$, letU$$, map$$, mergeMapS$$, ref$$
 } from '@lifaon/rx-js-light-shortcuts';
 import { toPercent, toPercent$$ } from '../../../../rx-js-light/helpers/to-percent-subscribe-pipe';
 import { formatDuration } from '../../../../rx-js-light/helpers/format-duration';
@@ -194,13 +194,13 @@ export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IDa
     super();
     // type TAudio = RXMediaPlayer<HTMLAudioElement>;
     type TAudio = IRXMediaPlayer;
-    const audio$ = const$$(new RXMediaPlayer(new Audio('/assets/audio/audio-sample-01.mp3')));
+    const audio$ = single$$(new RXMediaPlayer(new Audio('/assets/audio/audio-sample-01.mp3')));
 
     const duration$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return audio.duration$;
     });
 
-    const loadedChunks$ = const$$([{ left: of('0%'), width: of('75%') }]);
+    const loadedChunks$ = single$$([{ left: of('0%'), width: of('75%') }]);
 
     const trackProgressWidth$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return toPercent$$(audio.progress$);
@@ -248,28 +248,28 @@ export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IDa
     );
 
 
-    const previousTrackButtonTitle$ = const$$('Previous track');
-    const previousTrackButtonDisabled$ = const$$(false);
+    const previousTrackButtonTitle$ = single$$('Previous track');
+    const previousTrackButtonDisabled$ = single$$(false);
 
-    const pauseButtonTitle$ = const$$('Pause');
+    const pauseButtonTitle$ = single$$('Pause');
     const pauseButtonVisible$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return map$$(audio.playState$, (playState: IRXMediaPlayState) => (playState === 'playing'));
     });
 
 
-    const playButtonTitle$ = const$$('Play');
+    const playButtonTitle$ = single$$('Play');
     const playButtonVisible$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return map$$(audio.playState$, (playState: IRXMediaPlayState) => (playState === 'paused'));
     });
 
 
-    const loaderTitle$ = const$$('Loading');
+    const loaderTitle$ = single$$('Loading');
     const loaderVisible$ = mergeMapS$$(audio$, (audio) => {
       return map$$(audio.playState$, (playState: IRXMediaPlayState) => (playState === 'loading'));
     });
 
-    const nextTrackButtonTitle$ = const$$('Next track');
-    const nextTrackButtonDisabled$ = const$$(true);
+    const nextTrackButtonTitle$ = single$$('Next track');
+    const nextTrackButtonDisabled$ = single$$(true);
 
     let onClickPauseButton: IEmitFunction<void> = noop;
     let onClickPlayButton: IEmitFunction<void> = noop;

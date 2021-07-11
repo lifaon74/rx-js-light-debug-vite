@@ -5,7 +5,7 @@ import {
   pluralRulesResultToTranslationKeySubscribePipe, pluralRulesSubscribePipe, translateSubscribeFunction
 } from '@lifaon/rx-js-light';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
-import { const$$, let$$, map$$, mergeMap$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
+import { single$$, let$$, map$$, mergeMap$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
 
 // declare namespace Intl {
 //   const Locale: any;
@@ -57,16 +57,16 @@ export function translationsShortcutsExample() {
   }
 
   function generateProductSource(): ISubscribeFunction<IReactiveProduct[]> {
-    return const$$([
+    return single$$([
       {
         name: 'apple',
-        price: const$$(2),
-        quantity: const$$(3),
+        price: single$$(2),
+        quantity: single$$(3),
       },
       {
         name: 'banana',
-        price: const$$(1.5),
-        quantity: const$$(1),
+        price: single$$(1.5),
+        quantity: single$$(1),
       },
     ]);
   }
@@ -90,14 +90,14 @@ export function translationsShortcutsExample() {
 
     const listFormatter$$ = listFormatSubscribePipe(locales$);
 
-    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, const$$('mediumDate'));
+    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, single$$('mediumDate'));
 
     const pluralRules$$ = pluralRulesSubscribePipe(locales$);
 
     const translated$ = translateSubscribeFunction(
       translations$,
-      const$$('translate.product.list'),
-      const$$({
+      single$$('translate.product.list'),
+      single$$({
         list: pipe$$(products$, [
           mergeMap$$$<IReactiveProduct[], readonly string[]>((products: IReactiveProduct[]): ISubscribeFunction<readonly string[]> => {
             return combineLatest(
@@ -117,8 +117,8 @@ export function translationsShortcutsExample() {
 
                 return translateSubscribeFunction(
                   translations$,
-                  const$$('translate.product.price'),
-                  const$$({
+                  single$$('translate.product.price'),
+                  single$$({
                     quantity: quantity$,
                     product: product$,
                     price: price$,
