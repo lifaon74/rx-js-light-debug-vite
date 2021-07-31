@@ -1,0 +1,17 @@
+<!--<input-->
+<!--  #input-->
+<!--  type="text"-->
+<!--  [value]="$.$value$.subscribe"-->
+<!--  (input)="() => $.$value$.emit(getNodeReference('input').value)"-->
+<!--  [disabled]="$.disabled$"-->
+<!--  [required]="$.required$"-->
+<!--&gt;-->
+
+<input
+  type="text"
+  $input-value="[$.$inputValue$]"
+  $ref="[$.$input]"
+  readonly
+>
+
+

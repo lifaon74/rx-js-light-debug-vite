@@ -1,0 +1,83 @@
+$close-button-offset: 16px;
+$close-button-size: 16px;
+$close-button-color: #333;
+$close-button-color-hover: #999;
+
+$message-color: #333;
+
+$transition-duration: 250ms;
+$math_sqrt2: 1.4142135623730951;
+
+:host {
+  & > .content {
+    position: relative;
+
+    & > .close-icon {
+      position: absolute;
+      right: $close-button-offset;
+      top: $close-button-offset;
+      width: $close-button-size;
+      height: $close-button-size;
+      cursor: pointer;
+
+      &::before,
+      &::after {
+        $width: 10%;
+        $height: 100% * $math_sqrt2;
+
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50% - ($height * 0.5);
+        left: 50% - ($width * 0.5);
+        width: $width;
+        height: $height;
+        background-color: $close-button-color;
+        transform-origin: center center;
+        transition: background-color $transition-duration;
+      }
+
+      &::before {
+        transform: rotate(45deg);
+      }
+
+      &::after {
+        transform: rotate(-45deg);
+      }
+
+      &:hover {
+        &::before,
+        &::after {
+          background-color: $close-button-color-hover;
+        }
+      }
+    }
+
+    & > .message {
+      text-align: center;
+      font-size: 16px;
+      padding: 20px;
+      color: $message-color;
+    }
+
+    & > .footer-buttons {
+      text-align: center;
+
+      & > * {
+        display: inline-block;
+        vertical-align: top;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        padding: 0 8px;
+        font-size: 14px;
+        cursor: pointer;
+
+        color: #333;
+        background-color: #eeeeee;
+      }
+    }
+  }
+}
+

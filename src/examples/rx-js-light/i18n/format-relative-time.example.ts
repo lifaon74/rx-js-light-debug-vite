@@ -2,7 +2,7 @@ import {
   ILocales, interval, IRelativeTimeFormatValueAndUnit, IRelativeTimeFormatOptions, IRelativeTimeFormatUnit,
   IRelativeTimeFormatValue, ISubscribeFunction,
   mapSubscribePipe, of,
-  pipeSubscribeFunction, relativeTimeFormatSubscribePipe, ISubscribePipeFunction, IListFormatOptions,
+  pipeSubscribeFunction, relativeTimeFormatSubscribePipe, ISubscribePipeFunction, IListFormatOptions, single,
 } from '@lifaon/rx-js-light';
 import { createLocaleFormatContext } from './shared-functions';
 
@@ -46,7 +46,7 @@ export function formatRelativeTimeExample() {
 
     return pipeSubscribeFunction(interval(1000), [
       mapSubscribePipe<void, IRelativeTimeFormatValueAndUnit>(() => ({ value: Date.now(), unit: 'day' })),
-      relativeTimeFormatSubscribePipe(locales$, of<IRelativeTimeFormatOptions>({ style: 'long' })),
+      relativeTimeFormatSubscribePipe(locales$, single<IRelativeTimeFormatOptions>({ style: 'long' })),
     ]);
   });
 }

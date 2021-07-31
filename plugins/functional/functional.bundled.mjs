@@ -286,7 +286,7 @@ Position.prototype.offset = function offset (n) {
 var SourceLocation = function SourceLocation(p, start, end) {
   this.start = start;
   this.end = end;
-  if (p.sourceFile !== null) { this.source = p.sourceFile; }
+  if (p.sourceFile !== null) { this.mediaSource = p.sourceFile; }
 };
 
 // The `getLineInfo` function is mostly useful when the
@@ -3363,7 +3363,7 @@ var RegExpValidationState = function RegExpValidationState(parser) {
   this.parser = parser;
   this.validFlags = "gim" + (parser.options.ecmaVersion >= 6 ? "uy" : "") + (parser.options.ecmaVersion >= 9 ? "s" : "");
   this.unicodeProperties = data[parser.options.ecmaVersion >= 12 ? 12 : parser.options.ecmaVersion];
-  this.source = "";
+  this.mediaSource = "";
   this.flags = "";
   this.start = 0;
   this.switchU = false;

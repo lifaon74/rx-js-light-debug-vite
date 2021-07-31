@@ -29,7 +29,12 @@ const CONSTANTS_TO_IMPORT = {
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <app-form>
 <!--      {{ pipe(idle(), [map(() => Date.now())]) }}-->
-      <app-number-input></app-number-input>
+      <app-number-input
+        [min]="10"
+        [max]="30"
+        [step]="2"
+        [required]="true"
+      ></app-number-input>
     </app-form>
   `, CONSTANTS_TO_IMPORT),
   // style: compileReactiveCSSAsComponentStyle(style),

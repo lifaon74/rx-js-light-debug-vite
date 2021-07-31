@@ -1,0 +1,25 @@
+@import './button-mixins';
+
+.button-style {
+  padding: 10px;
+  font-family: inherit;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform 100ms;
+
+  border-width: 1px;
+  border-style: solid;
+
+  @include setup-button-mixin($button-config-default);
+
+  @include disabled-mixin() {
+    cursor: default;
+  };
+
+  @include active-mixin() {
+    transform: translateY(2px);
+  };
+}

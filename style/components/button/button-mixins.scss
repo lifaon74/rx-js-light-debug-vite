@@ -1,0 +1,41 @@
+@import './button-variables';
+@import '../../functions';
+
+@mixin disabled-mixin() {
+  &:disabled,
+  &[disabled],
+  &.disabled {
+    @content;
+  }
+}
+
+
+@mixin active-mixin() {
+  &:active,
+  &[active],
+  &.active {
+    @content;
+  }
+}
+
+@mixin setup-button-colors-mixin(
+  $config: $button-config-default,
+) {
+  @if $config == null {
+    $config: $button-config-default;
+  }
+  color: map-get($config, color);
+  background-color: map-get($config, background-color);
+  border-color: map-get($config, border-color);
+}
+
+@mixin setup-button-mixin(
+  $config,
+) {
+  @include setup-button-colors-mixin($config);
+  @include disabled-mixin() {
+    @include setup-button-colors-mixin(map-get($config, disabled));
+  };
+}
+
+

@@ -2,7 +2,7 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_FROM_CONSTANTS_TO_IMPORT, OnConnect, OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
-import { IDefaultNotificationsUnion, ISubscribeFunction, Subscription, SubscriptionManager } from '@lifaon/rx-js-light';
+import { IDefaultNotificationsUnion, ISubscribeFunction, Subscription, SubscriptionManager, mutateReadonlyReplayLastSourceArray } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './tiles-list.component.scss';
 // @ts-ignore
@@ -12,7 +12,6 @@ import { fetchMonkeyUsersPosts, IMonkeyUserResponse } from '../services/fetch-mo
 import { filter$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
 import { fetchNineGagPosts } from '../services/fetch-nine-gag-posts';
 import { IResource } from '../services/resource.type';
-import { mutateReadonlyReplayLastSourceArray } from '../../../misc/mutate-readonly-replay-last-source-array';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 

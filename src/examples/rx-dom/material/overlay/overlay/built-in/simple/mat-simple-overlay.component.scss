@@ -1,0 +1,26 @@
+$transition-duration: 200ms;
+
+
+:host {
+  // backdrop
+  display: block;
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  transition: opacity $transition-duration;
+
+  & > .content {
+    position: absolute;
+    display: block;
+    background-color: white;
+    padding: 7px 10px;
+    border-radius: 5px;
+
+    box-shadow: 0 2px 7px 0 rgba(black, 0.15);
+  }
+
+  &.visible {
+    opacity: 1;
+  }
+}
+

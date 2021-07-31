@@ -1,8 +1,24 @@
-import { ISubscribeFunction } from '@lifaon/rx-js-light';
-import { single$$, function$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import { function$$, map$$, notOrM$$ } from '@lifaon/rx-js-light-shortcuts';
 import { isStepValid } from '../misc/number-helpers';
 import { distinctDebouncedShared$$ } from '../misc/rx-js-light-helpers';
 import { IInputValidityOptions, InputValidity } from '../shared/input-validity';
+
+/** FUNCTIONS **/
+
+export function getStepBaseSubscribeFunction(
+  min$: ISubscribeFunction<number>,
+): ISubscribeFunction<number> {
+  return map$$(min$, getStepBase);
+}
+
+export function getStepBase(
+  min: number
+): number {
+  return Number.isFinite(min) ? min : 0;
+}
+
+/** TYPES **/
 
 export type INumberInputValue = number | null;
 
@@ -13,6 +29,8 @@ export interface INumberInputValidityOptions extends IInputValidityOptions {
   max$?: ISubscribeFunction<number>;
   step$?: ISubscribeFunction<number>;
 }
+
+/** CLASS **/
 
 export class NumberInputValidity extends InputValidity {
   readonly valid$: ISubscribeFunction<boolean>;
@@ -26,15 +44,15 @@ export class NumberInputValidity extends InputValidity {
   constructor(
     {
       value$,
-      required$ = single$$<boolean>(false),
-      min$ = single$$<number>(Number.NEGATIVE_INFINITY),
-      max$ = single$$<number>(Number.POSITIVE_INFINITY),
-      step$ = single$$<number>(0),
+      required$ = single<boolean>(false),
+      min$ = single<number>(Number.NEGATIVE_INFINITY),
+      max$ = single<number>(Number.POSITIVE_INFINITY),
+      step$ = single<number>(0),
     }: INumberInputValidityOptions,
   ) {
     super();
 
-    const stepBase$ = map$$(min$, (min: number) => (Number.isFinite(min) ? min : 0));
+    const stepBase$ = getStepBaseSubscribeFunction(min$);
 
     /** VALIDITY **/
 
@@ -58,6 +76,7 @@ export class NumberInputValidity extends InputValidity {
       (value: INumberInputValue, step: number, stepBase: number): boolean => {
         return (
           (value !== null)
+          && Number.isFinite(value)
           && !isStepValid(value, step, stepBase)
         );
       },
@@ -71,28 +90,35 @@ export class NumberInputValidity extends InputValidity {
     this.valueMissing$ = distinctDebouncedShared$$(valueMissing$);
 
 
-    const valid$ = function$$(
-      [
-        // badInput$,
-        // rangeUnderflow$,
-        // rangeOverflow$,
-        // stepMismatch$,
-        // valueMissing$,
-        this.badInput$,
-        this.rangeUnderflow$,
-        this.rangeOverflow$,
-        this.stepMismatch$,
-        this.valueMissing$,
-      ],
-      (...values: boolean[]): boolean => {
-        for (let i = 0, l = values.length; i < l; i++) {
-          if (values[i]) {
-            return false;
-          }
-        }
-        return true;
-      },
+    const valid$ = notOrM$$(
+      badInput$,
+      rangeUnderflow$,
+      rangeOverflow$,
+      stepMismatch$,
+      valueMissing$,
     );
+    // const valid$ = function$$(
+    //   [
+    //     // badInput$,
+    //     // rangeUnderflow$,
+    //     // rangeOverflow$,
+    //     // stepMismatch$,
+    //     // valueMissing$,
+    //     this.badInput$,
+    //     this.rangeUnderflow$,
+    //     this.rangeOverflow$,
+    //     this.stepMismatch$,
+    //     this.valueMissing$,
+    //   ],
+    //   (...values: boolean[]): boolean => {
+    //     for (let i = 0, l = values.length; i < l; i++) {
+    //       if (values[i]) {
+    //         return false;
+    //       }
+    //     }
+    //     return true;
+    //   },
+    // );
     this.valid$ = distinctDebouncedShared$$(valid$);
   }
 }

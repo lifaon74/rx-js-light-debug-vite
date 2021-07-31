@@ -1,6 +1,7 @@
 
 $number-input-border-color: #aaa;
 $number-input-border-color-invalid: #e80000;
+$number-input-color-invalid: #e80000;
 
 $number-input-validity-container-color: #e80000;
 
@@ -66,6 +67,7 @@ $number-input-validity-container-color: #e80000;
 
     &:not(.valid) {
       & > input {
+        color: $number-input-color-invalid;
         border-color: $number-input-border-color-invalid;
       }
     }

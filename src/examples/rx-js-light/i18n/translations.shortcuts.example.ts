@@ -2,10 +2,10 @@ import {
   combineLatest, currencyFormatSubscribePipe, dateTimeShortcutFormatSubscribePipe, ICurrencyFormatOptions, ILocales,
   ILocaleToTranslationKeyToTranslationValueMap, ISubscribeFunction, ITranslationKeyToTranslationValueMap,
   listFormatSubscribePipe, localesToStringArray, numberFormatSubscribePipe,
-  pluralRulesResultToTranslationKeySubscribePipe, pluralRulesSubscribePipe, translateSubscribeFunction
+  pluralRulesResultToTranslationKeySubscribePipe, pluralRulesSubscribePipe, translateSubscribeFunction, single
 } from '@lifaon/rx-js-light';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
-import { single$$, let$$, map$$, mergeMap$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
+import { let$$, map$$, mergeMap$$$, mergeMapS$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
 
 // declare namespace Intl {
 //   const Locale: any;
@@ -57,16 +57,16 @@ export function translationsShortcutsExample() {
   }
 
   function generateProductSource(): ISubscribeFunction<IReactiveProduct[]> {
-    return single$$([
+    return single([
       {
         name: 'apple',
-        price: single$$(2),
-        quantity: single$$(3),
+        price: single(2),
+        quantity: single(3),
       },
       {
         name: 'banana',
-        price: single$$(1.5),
-        quantity: single$$(1),
+        price: single(1.5),
+        quantity: single(1),
       },
     ]);
   }
@@ -90,16 +90,16 @@ export function translationsShortcutsExample() {
 
     const listFormatter$$ = listFormatSubscribePipe(locales$);
 
-    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, single$$('mediumDate'));
+    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, single('mediumDate'));
 
     const pluralRules$$ = pluralRulesSubscribePipe(locales$);
 
     const translated$ = translateSubscribeFunction(
       translations$,
-      single$$('translate.product.list'),
-      single$$({
+      single('translate.product.list'),
+      single({
         list: pipe$$(products$, [
-          mergeMap$$$<IReactiveProduct[], readonly string[]>((products: IReactiveProduct[]): ISubscribeFunction<readonly string[]> => {
+          mergeMapS$$$<IReactiveProduct[], readonly string[]>((products: IReactiveProduct[]): ISubscribeFunction<readonly string[]> => {
             return combineLatest(
               products.map((product: IReactiveProduct): ISubscribeFunction<string> => {
 
@@ -117,8 +117,8 @@ export function translationsShortcutsExample() {
 
                 return translateSubscribeFunction(
                   translations$,
-                  single$$('translate.product.price'),
-                  single$$({
+                  single('translate.product.price'),
+                  single({
                     quantity: quantity$,
                     product: product$,
                     price: price$,
@@ -126,7 +126,7 @@ export function translationsShortcutsExample() {
                 );
               }),
             );
-          }, 1),
+          }),
           listFormatter$$,
         ]),
         date: dateFormatter$$($date$.subscribe),

@@ -1,14 +1,26 @@
-import { IMulticastReplayLastSource, ISubscribeFunction } from '@lifaon/rx-js-light';
+import { IEmitFunction, IMulticastReplayLastSource, ISubscribeFunction, single } from '@lifaon/rx-js-light';
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, Input, OnCreate, OnInit, setReactiveClass
+  DEFAULT_CONSTANTS_TO_IMPORT, HTMLElementConstructor, IOnInitOptions, OnCreate, OnInit, setReactiveClass
 } from '@lifaon/rx-dom';
-import { single$$, let$$, map$$, map$$$, mergeAll$$, pipe$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
-import { INumberInputValue, NumberInputValidity } from './number-input-validity';
+import { function$$, let$$, map$$, map$$$, pipe$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
+import { getStepBaseSubscribeFunction, INumberInputValue, NumberInputValidity } from './number-input-validity';
 // @ts-ignore
 import style from './number-input.component.scss';
+import { createHigherOrderVariable } from '../../../../examples/misc/create-higher-order-variable';
+import { havingMultipleSubscribeFunctionProperties } from '../../../../examples/misc/having-multiple-subscribe-function-properties';
+import { createPristineSubscribeFunction } from '../misc/create-pristine-subscribe-function';
+
 
 /** COMPONENT **/
+
+type IAppNumberInputComponentInputs = [
+  ['disabled', boolean],
+  ['required', boolean],
+  ['min', number],
+  ['max', number],
+  ['step', number],
+];
 
 interface IData {
   $value$: IMulticastReplayLastSource<string>;
@@ -35,7 +47,7 @@ const CONSTANTS_TO_IMPORT = {
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <input
       #input
-      type="number"
+      type="text"
       [value]="$.$value$.subscribe"
       (input)="() => $.$value$.emit(getNodeReference('input').value)"
       [disabled]="$.disabled$"
@@ -64,39 +76,31 @@ const CONSTANTS_TO_IMPORT = {
   `, CONSTANTS_TO_IMPORT),
   style: compileReactiveCSSAsComponentStyle(style),
 })
-export class AppNumberInputComponent extends HTMLElement implements OnCreate<IData>, OnInit {
-  @Input((instance: AppNumberInputComponent) => instance._$disabled$)
-  disabled$!: ISubscribeFunction<boolean>;
-
-
-  @Input((instance: AppNumberInputComponent) => instance._$required$)
-  required$!: ISubscribeFunction<boolean>;
-
-  @Input((instance: AppNumberInputComponent) => instance._$min$)
-  min$!: ISubscribeFunction<number>;
-
-  @Input((instance: AppNumberInputComponent) => instance._$max$)
-  max$!: ISubscribeFunction<number>;
-
-  @Input((instance: AppNumberInputComponent) => instance._$step$)
-  step$!: ISubscribeFunction<number>;
-
+export class AppNumberInputComponent extends havingMultipleSubscribeFunctionProperties<IAppNumberInputComponentInputs, HTMLElementConstructor>(HTMLElement) implements OnCreate<IData>, OnInit {
   readonly validity: NumberInputValidity;
   readonly numberValue$: ISubscribeFunction<INumberInputValue>;
 
   protected readonly _data: IData;
 
-  protected _pristine: boolean;
+  protected _resetPristine: IEmitFunction<void>;
 
   protected readonly _$value$: IMulticastReplayLastSource<string>;
-  protected readonly _$disabled$: IMulticastReplayLastSource<ISubscribeFunction<boolean>>;
-  protected readonly _$required$: IMulticastReplayLastSource<ISubscribeFunction<boolean>>;
-  protected readonly _$min$: IMulticastReplayLastSource<ISubscribeFunction<number>>;
-  protected readonly _$max$: IMulticastReplayLastSource<ISubscribeFunction<number>>;
-  protected readonly _$step$: IMulticastReplayLastSource<ISubscribeFunction<number>>;
 
   constructor() {
-    super();
+    const [$disabled$, disabled$] = createHigherOrderVariable(false);
+    const [$required$, required$] = createHigherOrderVariable(false);
+    const [$min$, min$] = createHigherOrderVariable(Number.NEGATIVE_INFINITY);
+    const [$max$, max$] = createHigherOrderVariable(Number.POSITIVE_INFINITY);
+    const [$step$, step$] = createHigherOrderVariable(0);
+
+    super([
+      ['disabled', $disabled$],
+      ['required', $required$],
+      ['min', $min$],
+      ['max', $max$],
+      ['step', $step$],
+    ]);
+
     const $value$ = let$$<string>('');
     this._$value$ = $value$;
 
@@ -106,32 +110,11 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
     ]);
     this.numberValue$ = value$;
 
-    // TODO is pristine until focused instead ?
-    this._pristine = true;
-    const pristine$ = pipe$$($value$.subscribe, [
-      map$$$<string, boolean>((value: string): boolean => {
-        if (this._pristine && (value !== '')) {
-          this._pristine = false;
-        }
-        return this._pristine;
-      }),
-      shareR$$$<boolean>(),
-    ]);
 
-    this._$required$ = let$$(single$$<boolean>(false));
-    const required$ = mergeAll$$(this._$required$.subscribe, 1);
+    const [pristine$, resetPristine] = createPristineSubscribeFunction($value$.subscribe);
+    this._resetPristine = resetPristine;
 
-    this._$disabled$ = let$$(single$$<boolean>(false));
-    const disabled$ = mergeAll$$(this._$disabled$.subscribe, 1);
-
-    this._$min$ = let$$(single$$<number>(Number.NEGATIVE_INFINITY));
-    const min$ = mergeAll$$(this._$min$.subscribe, 1);
-
-    this._$max$ = let$$(single$$<number>(Number.POSITIVE_INFINITY));
-    const max$ = mergeAll$$(this._$max$.subscribe, 1);
-
-    this._$step$ = let$$(single$$<number>(0));
-    const step$ = mergeAll$$(this._$step$.subscribe, 1);
+    const stepBase$ = getStepBaseSubscribeFunction(min$);
 
     this.validity = new NumberInputValidity({
       value$,
@@ -141,11 +124,18 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
       step$,
     });
 
-    const badInputText$ = single$$(`Bad input`);
+    const badInputText$ = single(`Bad input`);
     const rangeUnderflowText$ = map$$(min$, (min: number) => `Number must be greater or equal to ${ min }`);
     const rangeOverflowText$ = map$$(max$, (max: number) => `Number must be lower or equal to ${ max }`);
-    const stepMismatchText$ = map$$(step$, (step: number) => `Number must be a multiple of ${ step }`);
-    const valueMissingText$ = single$$(`Missing value`);
+    // const stepMismatchText$ = map$$(step$, (step: number) => `Number must be a multiple of ${ step }`);
+    const stepMismatchText$ = function$$(
+      [step$, stepBase$],
+      (step: number, stepBase: number) => {
+        return (stepBase === 0)
+          ? `Number must be a multiple of ${ step }`
+          : `Number must follow this constraint: ${ stepBase } + ${ step } * x`;
+      });
+    const valueMissingText$ = single(`A value is required`);
 
     this._data = {
       $value$,
@@ -177,15 +167,11 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
     setReactiveClass(this.validity.valid$, this, 'valid');
   }
 
-  set required(value: boolean) {
-    this._$required$.emit(single$$<boolean>(value));
-  }
-
   onCreate(): IData {
     return this._data;
   }
 
-  onInit(): void {
+  onInit(options:IOnInitOptions): void {
 
   }
 
@@ -194,7 +180,7 @@ export class AppNumberInputComponent extends HTMLElement implements OnCreate<IDa
   }
 
   reset(): void {
-    this._pristine = true;
+    this._resetPristine();
     this.setValue('');
   }
 }

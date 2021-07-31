@@ -1,0 +1,50 @@
+$transition-duration: 200ms;
+
+$backdrop-vertical-padding: 10px;
+$backdrop-horizontal-padding: 10px;
+$content-top-offset: 100px;
+$content-top-offset-smaller: 0;
+
+:host {
+  // backdrop
+  display: block;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+  padding: $backdrop-vertical-padding $backdrop-horizontal-padding;
+  opacity: 0;
+  transition: opacity $transition-duration;
+  pointer-events: auto;
+
+  & > .content {
+    $vertical-margin: $content-top-offset - (2 * $backdrop-vertical-padding);
+
+    display: block;
+    margin: $content-top-offset auto 0;
+    background-color: white;
+    max-width: 600px;
+    max-height: calc(100vh - #{$vertical-margin});
+    padding: 20px;
+    border-radius: 5px;
+    transition: transform $transition-duration;
+    transform: translateY(100px);
+    box-shadow: 0 2px 5px 0 rgba(black, 0.1);
+    overflow-y: auto;
+
+    @media (max-height: 600px) {
+      $vertical-margin: $content-top-offset-smaller - (2 * $backdrop-vertical-padding);
+      margin-top: $content-top-offset-smaller;
+      max-height: calc(100vh - #{$vertical-margin});
+    }
+  }
+
+  &.visible {
+    opacity: 1;
+
+    & > .content {
+      transform: translateY(0);
+    }
+  }
+}
+

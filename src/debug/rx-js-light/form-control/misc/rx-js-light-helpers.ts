@@ -1,10 +1,11 @@
-import { ISubscribeFunction, ISubscribePipeFunction } from '@lifaon/rx-js-light';
+import { debounceImmediateSubscribePipe, ISubscribeFunction, ISubscribePipeFunction } from '@lifaon/rx-js-light';
 import { debounce$$$, distinct$$$, pipe$$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
 
 export function distinctDebouncedShared$$$<GValue>(): ISubscribePipeFunction<GValue, GValue> {
   return pipe$$$([
     distinct$$$<GValue>(),
-    debounce$$$<GValue>(0),
+    // debounce$$$<GValue>(0),
+    debounceImmediateSubscribePipe<GValue>(),
     shareR$$$<GValue>(),
   ]);
 }

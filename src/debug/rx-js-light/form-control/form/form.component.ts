@@ -1,7 +1,7 @@
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
-import { of } from '@lifaon/rx-js-light';
+import { of, single } from '@lifaon/rx-js-light';
 // @ts-ignore
 // import style from './number-input.component.scss';
 
@@ -13,14 +13,14 @@ interface IData {
 
 const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
-  of,
+  single,
 };
 
 @Component({
   name: 'app-form',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <rx-inject-content
-      content="of($content)"
+      content="single($content)"
     ></rx-inject-content>
   `, CONSTANTS_TO_IMPORT),
   // style: compileReactiveCSSAsComponentStyle(style),

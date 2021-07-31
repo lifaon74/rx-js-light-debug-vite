@@ -6,7 +6,13 @@ export function floatEquals(
   return Math.abs(a - b) < precision;
 }
 
-export function isNonNullStepValid(
+/*
+  y = stepBase + step * x
+  x = (y - stepBase) / step
+  => x must be an integer
+*/
+
+export function isNonZeroStepValid(
   value: number,
   step: number,
   stepBase: number,
@@ -20,5 +26,5 @@ export function isStepValid(
   step: number,
   stepBase: number,
 ): boolean {
-  return (step === 0) || isNonNullStepValid(value, step, stepBase);
+  return (step === 0) || isNonZeroStepValid(value, step, stepBase);
 }

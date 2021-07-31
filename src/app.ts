@@ -3,7 +3,6 @@ import { mousePositionExample } from './examples/rx-js-light/mouse-position.exam
 import { debugObservableV5 } from './debug/debug-observables-v5';
 import { debugI18N } from './debug/debug-observables-i18n';
 import { debugReactiveDOM } from './debug/rx-dom/debug-reactive-dom';
-import { modalComponentExample } from './examples/rx-dom/modal-example/modal-component.example';
 import { autoUpdateExample } from './examples/rx-dom/auto-update/auto-update.example';
 import { infinitePostsExample } from './examples/rx-dom/infinite-posts/infinite-posts.example';
 import { intersectionObserverExample } from './examples/rx-js-light/intersection-observer.example';
@@ -37,6 +36,11 @@ import { webRTCDebug } from './debug/webrtc/webrtc.debug';
 import { storeExample } from './examples/rx-js-light/store/store.example';
 import { debugReactiveDOMCompiler } from './debug/rx-dom/debug-reactive-dom-compiler';
 import { weatherExample } from './examples/rx-dom/weather/weather.example';
+import { overlayComponentExample } from './examples/rx-dom/material/overlay/overlay-component.example';
+import { pictureExample } from './examples/rx-js-light/picture/picture.example';
+import { matIconExample } from './examples/rx-dom/material/icon/mat-icon.example';
+import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
+import { matSelectExample } from './examples/rx-dom/material/form/select/mat-select.example';
 
 function run() {
   // debugObservableV5();
@@ -53,7 +57,10 @@ function run() {
   // console.log('started');
   // dynamicDateExample();
   // mousePositionExample();
-  // modalComponentExample();
+  // overlayComponentExample();
+  // matIconExample();
+  // matButtonExample();
+  matSelectExample();
   // infinitePostsExample();
   // progressBarExample();
   // progressBarLazyExample();
@@ -80,7 +87,8 @@ function run() {
   // fileSystemExample();
   // observableArrayExample();
   // storeExample();
-  weatherExample();
+  // weatherExample();
+  // pictureExample();
 }
 
 run();

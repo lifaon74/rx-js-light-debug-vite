@@ -5,8 +5,8 @@ import { translationsShortcutsExample } from './translations.shortcuts.example';
 import { formatRelativeTimeExample } from './format-relative-time.example';
 
 export async function i18nExample() {
-  // await formatDateExample();
-  await formatRelativeTimeExample();
+  await formatDateExample();
+  // await formatRelativeTimeExample();
   // await formatCurrencyExample();
   // await translationsExample();
   // await translationsShortcutsExample();

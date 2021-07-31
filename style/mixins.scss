@@ -70,9 +70,9 @@ $icon-vertical-offset: 5%;
 }
 
 @mixin scrollbar-mixin(
-  $scroll-width: 6px,
+  $scroll-width: 4px,
   $scroll-background: #fff,
-  $scroll-color: #000
+  $scroll-color: #5a5a5a
 ) {
   -webkit-overflow-scrolling: auto;
 

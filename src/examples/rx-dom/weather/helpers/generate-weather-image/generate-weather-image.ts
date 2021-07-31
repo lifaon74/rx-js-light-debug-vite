@@ -21,64 +21,10 @@ import mistURL from './assets/mist.svg';
 // @ts-ignore
 import tornadoURL from './assets/tornado2.svg';
 import { IWeatherStateId } from '../../api/get-weather/weather-state-id/weather-state-id.type';
+import { createAndAwaitImage, createCanvasRenderingContext2D } from '../../../../misc/image/image-helpers';
 
 /*---------------*/
 
-function createImage(
-  src: string,
-): HTMLImageElement {
-  const image: HTMLImageElement = createElement('img');
-  image.src = src;
-  return image;
-}
-
-function awaitImageLoaded(
-  image: HTMLImageElement,
-): Promise<HTMLImageElement> {
-  return new Promise<HTMLImageElement>((
-    resolve: (value: HTMLImageElement) => void,
-    reject: (reason?: any) => void,
-  ): void => {
-    if (image.complete) {
-      resolve(image);
-    } else {
-      const end = mergeUnsubscribeFunctions([
-        fromEventTarget(image, 'load')(() => {
-          end();
-          resolve(image);
-        }),
-        fromEventTarget(image, 'error')(() => {
-          end();
-          reject(image);
-        }),
-      ]);
-    }
-  });
-}
-
-function createAndAwaitImage(
-  src: string,
-): Promise<HTMLImageElement> {
-  return awaitImageLoaded(createImage(src));
-}
-
-
-function createCanvas(
-  width: number,
-  height: number
-): HTMLCanvasElement {
-  const canvas: HTMLCanvasElement = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  return canvas;
-}
-
-function createCanvasRenderingContext2D(
-  width: number,
-  height: number
-): CanvasRenderingContext2D {
-  return createCanvas(width, height).getContext('2d') as CanvasRenderingContext2D;
-}
 
 /*-------------*/
 

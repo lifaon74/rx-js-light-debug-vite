@@ -1,6 +1,6 @@
 import {
   bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_ARITHMETIC_CONSTANTS_TO_IMPORT,
-  DEFAULT_CASTING_CONSTANTS_TO_IMPORT, DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
+  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, DEFAULT_CASTING_CONSTANTS_TO_IMPORT
 } from '@lifaon/rx-dom';
 import {
   createSubscribeFunctionProxy, idle, ISubscribeFunctionProxy, mapSubscribePipe, pipeSubscribeFunction,
@@ -64,7 +64,7 @@ const CONSTANTS_TO_IMPORT = {
       +
       <span>{{ $.proxy.inputB.$ }}</span>
       =
-      <span>{{ add(toNumber($.proxy.inputA.$), toNumber($.proxy.inputB.$)) }}</span>
+      <span>{{ add(castToNumber($.proxy.inputA.$), castToNumber($.proxy.inputB.$)) }}</span>
     </div>
   `, CONSTANTS_TO_IMPORT),
 })

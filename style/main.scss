@@ -1,4 +1,5 @@
 @import './components/index';
+@import './mixins';
 
 @import './icons';
 
@@ -11,6 +12,10 @@
     //transform: translateZ(0);
     //will-change: transform, opacity, left, top, contents;
   }
+}
+
+* {
+  @include scrollbar-mixin();
 }
 
 html,

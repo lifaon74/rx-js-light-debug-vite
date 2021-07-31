@@ -12,8 +12,8 @@ import {
   SubscriptionManager
 } from '@lifaon/rx-js-light';
 import { let$$, letU$$, map$$, not$$ } from '@lifaon/rx-js-light-shortcuts';
+import { mutateReadonlyReplayLastSourceArray } from '@lifaon/rx-js-light';
 import { createInfiniteScrollSubscribeFunction } from '../../../infinite-posts/helpers/infinite-scroll';
-import { mutateReadonlyReplayLastSourceArray } from '../../../../misc/mutate-readonly-replay-last-source-array';
 
 /** FUNCTIONS **/
 

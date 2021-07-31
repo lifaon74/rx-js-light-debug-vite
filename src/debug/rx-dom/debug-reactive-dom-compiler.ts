@@ -8,11 +8,11 @@ import {
   reactiveFunction, sourceSubscribePipe,
 } from '@lifaon/rx-js-light';
 import {
-  attachNode,
-  bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  createElementNode, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, getDocumentBody,
-  nodeAppendChild, OnConnect,
-  OnCreate, OnDisconnect, uuid,
+  attachNode, bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, compileHTMLAsHTMLTemplate,
+  compileReactiveCSSAsComponentStyle, Component, createElementModifier, createElementNode, createNodeModifier,
+  DEFAULT_CONSTANTS_TO_IMPORT,
+  DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, generateGetNodeModifierFunctionFromArray, getDocumentBody, nodeAppendChild,
+  OnConnect, OnCreate, OnDisconnect, uuid,
 } from '@lifaon/rx-dom';
 import { AppWindowComponent } from './window-component/window.component';
 import { noCORS } from '../../examples/misc/no-cors';
@@ -49,7 +49,7 @@ async function debugReactiveDOMCompiler1() {
   // const html = `<div [style.font-size]="$.fontSize"></div>`;
   // const html = `<div [style...]="$.style"></div>`;
   // const html = `<div style="width: 500px; height: 500px; background-color: #fafafa" (click)="$.onClick"></div>`;
-  // const html = `<div #nodeA></div>`;
+  const html = `<div #nodeA></div>`;
 
   // const html = `
   //   <rx-template
@@ -192,27 +192,27 @@ async function debugReactiveDOMCompiler1() {
   // `;
 
 
-  const html = `
-    <rx-switch
-      expression="$.switchValue"
-    >
-      <div
-        *switch-case="1"
-      >
-        A
-      </div>
-     <div
-        *switch-case="2"
-      >
-        B
-      </div>
-      <div
-        *switch-default
-      >
-        C
-      </div>
-    </rx-switch>
-  `;
+  // const html = `
+  //   <rx-switch
+  //     expression="$.switchValue"
+  //   >
+  //     <div
+  //       *switch-case="1"
+  //     >
+  //       A
+  //     </div>
+  //    <div
+  //       *switch-case="2"
+  //     >
+  //       B
+  //     </div>
+  //     <div
+  //       *switch-default
+  //     >
+  //       C
+  //     </div>
+  //   </rx-switch>
+  // `;
 
   // const url = `http://info.cern.ch/hypertext/WWW/TheProject.html`;
   // const url = `https://streams.spec.whatwg.org/`;
@@ -256,7 +256,7 @@ async function debugReactiveDOMCompiler1() {
 
   type GData = typeof data;
 
-  // console.log(compileHTMLAsHTMLTemplate(html).join('\n'));
+  console.log(compileHTMLAsHTMLTemplate(html).join('\n'));
 
   // console.time('compilation');
   // const template = compileAndEvaluateReactiveHTMLAsComponentTemplate<GData>(html.trim());
@@ -652,6 +652,7 @@ async function debugReactiveDOMCompiler4() {
 }
 
 
+/** PROXY **/
 async function debugReactiveDOMCompiler5() {
 
   const CONSTANTS_TO_IMPORT = {
@@ -721,7 +722,7 @@ async function debugReactiveDOMCompiler5() {
           data.emit(_data);
         }, 1000);
 
-        _data.items = Array.from({ length: 1e2 }, (v: any, i: number) => ({ id: `id-${ i }`}));
+        _data.items = Array.from({ length: 1e2 }, (v: any, i: number) => ({ id: `id-${ i }` }));
 
         (window as any).$data$ = data;
 
@@ -739,256 +740,42 @@ async function debugReactiveDOMCompiler5() {
   nodeAppendChild(document.body, createElementNode('app-main'));
 }
 
+/** NODE MODIFIER **/
+async function debugReactiveDOMCompiler6() {
 
-/**
- * Popups - works !
- */
-// async function debugReactiveDOMCompiler6() {
-//
-//   const CONSTANTS_TO_IMPORT = {
-//     ...DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
-//     ...DEFAULT_CONSTANTS_TO_IMPORT,
-//   };
-//
-//
-//   function setUpAppMainComponent() {
-//
-//
-//     abstract class AppPopupComponent<GData extends object> extends HTMLElement {
-//       public readonly manager: AppPopupManagerComponent;
-//
-//       protected constructor(
-//         manager: AppPopupManagerComponent,
-//       ) {
-//         super();
-//         this.manager = manager;
-//       }
-//
-//       close(): void {
-//         this.manager.close(this);
-//       }
-//     }
-//
-//     interface IAppPopupComponentConstructor<GData extends object> {
-//       new(
-//         manager: AppPopupManagerComponent,
-//         data: GData,
-//       ): AppPopupComponent<GData>;
-//     }
-//
-//     /*-----------*/
-//
-//     interface IData {
-//       popups: IMulticastReplayLastSource<IPopup[]>;
-//       onClickPopupContainer: IEmitFunction<MouseEvent>;
-//     }
-//
-//     interface IPopup {
-//       component: AppPopupComponent<any>;
-//       template: IReactiveContent;
-//     }
-//
-//
-//     @Component({
-//       name: 'app-popup-manager',
-//       template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
-//         <div
-//           class="popup-container"
-//           *for="let popup of $.popups.subscribe"
-//           (click)="$.onClickPopupContainer"
-//           [class.visible]="idle()"
-//         >
-//           <rx-inject-template
-//             template="popup.template"
-//           ></rx-inject-template>
-//          </div>
-//       `,
-//         CONSTANTS_TO_IMPORT,
-//       ),
-//       style: compileReactiveCSSAsComponentStyle(`
-//         * {
-//            box-sizing: border-box;
-//         }
-//
-//         :host {
-//           display: block;
-//           position: fixed;
-//           top: 0;
-//           right: 0;
-//           bottom: 0;
-//           left: 0;
-//         }
-//
-//         :host > * {
-//           position: fixed;
-//           top: 0;
-//           right: 0;
-//           bottom: 0;
-//           left: 0;
-//           background-color: rgba(0, 0, 0, 0.5);
-//           overflow: auto;
-//           padding: 10px;
-//           opacity: 0;
-//           transition: opacity 100ms;
-//         }
-//
-//         :host > * > * {
-//           display: block;
-//           margin: 100px auto 0;
-//           background-color: white;
-//           max-width: 600px;
-//           padding: 20px;
-//           border-radius: 5px;
-//           transition: transform 100ms;
-//           transform: translateY(100px);
-//         }
-//
-//         :host:not(.visible) {
-//            display: none;
-//         }
-//
-//         :host > .visible {
-//            opacity: 1;
-//         }
-//
-//         :host > .visible > * {
-//           transform: translateY(0);
-//         }
-//       `)
-//     })
-//     class AppPopupManagerComponent extends HTMLElement implements OnCreate<IData>, OnConnect, OnDisconnect {
-//       protected readonly data: IData;
-//       protected readonly isVisibleSubscription: ISubscription<boolean>;
-//
-//       constructor() {
-//         super();
-//         const popups: IMulticastReplayLastSource<IPopup[]> = createMulticastReplayLastSource<IPopup[]>({ initialValue: [] });
-//         this.data = {
-//           popups,
-//           onClickPopupContainer: (event: MouseEvent): void => {
-//             if (event.currentTarget === event.target) {
-//               this.close(getFirstElementChild<AppPopupComponent<any>>(event.target as Element) as AppPopupComponent<any>);
-//             }
-//           },
-//         };
-//
-//         this.isVisibleSubscription = new Subscription(
-//           pipeSubscribeFunction(popups.subscribe, [
-//             mapSubscribePipe<IPopup[], boolean>((popups: IPopup[]) => (popups.length > 0)),
-//           ]),
-//           (isVisible: boolean) => {
-//             this.classList.toggle('visible', isVisible);
-//           }
-//         );
-//       }
-//
-//       open<GData  extends object>(
-//         component: IAppPopupComponentConstructor<GData>,
-//         data: GData,
-//       ): AppPopupComponent<GData> {
-//
-//         const fragment: DocumentFragment = createDocumentFragment();
-//         const popup: AppPopupComponent<GData> = new component(this, data);
-//         nodeAppendChild(fragment, popup);
-//
-//         const popups: IPopup[] = this.data.popups.getValue();
-//
-//         popups.push({
-//           component: popup,
-//           template: of(fragment),
-//         });
-//
-//         this.data.popups.emit(popups);
-//
-//         return popup;
-//       }
-//
-//       close(
-//         component: AppPopupComponent<any>,
-//       ): void {
-//         const index: number = this._getPopupIndex(component);
-//         if (index === -1) {
-//           throw new Error(`Not a popup of this manager`);
-//         } else {
-//           this._close(index);
-//         }
-//       }
-//
-//       onCreate(): any {
-//         return this.data;
-//       }
-//
-//       onConnect(): void {
-//         console.log('connected');
-//         this.isVisibleSubscription.activate();
-//       }
-//
-//       onDisconnect(): void {
-//         this.isVisibleSubscription.deactivate();
-//       }
-//
-//       protected _getPopupIndex(
-//         component: AppPopupComponent<any>,
-//       ): number {
-//         return this.data.popups.getValue().findIndex((popup: IPopup) => {
-//           return popup.component === component;
-//         });
-//       }
-//
-//       protected _close(
-//         index: number,
-//       ): void {
-//         const popups: IPopup[] = this.data.popups.getValue();
-//         popups.splice(index, 1);
-//         this.data.popups.emit(popups);
-//       }
-//     }
-//
-//     /*-----------*/
-//
-//     @Component({
-//       name: 'app-popup-hello-world',
-//       template: compileAndEvaluateReactiveHTMLAsComponentTemplate<IData>(`
-//         hello world
-//       `,
-//         CONSTANTS_TO_IMPORT,
-//       ),
-//     })
-//     class AppPopupHelloWorldComponent extends AppPopupComponent<any> {
-//       constructor(
-//         manager: AppPopupManagerComponent,
-//         data: any,
-//       ) {
-//         super(manager);
-//         console.log(data);
-//       }
-//     }
-//
-//
-//     /*-----------*/
-//
-//     const manager = new AppPopupManagerComponent();
-//     nodeAppendChild(document.body, manager);
-//
-//     fromEventTarget(document.body, 'click')((event: Event) => {
-//       if (event.currentTarget === event.target) {
-//         manager.open(AppPopupHelloWorldComponent, {
-//           a: 'a',
-//         });
-//       }
-//     });
-//
-//     // manager.open(AppPopupHelloWorldComponent, {
-//     //   a: 'a',
-//     // });
-//   }
-//
-//
-//   setUpAppMainComponent();
-//
-//
-//
-// }
+  const tooltipModifier = createElementModifier('tooltip', (element: HTMLElement, value: string): HTMLElement => {
+    element.title = value;
+    return element;
+  });
+
+
+  /*---*/
+
+  const CONSTANTS_TO_IMPORT = {
+    ...DEFAULT_CONSTANTS_TO_IMPORT,
+    getNodeModifier: generateGetNodeModifierFunctionFromArray([
+      tooltipModifier,
+    ]),
+  };
+
+  @Component({
+    name: 'app-main',
+    template: compileAndEvaluateReactiveHTMLAsComponentTemplate<any>(`
+        <div $tooltip="['hello world !']">
+          some content
+        </div>
+      `,
+      CONSTANTS_TO_IMPORT,
+    ),
+  })
+  class AppMainComponent extends HTMLElement {
+    constructor() {
+      super();
+    }
+  }
+
+  bootstrap(new AppMainComponent());
+}
 
 /**
  * Lazy loaded images - wip
@@ -1243,8 +1030,8 @@ export async function debugReactiveDOMCompiler() {
   // await debugReactiveDOMCompiler3();
   // await debugReactiveDOMCompiler4();
   // await debugReactiveDOMCompiler5();
-  // await debugReactiveDOMCompiler6();
+  await debugReactiveDOMCompiler6();
   // await debugReactiveDOMCompiler7();
   // await debugReactiveDOMCompiler8();
-  await debugReactiveDOMCompiler9();
+  // await debugReactiveDOMCompiler9();
 }

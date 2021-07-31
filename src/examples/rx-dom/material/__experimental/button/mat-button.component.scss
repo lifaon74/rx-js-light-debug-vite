@@ -1,0 +1,49 @@
+//@import '../../../../../style/mixins';
+
+:host {
+  --mat-button-color: #666;
+  --mat-button-background-color: #fafafa;
+  --mat-button-border-color: #eaeaea;
+
+  --mat-button-color-active: #666;
+  --mat-button-background-color-active: #fafafa;
+  --mat-button-border-color-active: #eaeaea;
+
+  --mat-button-color-disabled: #666;
+  --mat-button-background-color-disabled: #fafafa;
+  --mat-button-border-color-disabled: #eaeaea;
+
+
+  padding: 10px;
+  font-family: inherit;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform 100ms;
+
+  border-width: 1px;
+  border-style: solid;
+
+  color: var(--mat-button-color);
+  background-color: var(--mat-button-background-color);
+  border-color: var(--mat-button-border-color);
+
+  &:active,
+  &[active],
+  &.active {
+    color: var(--mat-button-color-active);
+    background-color: var(--mat-button-background-color-active);
+    border-color: var(--mat-button-border-color-active);
+  }
+
+  &:disabled,
+  &[disabled],
+  &.disabled {
+    color: var(--mat-button-color-disabled);
+    background-color: var(--mat-button-background-color-disabled);
+    border-color: var(--mat-button-border-color-disabled);
+  }
+}
+

@@ -2,7 +2,7 @@ import {
   combineLatest, createMulticastReplayLastSource, currencyFormatSubscribePipe, dateTimeShortcutFormatSubscribePipe,
   extractReactiveStringParts, ICurrencyFormatOptions, ILocales, ILocaleToTranslationKeyToTranslationValueMap,
   ISubscribeFunction, ITranslationKeyToTranslationValueMap, listFormatSubscribePipe, localesToStringArray,
-  mapSubscribePipe, mergeMapSubscribePipe, numberFormatSubscribePipe, of, pipeSubscribeFunction,
+  mapSubscribePipe, mergeMapSubscribePipe, numberFormatSubscribePipe, single, pipeSubscribeFunction,
   pluralRulesResultToTranslationKeySubscribePipe, pluralRulesSubscribePipe, reactiveFunction, translateSubscribeFunction
 } from '@lifaon/rx-js-light';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
@@ -68,13 +68,13 @@ export function translationsExample() {
       initialValue: [
         {
           name: 'apple',
-          price: of(2),
-          quantity: of(3),
+          price: single(2),
+          quantity: single(3),
         },
         {
           name: 'banana',
-          price: of(1.5),
-          quantity: of(1),
+          price: single(1.5),
+          quantity: single(1),
         },
       ]
     }).subscribe;
@@ -122,8 +122,8 @@ export function translationsExample() {
           if (!productCache.has(product)) {
             productCache.set(product, {
               name: product.name,
-              price: of(product.price),
-              quantity: of(product.quantity),
+              price: single(product.price),
+              quantity: single(product.quantity),
             });
           }
           return productCache.get(product) as IReactiveProduct;
@@ -154,14 +154,14 @@ export function translationsExample() {
 
     const listFormatter$$ = listFormatSubscribePipe(locales$);
 
-    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, of('mediumDate'));
+    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, single('mediumDate'));
 
     const pluralRules$$ = pluralRulesSubscribePipe(locales$);
 
     const translated$ = translateSubscribeFunction(
       translations$,
-      of('translate.product.list'),
-      of({
+      single('translate.product.list'),
+      single({
         list: pipeSubscribeFunction(products$, [
           mergeMapSubscribePipe<IReactiveProduct[], readonly string[]>((products: IReactiveProduct[]): ISubscribeFunction<readonly string[]> => {
             return combineLatest(
@@ -185,8 +185,8 @@ export function translationsExample() {
 
                 return translateSubscribeFunction(
                   translations$,
-                  of('translate.product.price'),
-                  of({
+                  single('translate.product.price'),
+                  single({
                     quantity: quantity$,
                     product: product$,
                     price: price$,
