@@ -1,0 +1,22 @@
+import { IHSLAColor } from '../hsla-color.type';
+import { rgbaColorToHSLAColor } from '../../rgba/to/rgba-color-to-hsla-color';
+import {
+  createRGBAColorFromString, createRGBAColorFromStringOrThrow
+} from '../../rgba/create/create-rgba-color-from-string.ts.bcp';
+import { IRGBAColor } from '../../rgba/rgba-color.type';
+
+
+export function createHSLAColorFromString(
+  input: string,
+): IHSLAColor | null {
+  const color: IRGBAColor | null = createRGBAColorFromString(input);
+  return (color === null)
+    ? null
+    : rgbaColorToHSLAColor(color);
+}
+
+export function createHSLAColorFromStringOrThrow(
+  input: string,
+): IHSLAColor {
+  return rgbaColorToHSLAColor(createRGBAColorFromStringOrThrow(input));
+}

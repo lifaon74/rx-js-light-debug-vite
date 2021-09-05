@@ -1,0 +1,11 @@
+
+$contrast-background-image-url: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAF0lEQVQI12PYvHnz////Gf///79lyxYAR08KMUdkyCMAAAAASUVORK5CYII=");
+
+@mixin contrast-background-image-mixin(
+  $background-size: 50%,
+) {
+  background-image: $contrast-background-image-url;
+  background-size: $background-size;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}

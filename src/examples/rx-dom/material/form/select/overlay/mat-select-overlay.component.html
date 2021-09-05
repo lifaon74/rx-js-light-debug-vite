@@ -3,7 +3,7 @@
     <div
       class="option"
       *for="let option of $.options$; trackBy: trackById"
-      (click)="() => $.onClickOption(option)"
+      (mousedown)="() => $.onClickOption(option)"
       [class.selected]="option.$selected$.subscribe"
       [class.disabled]="option.disabled$"
     >

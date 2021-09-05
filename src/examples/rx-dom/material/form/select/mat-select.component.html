@@ -7,11 +7,39 @@
 <!--  [required]="$.required$"-->
 <!--&gt;-->
 
-<input
-  type="text"
-  $input-value="[$.$inputValue$]"
-  $ref="[$.$input]"
-  readonly
+<div
+  class="field-container"
+  tabindex="0"
+  $on-focused="[$.$focused]"
+  [class...]="$.fieldContainerClasses$"
+  (keydown)="$.$onKeyDown"
 >
+  <div class="select-value">
+    {{ $.selectValue$ }}
+  </div>
+
+  <div class="select-placeholder">
+    {{ $.placeholder$ }}
+  </div>
+
+
+  <div
+    class="filter-input"
+  >
+    <input
+      $input-value="[$.$filterInputValue$]"
+    >
+  </div>
+
+  <div
+    class="clear-icon"
+    (click)="$.$onClickClearIcon"
+  ></div>
+<!--  <input-->
+<!--    type="text"-->
+<!--    (input)="() => $.onInputChange()"-->
+<!--    $input-value="[$.$inputValue$]"-->
+<!--  >-->
+</div>
 
 

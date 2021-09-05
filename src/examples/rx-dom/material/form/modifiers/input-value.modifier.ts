@@ -1,5 +1,6 @@
 import { createElementModifier, setReactiveEventListener, setReactiveProperty } from '@lifaon/rx-dom';
 import { ISource } from '@lifaon/rx-js-light';
+import { $$map } from '@lifaon/rx-js-light-shortcuts';
 
 export function inputValueModifierFunction(
   element: HTMLElement,
@@ -9,11 +10,11 @@ export function inputValueModifierFunction(
     throw new Error(`Not an input element`);
   }
 
-  setReactiveEventListener(() => {
-    $source$.emit(element.value);
-  }, element, 'input');
+  // setReactiveEventListener(() => {
+  //   $source$.emit(element.value);
+  // }, element, 'input');
 
-
+  setReactiveEventListener($$map($source$.emit, () => element.value), element, 'input');
   setReactiveProperty($source$.subscribe, element, 'value');
 
   return element;

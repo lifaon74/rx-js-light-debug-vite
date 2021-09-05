@@ -1,0 +1,45 @@
+<div class="content">
+  <div
+    class="saturation-and-value-select"
+    (mousedown)="$.$mouseDownSaturationAndValueSelect"
+    [style.background-color]="$.saturationAndValueSelectElementBackgroundColor$"
+  >
+    <div
+      class="cursor"
+      tabindex="0"
+      [style.left]="$.saturationAndValueSelectCursorElementLeft$"
+      [style.top]="$.saturationAndValueSelectCursorElementTop$"
+      (keydown)="$.$keyDownSaturationAndValueSelectCursor"
+    ></div>
+  </div>
+
+  <div
+    class="hue-select"
+    (mousedown)="$.$mouseDownHueSelect"
+  >
+    <div
+      class="cursor"
+      tabindex="0"
+      [style.top]="$.hueSelectCursorElementTop$"
+      (keydown)="$.$keyDownHueSelectCursor"
+    ></div>
+  </div>
+
+  <div
+    class="alpha-select"
+    (mousedown)="$.$mouseDownAlphaSelect"
+  >
+    <div
+      class="alpha-select-gradient"
+      [style.background-image]="$.alphaSelectElementBackgroundGradient$"
+    ></div>
+    <div
+      class="cursor"
+      tabindex="0"
+      [style.top]="$.alphaSelectCursorElementTop$"
+      (keydown)="$.$keyDownAlphaSelectCursor"
+    ></div>
+  </div>
+
+</div>
+

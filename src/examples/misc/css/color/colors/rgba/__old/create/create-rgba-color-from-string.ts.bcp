@@ -1,0 +1,33 @@
+import { IRGBAColor } from '../rgba-color.type';
+import { createRGBAColorFromRGBAString } from './create-rgba-color-from-rgba-string.ts.bcp';
+
+
+export function createRGBAColorFromString(
+  input: string,
+): IRGBAColor | null {
+  const element: HTMLElement = document.createElement('div');
+  element.style.setProperty('color', input);
+
+  if (element.style.getPropertyValue('color')) {
+    document.body.appendChild(element);
+    const style: CSSStyleDeclaration = window.getComputedStyle(element);
+    const rgbColor: string = style.color;
+    document.body.removeChild(element);
+    return createRGBAColorFromRGBAString(rgbColor);
+  } else {
+    return null;
+  }
+}
+
+export function createRGBAColorFromStringOrThrow(
+  input: string,
+): IRGBAColor {
+  const color: IRGBAColor | null = createRGBAColorFromString(input);
+  if (color === null) {
+    throw new Error(`Not a valid color`);
+  } else {
+    return color;
+  }
+}
+
+

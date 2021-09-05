@@ -5,6 +5,7 @@ import optimizeFunctionalPlugin from './plugins/functional/functional.bundled.mj
  * @type {import('vite').UserConfig}
  */
 const config = {
+
   build: {
     terserOptions: {
       toplevel: true,
@@ -31,7 +32,10 @@ const config = {
   plugins: [
     // aot(),
     // optimizeFunctionalPlugin(),
-  ]
+  ],
+  server: {
+    https: false,
+  }
 };
 
 export default config;

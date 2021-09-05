@@ -1,7 +1,7 @@
 import {
   compileReactiveHTMLAsComponentTemplateFunctionOptimized, DEFAULT_CONSTANTS_TO_IMPORT,
   generateConstantsToImportForComponentTemplateFromObject, ILines, IObjectProperties, linesToString
-} from '../rx-dom/dist';
+} from '@lifaon/rx-dom';
 
 const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,

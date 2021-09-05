@@ -1,0 +1,26 @@
+import { IAngleUnits, IAngleValueAndUnit } from '../../../angle-units.type';
+import { degreesToRadians } from './degrees-to-radians';
+import { degreesToTurns } from './degrees-to-turns';
+import { DEGREES_UNIT } from '../../degrees-unit.constant';
+import { createDegreesValueAndUnit } from '../../create-degrees-value-and-unit';
+import { createRadiansValueAndUnit } from '../../../radians/create-radians-value-and-unit';
+import { createTurnsValueAndUnit } from '../../../turns/create-turns-value-and-unit';
+import { TURNS_UNIT } from '../../../turns/turns-unit.constant';
+import { throwUnknownUnitError } from '../../../../../helpers/unknown-unit-error';
+import { RADIANS_UNIT } from '../../../radians/radians-unit.constant';
+
+export function degreesToAngleValueUnit(
+  degrees: number,
+  unit: IAngleUnits,
+): IAngleValueAndUnit {
+  switch (unit) {
+    case DEGREES_UNIT:
+      return createDegreesValueAndUnit(degrees);
+    case RADIANS_UNIT:
+      return createRadiansValueAndUnit(degreesToRadians(degrees));
+    case TURNS_UNIT:
+      return createTurnsValueAndUnit(degreesToTurns(degrees));
+    default:
+      throwUnknownUnitError(unit);
+  }
+}

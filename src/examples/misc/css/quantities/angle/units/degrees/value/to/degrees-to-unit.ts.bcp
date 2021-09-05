@@ -1,0 +1,23 @@
+import { IAngleUnits } from '../../../angle-units.type';
+import { degreesToRadians } from './degrees-to-radians';
+import { degreesToTurns } from './degrees-to-turns';
+import { DEGREES_UNIT } from '../../degrees-unit.constant';
+import { TURNS_UNIT } from '../../../turns/turns-unit.constant';
+import { RADIANS_UNIT } from '../../../radians/radians-unit.constant';
+import { throwUnknownUnitError } from '../../../../../helpers/unknown-unit-error';
+
+export function degreesToUnit(
+  degrees: number,
+  unit: IAngleUnits,
+): number {
+  switch (unit) {
+    case DEGREES_UNIT:
+      return degrees;
+    case RADIANS_UNIT:
+      return degreesToRadians(degrees);
+    case TURNS_UNIT:
+      return degreesToTurns(degrees);
+    default:
+      throwUnknownUnitError(unit);
+  }
+}

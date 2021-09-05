@@ -1,11 +1,12 @@
 import { IPosition } from './position.type';
+import { createPosition } from './create-position';
 
 export function translatePosition(
   position: IPosition,
   translation: IPosition,
 ): IPosition {
-  return {
-    left: position.left + translation.left,
-    top: position.top + translation.top,
-  };
+  return createPosition(
+    position.left + translation.left,
+    position.top + translation.top,
+  );
 }

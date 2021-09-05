@@ -1,0 +1,11 @@
+import { ITurnsValueAndUnit } from '../turns-value-and-unit.type';
+import { IAngleUnits, IAngleValueAndUnit } from '../../../angle-units.type';
+import { turnsToAngleValueUnit } from '../value/to/turns-to-angle-value-and-unit';
+
+
+export function turnsValueAndUnitToAngleValueAndUnit(
+  turns: ITurnsValueAndUnit,
+  unit: IAngleUnits,
+): IAngleValueAndUnit {
+  return turnsToAngleValueUnit(turns.value, unit);
+}

@@ -41,6 +41,7 @@ import { pictureExample } from './examples/rx-js-light/picture/picture.example';
 import { matIconExample } from './examples/rx-dom/material/icon/mat-icon.example';
 import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
 import { matSelectExample } from './examples/rx-dom/material/form/select/mat-select.example';
+import { matColorInputExample } from './examples/rx-dom/material/form/color/mat-color-input.example';
 
 function run() {
   // debugObservableV5();
@@ -60,7 +61,8 @@ function run() {
   // overlayComponentExample();
   // matIconExample();
   // matButtonExample();
-  matSelectExample();
+  // matSelectExample();
+  matColorInputExample();
   // infinitePostsExample();
   // progressBarExample();
   // progressBarLazyExample();

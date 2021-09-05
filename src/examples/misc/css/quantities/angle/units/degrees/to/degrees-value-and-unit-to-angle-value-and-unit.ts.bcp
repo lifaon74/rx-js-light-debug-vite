@@ -1,0 +1,11 @@
+import { IDegreesValueAndUnit } from '../degrees-value-and-unit.type';
+import { IAngleUnits, IAngleValueAndUnit } from '../../angle-units.type';
+import { degreesToAngleValueUnit } from '../value/to/degrees-to-angle-value-and-unit';
+
+
+export function degreesValueAndUnitToAngleValueAndUnit(
+  degrees: IDegreesValueAndUnit,
+  unit: IAngleUnits,
+): IAngleValueAndUnit {
+  return degreesToAngleValueUnit(degrees.value, unit);
+}

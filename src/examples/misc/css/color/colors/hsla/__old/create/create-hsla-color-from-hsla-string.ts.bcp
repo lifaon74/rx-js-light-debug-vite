@@ -1,0 +1,73 @@
+import { IHSLAColor } from '../hsla-color.type';
+import { createHSLAColor } from './create-hsla-color';
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsl_colors
+
+
+const HSLA_REGEXP: RegExp = new RegExp(`^hsla\\((.*)\\)$`);
+
+
+export function createHSLAColorFromHSLAString(
+  input: string,
+): IHSLAColor | null {
+  HSLA_REGEXP.lastIndex = 0;
+  const match: RegExpExecArray | null = HSLA_REGEXP.exec(input);
+  if (match !== null) {
+    // const members: string[] =
+  }
+  return null;
+  // if ((match !== null) && (typeof match[1] === typeof match[5])) { // check if 3 params for rgb and 4 for rgba
+  //   return createHSLAColor(
+  //     parseNumberLikeValue(match[2], 0, 255) / 255,
+  //     parseNumberLikeValue(match[3], 0, 255) / 255,
+  //     parseNumberLikeValue(match[4], 0, 255) / 255,
+  //     (match[5] === void 0)
+  //       ? 1
+  //       : parseNumberLikeValue(match[5], 0, 1)
+  //   );
+  // } else {
+  //   throw new Error(`Invalid rgb(a) color: ${ input }`);
+  // }
+}
+
+
+/** FUNCTIONS **/
+
+
+
+/** DEBUG **/
+
+export function debugCreateHSLAColorFromHSLAString() {
+  console.log('ok');
+  createHSLAColorFromHSLAString(`hsla(50, 100%, 50%, 1)`);
+  // createHSLAColorFromHSLAString(`hsl(50, 100%, 50%)`);
+}
+
+/*----------*/
+
+// const NUMBER_PATTERN: string = '\\s*(\\d+(?:\\.\\d+)?%?)\\s*';
+// const HSLA_REGEXP: RegExp = new RegExp(`rgb(a)?\\(${NUMBER_PATTERN},${NUMBER_PATTERN},${NUMBER_PATTERN}(?:,${NUMBER_PATTERN})?\\)`);
+//
+// function parseNumberLikeValue(
+//   input: string,
+//   min: number,
+//   max: number,
+// ): number {
+//   input = input.trim();
+//   let number: number = parseFloat(input);
+//   if (Number.isNaN(number)) {
+//     throw new Error(`Invalid number: ${ input }`);
+//   } else {
+//     if (input.endsWith('%')) {
+//       number *= max / 100;
+//     }
+//
+//     if ((min <= number) && (number <= max)) {
+//       return number;
+//     } else {
+//       throw new RangeError(`Invalid range [${ min }-${ max }] for number ${ number }`);
+//     }
+//   }
+// }
+//
+//

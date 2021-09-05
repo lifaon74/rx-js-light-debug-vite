@@ -12,10 +12,6 @@ $mat-select-overlay-option-background-color-selected: #f1f1f1;
   display: block;
 
   & > .content {
-    left: -1000px;
-    top: -1000px;
-    width: 0;
-    height: 0;
     padding: 0;
     overflow: hidden;
     pointer-events: auto;

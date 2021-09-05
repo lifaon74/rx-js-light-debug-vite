@@ -1,0 +1,11 @@
+import { IRadiansValueAndUnit } from '../radians-value-and-unit.type';
+import { IAngleUnits, IAngleValueAndUnit } from '../../../angle-units.type';
+import { radiansToAngleValueUnit } from '../value/to/radians-to-angle-value-and-unit';
+
+
+export function radiansValueAndUnitToAngleValueAndUnit(
+  radians: IRadiansValueAndUnit,
+  unit: IAngleUnits,
+): IAngleValueAndUnit {
+  return radiansToAngleValueUnit(radians.value, unit);
+}

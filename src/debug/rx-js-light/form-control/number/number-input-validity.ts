@@ -20,6 +20,8 @@ export function getStepBase(
 
 /** TYPES **/
 
+// const numberRegex = /^\s*[+-]?(\d+|\.\d+|\d+\.\d+|\d+\.)(e[+-]?\d+)?\s*$/;
+
 export type INumberInputValue = number | null;
 
 export interface INumberInputValidityOptions extends IInputValidityOptions {

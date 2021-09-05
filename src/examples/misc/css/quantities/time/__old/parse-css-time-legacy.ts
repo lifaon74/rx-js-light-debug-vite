@@ -1,8 +1,11 @@
-// https://developer.mozilla.org/en-US/docs/Web/CSS/time
+/** DEPRECATED **/
 
 const PARSE_CSS_TIME_REGEXP = new RegExp('^(.*)((?:ms)|(?:s))$');
 
-export function parseCSSTime(
+/**
+ * @deprecated
+ */
+export function parseCSSTimeLegacy(
   time: string,
 ): number | null {
   const match: RegExpExecArray | null = PARSE_CSS_TIME_REGEXP.exec(time);
@@ -16,3 +19,4 @@ export function parseCSSTime(
       : (time * multiplier);
   }
 }
+
