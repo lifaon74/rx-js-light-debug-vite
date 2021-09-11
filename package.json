@@ -38,7 +38,7 @@
     "@lifaon/rx-js-light-shortcuts": "1.0.0"
   },
   "dependencies": {
-    "@lifaon/rx-dom": "1.1.2",
+    "@lifaon/rx-dom": "1.2.0",
     "@lifaon/rx-js-light": "1.1.4",
     "@lifaon/rx-js-light-shortcuts": "1.1.4",
     "@lifaon/rx-store": "1.0.0",

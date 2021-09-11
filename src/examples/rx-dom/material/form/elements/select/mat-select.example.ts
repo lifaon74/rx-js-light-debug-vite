@@ -5,7 +5,7 @@ import {
   generateCreateElementFunctionWithCustomElements, getDocumentBody, injectComponentTemplate
 } from '@lifaon/rx-dom';
 import { single } from '@lifaon/rx-js-light';
-import { MatOverlayManagerComponent } from '../../overlay/overlay/manager/mat-overlay-manager.component';
+import { MatOverlayManagerComponent } from '../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { IMatSelectOption } from './types/mat-select-option.type';
 
 /** BOOTSTRAP FUNCTION **/

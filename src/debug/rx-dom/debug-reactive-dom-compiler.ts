@@ -389,11 +389,11 @@ async function debugReactiveDOMCompiler3() {
       `,
         CONSTANTS_TO_IMPORT
       ),
-      style: compileReactiveCSSAsComponentStyle(`
+      styles: [compileReactiveCSSAsComponentStyle(`
         :host {
           display: inline-block;
         }
-      `)
+      `)]
     })
     class AppDateComponent extends HTMLElement implements OnCreate<IData> {
       protected readonly data: IData;
@@ -447,7 +447,7 @@ async function debugReactiveDOMCompiler3() {
       `,
         CONSTANTS_TO_IMPORT,
       ),
-      style: compileReactiveCSSAsComponentStyle(`
+      styles: [compileReactiveCSSAsComponentStyle(`
         button:focus { outline: 0; }
       
         :host {
@@ -462,7 +462,7 @@ async function debugReactiveDOMCompiler3() {
           background-color: white;
           border: 1px solid black;
         }
-      `)
+      `)]
     })
     class AppMainComponent extends HTMLElement implements OnCreate<IData>, OnConnect, OnDisconnect {
       protected readonly data: IData;
@@ -561,7 +561,7 @@ async function debugReactiveDOMCompiler4() {
       `,
         CONSTANTS_TO_IMPORT,
       ),
-      style: compileReactiveCSSAsComponentStyle(`
+      styles: [compileReactiveCSSAsComponentStyle(`
         button:focus { outline: 0; }
         input:focus { outline: 0; }
         * {
@@ -599,7 +599,7 @@ async function debugReactiveDOMCompiler4() {
           margin-right: 5px;
           cursor: pointer;
         }
-      `)
+      `)],
     })
     class AppMainComponent extends HTMLElement implements OnCreate<IData> {
       protected readonly data: IData;

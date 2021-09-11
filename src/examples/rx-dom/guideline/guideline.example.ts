@@ -50,11 +50,11 @@ const CONSTANTS_TO_IMPORT = {
       stroke="20"
     ></app-progress-ring>
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
     }
-  `),
+  `)],
 })
 class AppGuideLineComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;

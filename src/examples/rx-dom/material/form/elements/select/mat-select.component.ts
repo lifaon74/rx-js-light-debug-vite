@@ -8,26 +8,25 @@ import {
 import html from './mat-select.component.html?raw';
 // @ts-ignore
 import style from './mat-select.component.scss';
-import { havingMultipleSubscribeFunctionProperties } from '../../../../misc/having-multiple-subscribe-function-properties';
-import { createHigherOrderVariable } from '../../../../misc/create-higher-order-variable';
+import { havingMultipleSubscribeFunctionProperties } from '../../../../../misc/having-multiple-subscribe-function-properties';
+import { createHigherOrderVariable } from '../../../../../misc/create-higher-order-variable';
 import { function$$, let$$, letU$$, map$$, mergeAllS$$, mergeMapS$$, share$$ } from '@lifaon/rx-js-light-shortcuts';
-import { INPUT_VALUE_MODIFIER } from '../modifiers/input-value.modifier';
+import { INPUT_VALUE_MODIFIER } from '../../modifiers/input-value.modifier';
 import {
   combineLatest, freeze, IEmitFunction, IMulticastReplayLastSource, ISubscribeFunction, IUnsubscribeFunction, merge,
   mergeUnsubscribeFunctions, noop, single
 } from '@lifaon/rx-js-light';
-import { NODE_REFERENCE_MODIFIER } from '../modifiers/node-reference.modifier';
 import {
   focusSubscribeFunction, focusSubscribeFunctionDebounced, isElementOrChildrenFocusedSubscribeFunctionDebounced
-} from '../../helpers/focus-subscribe-function';
-import { MatOverlayManagerComponent } from '../../overlay/overlay/manager/mat-overlay-manager.component';
+} from '../../../helpers/focus-subscribe-function';
+import { MatOverlayManagerComponent } from '../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { MatSelectOverlayComponent } from './overlay/mat-select-overlay.component';
-import { createOpenCloseTuple } from '../../overlay/overlay/component/helpers/create-open-close-tuple';
+import { createOpenCloseTuple } from '../../../overlay/overlay/component/helpers/create-open-close-tuple';
 import {
   IMatSelectOption, INormalizedMatSelectOption, IReadonlyNormalizedMatSelectOption
 } from './types/mat-select-option.type';
-import { focusElement } from '../../helpers/focus-element';
-import { ON_FOCUSED_MODIFIER } from '../modifiers/on-focused.modifier';
+import { focusElement } from '../../../helpers/focus-element';
+import { ON_FOCUSED_MODIFIER } from '../../modifiers/on-focused.modifier';
 import { Keyboard } from 'puppeteer';
 
 
@@ -217,7 +216,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'mat-select',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatSelectComponent<GValue> extends havingMultipleSubscribeFunctionProperties<IMatSelectComponentInputs<any>, HTMLElementConstructor>(HTMLElement) implements OnCreate<IData> {
   public readonly options$: ISubscribeFunction<IReadonlyNormalizedMatSelectOption<GValue>[]>;

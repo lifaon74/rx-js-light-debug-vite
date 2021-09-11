@@ -1,7 +1,13 @@
 <div class="content">
   <div
+    class="focus-loop-helper"
+    tabindex="0"
+    (focus)="$.$focusFirst"
+  ></div>
+
+  <div
     class="saturation-and-value-select"
-    (mousedown)="$.$mouseDownSaturationAndValueSelect"
+    (pointerdown)="$.$pointerDownSaturationAndValueSelect"
     [style.background-color]="$.saturationAndValueSelectElementBackgroundColor$"
   >
     <div
@@ -15,7 +21,7 @@
 
   <div
     class="hue-select"
-    (mousedown)="$.$mouseDownHueSelect"
+    (pointerdown)="$.$pointerDownHueSelect"
   >
     <div
       class="cursor"
@@ -27,7 +33,7 @@
 
   <div
     class="alpha-select"
-    (mousedown)="$.$mouseDownAlphaSelect"
+    (pointerdown)="$.$pointerDownAlphaSelect"
   >
     <div
       class="alpha-select-gradient"
@@ -41,5 +47,10 @@
     ></div>
   </div>
 
+  <div
+    class="focus-loop-helper"
+    tabindex="0"
+    (focus)="$.$focusLast"
+  ></div>
 </div>
 

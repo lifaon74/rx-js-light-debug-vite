@@ -30,7 +30,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'mat-alert-modal',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatAlertModalComponent extends MatModalComponent implements OnCreate<IData> {
   protected readonly data: IData;

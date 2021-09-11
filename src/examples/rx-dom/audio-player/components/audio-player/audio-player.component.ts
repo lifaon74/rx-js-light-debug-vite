@@ -184,7 +184,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'app-audio-player',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IData> {
 

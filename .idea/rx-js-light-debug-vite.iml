@@ -11,6 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/plugins/aot/dist" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/misc/css/color/colors/hsla/__old" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/misc/css/color/colors/rgba/__old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/material/form/shared/input-field/__old" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

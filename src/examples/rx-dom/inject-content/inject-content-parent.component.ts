@@ -54,11 +54,11 @@ const CONSTANTS_TO_IMPORT = {
     </app-inject-content>
     
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
     }
-  `),
+  `)],
 })
 export class AppInjectContentParentComponent extends HTMLElement implements OnCreate<IData>, OnInit {
   protected readonly data: IData;

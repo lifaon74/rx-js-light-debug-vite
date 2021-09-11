@@ -1,9 +1,10 @@
-import { IMulticastReplayLastSource, ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import { IEmitFunction, IMulticastReplayLastSource, ISubscribeFunction, single } from '@lifaon/rx-js-light';
 import { let$$, letU$$, mergeAllS$$ } from '@lifaon/rx-js-light-shortcuts';
 
 export type ICreateHigherOrderVariable<GValue> = [
   source: IMulticastReplayLastSource<ISubscribeFunction<GValue>>,
   subscribe: ISubscribeFunction<GValue>,
+  emit: IEmitFunction<GValue>,
 ];
 
 export function createHigherOrderVariable<GValue>(
@@ -13,6 +14,9 @@ export function createHigherOrderVariable<GValue>(
   return [
     source,
     mergeAllS$$(source.subscribe),
+    (value: GValue): void => {
+      source.emit(single(value));
+    },
   ];
 }
 
@@ -21,5 +25,8 @@ export function createHigherOrderVariableUninitialized<GValue>(): ICreateHigherO
   return [
     source,
     mergeAllS$$(source.subscribe),
+    (value: GValue): void => {
+      source.emit(single(value));
+    },
   ];
 }

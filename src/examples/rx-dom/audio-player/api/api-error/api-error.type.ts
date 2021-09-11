@@ -1,9 +1,9 @@
-import { IErrorOptions } from '@lifaon/rx-js-light';
+import { ICustomErrorOptions } from '@lifaon/rx-js-light';
 
 export interface IAPIError extends Error {
   code: string;
 }
 
-export interface IAPIErrorOptions extends IErrorOptions {
+export interface IAPIErrorOptions extends ICustomErrorOptions {
   code: string;
 }

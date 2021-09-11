@@ -42,7 +42,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'mat-tooltip-modal',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatTooltipModalComponent extends MatSimpleOverlayComponent implements OnCreate<IData> {
   protected readonly data: IData;

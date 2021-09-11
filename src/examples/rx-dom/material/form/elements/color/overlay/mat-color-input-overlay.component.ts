@@ -1,32 +1,34 @@
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, generateGetNodeModifierFunctionFromArray, OnCreate, OnInit, querySelector,
-  setReactiveClass, subscribeOnNodeConnectedTo,
+  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, OnInit, querySelector, querySelectorOrThrow, setReactiveClass,
+  subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
 import { fromAnimationFrame, fromEventTarget, IEmitFunction, ISubscribeFunction } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-color-input-overlay.component.scss';
 // @ts-ignore
 import html from './mat-color-input-overlay.component.html?raw';
-import { ICSSPositionAndSize } from '../../../../../misc/types/position-and-size/css-position-and-size.type';
-import { MatSimpleOverlayComponent } from '../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
-import { MatOverlayManagerComponent } from '../../../overlay/overlay/manager/mat-overlay-manager.component';
-import { debounceFrame$$, map$$ } from '../../../../../../../../rx-js-light-shortcuts/dist';
-import { IPositionAndSize } from '../../../../../misc/types/position-and-size/position-and-size.type';
-import { getElementPositionAndSize } from '../../../../../misc/types/position-and-size/get-element-position-and-size';
-import { ISize } from '../../../../../misc/types/size/size.type';
-import { positionAndSizeToCSSPositionAndSize } from '../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
-import { POSITION_AND_SIZE_OUT_OF_WINDOW } from '../../../overlay/overlay/built-in/simple/helper/position-and-size-out-of-window.constant';
-import { getFittingBoxForContainer$Target$ContentElements } from '../../../overlay/overlay/built-in/simple/helper/get-fitting-box-for-container-target-content-elements';
-import { IReadonlyHSVAColor } from '../../../../../misc/css/color/colors/hsva/hsva-color.type';
+import { ICSSPositionAndSize } from '../../../../../../misc/types/position-and-size/css-position-and-size.type';
+import { MatSimpleOverlayComponent } from '../../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
+import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
+import { debounceFrame$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { IPositionAndSize } from '../../../../../../misc/types/position-and-size/position-and-size.type';
+import { getElementPositionAndSize } from '../../../../../../misc/types/position-and-size/get-element-position-and-size';
+import { ISize } from '../../../../../../misc/types/size/size.type';
+import { positionAndSizeToCSSPositionAndSize } from '../../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
+import { POSITION_AND_SIZE_OUT_OF_WINDOW } from '../../../../overlay/overlay/built-in/simple/helper/position-and-size-out-of-window.constant';
+import { getFittingBoxForContainer$Target$ContentElements } from '../../../../overlay/overlay/built-in/simple/helper/get-fitting-box-for-container-target-content-elements';
+import { IReadonlyHSVAColor } from '../../../../../../misc/css/color/colors/hsva/hsva-color.type';
 import { DEFAULT_MAT_COLOR_INPUT_COLOR } from '../misc/default-mat-color-input-color.constant';
-import { NODE_REFERENCE_MODIFIER } from '../../modifiers/node-reference.modifier';
-import { createHSVAColor } from '../../../../../misc/css/color/colors/hsva/create-hsva-color';
-import { createHSLAColor } from '../../../../../misc/css/color/colors/hsla/create-hsla-color';
-import { hslaColorToHexString } from '../../../../../misc/css/color/colors/hsla/to/string/hsla-color-to-hex-string';
-import { IHSLAColor } from '../../../../../misc/css/color/colors/hsla/hsla-color.type';
-import { hsvaColorToHexString } from '../../../../../misc/css/color/colors/hsva/to/string/hsva-color-to-hex-string';
-import { mathClamp } from '../../../../../misc/math/clamp';
+import { createHSVAColor } from '../../../../../../misc/css/color/colors/hsva/create-hsva-color';
+import { createHSLAColor } from '../../../../../../misc/css/color/colors/hsla/create-hsla-color';
+import { hslaColorToHexString } from '../../../../../../misc/css/color/colors/hsla/to/string/hsla-color-to-hex-string';
+import { IHSLAColor } from '../../../../../../misc/css/color/colors/hsla/hsla-color.type';
+import { hsvaColorToHexString } from '../../../../../../misc/css/color/colors/hsva/to/string/hsva-color-to-hex-string';
+import { mathClamp } from '../../../../../../misc/math/clamp';
+import { makeMatOverlayComponentBackdropClosable } from '../../../../overlay/overlay/component/helpers/make-mat-overlay-component-backdrop-closable';
+import { makeMatOverlayComponentClosableWithEscape } from '../../../../overlay/overlay/component/helpers/make-mat-overlay-component-closable-with-escape';
+import { IOverlayCloseOrigin } from '../../../../overlay/overlay/component/mat-overlay.component';
 
 
 /** FUNCTION **/
@@ -53,7 +55,7 @@ function generateHueGradient(
 
 export interface IMatColorInputOverlayComponentOptions {
   readonly targetElement: HTMLElement;
-  // readonly $hsvaColor$: IReplayLastSource<IReadonlyHSVAColor, IGenericSource>;
+  readonly $close: IEmitFunction<void>;
   readonly $hsvaColor: IEmitFunction<IReadonlyHSVAColor>;
   readonly hsvaColor$: ISubscribeFunction<IReadonlyHSVAColor>;
   readonly alphaDisabled$: ISubscribeFunction<boolean>;
@@ -67,35 +69,39 @@ interface IData {
   readonly hueSelectCursorElementTop$: ISubscribeFunction<string>;
   readonly alphaSelectElementBackgroundGradient$: ISubscribeFunction<string>;
   readonly alphaSelectCursorElementTop$: ISubscribeFunction<string>;
-  readonly $mouseDownSaturationAndValueSelect: IEmitFunction<MouseEvent>;
+  readonly $pointerDownSaturationAndValueSelect: IEmitFunction<PointerEvent>;
   readonly $keyDownSaturationAndValueSelectCursor: IEmitFunction<KeyboardEvent>;
-  readonly $mouseDownHueSelect: IEmitFunction<MouseEvent>;
+  readonly $pointerDownHueSelect: IEmitFunction<PointerEvent>;
   readonly $keyDownHueSelectCursor: IEmitFunction<KeyboardEvent>;
-  readonly $mouseDownAlphaSelect: IEmitFunction<MouseEvent>;
+  readonly $pointerDownAlphaSelect: IEmitFunction<PointerEvent>;
   readonly $keyDownAlphaSelectCursor: IEmitFunction<KeyboardEvent>;
+  readonly $focusFirst: IEmitFunction<FocusEvent>;
+  readonly $focusLast: IEmitFunction<FocusEvent>;
 }
 
-const MAT_COLOR_INPUT_OVERLAY_MODIFIERS = [
-  NODE_REFERENCE_MODIFIER,
-];
+// const MAT_COLOR_INPUT_OVERLAY_MODIFIERS = [
+//   NODE_REFERENCE_MODIFIER,
+// ];
 
 const CONSTANTS_TO_IMPORT = {
   ...DEFAULT_CONSTANTS_TO_IMPORT,
-  getNodeModifier: generateGetNodeModifierFunctionFromArray(MAT_COLOR_INPUT_OVERLAY_MODIFIERS)
+  // getNodeModifier: generateGetNodeModifierFunctionFromArray(MAT_COLOR_INPUT_OVERLAY_MODIFIERS)
 };
 
 @Component({
   name: 'mat-color-input-overlay',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent implements OnCreate<IData>, OnInit {
   protected readonly data: IData;
+  protected readonly $close: IEmitFunction<void>;
 
   constructor(
     manager: MatOverlayManagerComponent,
     {
       targetElement,
+      $close,
       $hsvaColor,
       hsvaColor$,
       alphaDisabled$,
@@ -107,6 +113,11 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
     );
 
     super(manager, positionAndSize$);
+
+    makeMatOverlayComponentBackdropClosable(this);
+    makeMatOverlayComponentClosableWithEscape(this);
+
+    this.$close = $close;
 
     /** REFLECT COLOR ON ELEMENTS **/
 
@@ -150,26 +161,24 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
 
     /** EVENTS **/
 
-    // TODO use pointer event instead of mouse event
     let hsvaColor: IReadonlyHSVAColor = DEFAULT_MAT_COLOR_INPUT_COLOR;
     hsvaColor$((_hsvaColor: IReadonlyHSVAColor) => (hsvaColor = _hsvaColor));
 
-
-    const onMouseDown = (event: Event): HTMLElement => {
+    const onPointerDown = (event: Event): HTMLElement => {
       event.stopPropagation();
       event.preventDefault();
       const element: HTMLElement = event.currentTarget as HTMLElement;
-      (element.querySelector(':scope > .cursor') as HTMLElement).focus();
+      querySelectorOrThrow<HTMLElement>(element, ':scope > .cursor').focus();
       return element;
     };
 
     // SATURATION AND VALUE
 
-    const $mouseDownSaturationAndValueSelect = (event: MouseEvent): void => {
-      const element: HTMLElement = onMouseDown(event);
+    const $pointerDownSaturationAndValueSelect = (event: PointerEvent): void => {
+      const element: HTMLElement = onPointerDown(event);
 
-      const update = (event: MouseEvent): void => {
-        const [s, v] = getSaturationAndValueFromMouseEvent(event, element);
+      const update = (event: PointerEvent): void => {
+        const [s, v] = getSaturationAndValueFromPointerEvent(event, element);
         $hsvaColor({
           ...hsvaColor,
           s,
@@ -179,19 +188,19 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
 
       update(event);
 
-      const unsubscribeMouseMove = subscribeOnNodeConnectedTo(
+      const unsubscribePointerMove = subscribeOnNodeConnectedTo(
         this,
-        debounceFrame$$(fromEventTarget<'mousemove', MouseEvent>(window, 'mousemove')),
+        debounceFrame$$(fromEventTarget<'pointermove', PointerEvent>(window, 'pointermove')),
         update,
       );
 
-      const unsubscribeMouseUp = subscribeOnNodeConnectedTo(
+      const unsubscribePointerUp = subscribeOnNodeConnectedTo(
         this,
-        fromEventTarget<'mouseup', MouseEvent>(window, 'mouseup'),
-        (event: MouseEvent): void => {
+        fromEventTarget<'pointerup', PointerEvent>(window, 'pointerup'),
+        (event: PointerEvent): void => {
           update(event);
-          unsubscribeMouseMove();
-          unsubscribeMouseUp();
+          unsubscribePointerMove();
+          unsubscribePointerUp();
         },
       );
     };
@@ -208,7 +217,7 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
           ...hsvaColor,
           v: clampValue(hsvaColor.v + step),
         });
-      } else  if (event.key === 'ArrowLeft') {
+      } else if (event.key === 'ArrowLeft') {
         $hsvaColor({
           ...hsvaColor,
           s: clampValue(hsvaColor.s - step),
@@ -224,31 +233,31 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
 
     // HUE
 
-    const $mouseDownHueSelect = (event: MouseEvent): void => {
-      const element: HTMLElement = onMouseDown(event);
+    const $pointerDownHueSelect = (event: PointerEvent): void => {
+      const element: HTMLElement = onPointerDown(event);
 
-      const update = (event: MouseEvent): void => {
+      const update = (event: PointerEvent): void => {
         $hsvaColor({
           ...hsvaColor,
-          h: getHueFromMouseEvent(event, element),
+          h: getHueFromPointerEvent(event, element),
         });
       };
 
       update(event);
 
-      const unsubscribeMouseMove = subscribeOnNodeConnectedTo(
+      const unsubscribePointerMove = subscribeOnNodeConnectedTo(
         this,
-        debounceFrame$$(fromEventTarget<'mousemove', MouseEvent>(window, 'mousemove')),
+        debounceFrame$$(fromEventTarget<'pointermove', PointerEvent>(window, 'pointermove')),
         update,
       );
 
-      const unsubscribeMouseUp = subscribeOnNodeConnectedTo(
+      const unsubscribePointerUp = subscribeOnNodeConnectedTo(
         this,
-        fromEventTarget<'mouseup', MouseEvent>(window, 'mouseup'),
-        (event: MouseEvent): void => {
+        fromEventTarget<'pointerup', PointerEvent>(window, 'pointerup'),
+        (event: PointerEvent): void => {
           update(event);
-          unsubscribeMouseMove();
-          unsubscribeMouseUp();
+          unsubscribePointerMove();
+          unsubscribePointerUp();
         },
       );
     };
@@ -270,31 +279,31 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
 
     // ALPHA
 
-    const $mouseDownAlphaSelect = (event: MouseEvent): void => {
-      const element: HTMLElement = onMouseDown(event);
+    const $pointerDownAlphaSelect = (event: PointerEvent): void => {
+      const element: HTMLElement = onPointerDown(event);
 
-      const update = (event: MouseEvent): void => {
+      const update = (event: PointerEvent): void => {
         $hsvaColor({
           ...hsvaColor,
-          a: getAlphaFromMouseEvent(event, element),
+          a: getAlphaFromPointerEvent(event, element),
         });
       };
 
       update(event);
 
-      const unsubscribeMouseMove = subscribeOnNodeConnectedTo(
+      const unsubscribePointerMove = subscribeOnNodeConnectedTo(
         this,
-        debounceFrame$$(fromEventTarget<'mousemove', MouseEvent>(window, 'mousemove')),
+        debounceFrame$$(fromEventTarget<'pointermove', PointerEvent>(window, 'pointermove')),
         update,
       );
 
-      const unsubscribeMouseUp = subscribeOnNodeConnectedTo(
+      const unsubscribePointerUp = subscribeOnNodeConnectedTo(
         this,
-        fromEventTarget<'mouseup', MouseEvent>(window, 'mouseup'),
-        (event: MouseEvent): void => {
+        fromEventTarget<'pointerup', PointerEvent>(window, 'pointerup'),
+        (event: PointerEvent): void => {
           update(event);
-          unsubscribeMouseMove();
-          unsubscribeMouseUp();
+          unsubscribePointerMove();
+          unsubscribePointerUp();
         },
       );
     };
@@ -316,6 +325,17 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
 
     setReactiveClass(alphaDisabled$, this, 'alpha-disabled');
 
+
+    /** FOCUS **/
+
+    const $focusFirst = (): void => {
+      querySelectorOrThrow<HTMLElement>(this, '.alpha-select > .cursor').focus();
+    };
+
+    const $focusLast = (): void => {
+      querySelectorOrThrow<HTMLElement>(this, '.saturation-and-value-select > .cursor').focus();
+    };
+
     this.data = {
       saturationAndValueSelectElementBackgroundColor$,
       saturationAndValueSelectCursorElementLeft$,
@@ -324,12 +344,14 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
       alphaSelectElementBackgroundGradient$,
       alphaSelectCursorElementTop$,
       //
-      $mouseDownSaturationAndValueSelect,
+      $pointerDownSaturationAndValueSelect,
       $keyDownSaturationAndValueSelectCursor,
-      $mouseDownHueSelect,
+      $pointerDownHueSelect,
       $keyDownHueSelectCursor,
-      $mouseDownAlphaSelect,
+      $pointerDownAlphaSelect,
       $keyDownAlphaSelectCursor,
+      $focusFirst,
+      $focusLast,
     };
   }
 
@@ -337,9 +359,14 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
     return this.data;
   }
 
+  override close(origin?: IOverlayCloseOrigin): Promise<void> {
+    this.$close();
+    return super.close();
+  }
+
   override onInit(): void {
     super.onInit();
-    (this.querySelector('.cursor') as HTMLElement).focus();
+    querySelectorOrThrow<HTMLElement>(this, '.cursor').focus();
   }
 }
 
@@ -371,7 +398,7 @@ function clampAlpha(
 }
 
 
-function getSaturationAndValueFromMouseEvent(event: MouseEvent, element: HTMLElement): [number, number] {
+function getSaturationAndValueFromPointerEvent(event: PointerEvent, element: HTMLElement): [number, number] {
   const elementPositionAndSize: IPositionAndSize = getElementPositionAndSize(element);
   return [
     clampSaturation((event.clientX - elementPositionAndSize.left) / elementPositionAndSize.width),
@@ -379,12 +406,12 @@ function getSaturationAndValueFromMouseEvent(event: MouseEvent, element: HTMLEle
   ];
 }
 
-function getHueFromMouseEvent(event: MouseEvent, element: HTMLElement): number {
+function getHueFromPointerEvent(event: PointerEvent, element: HTMLElement): number {
   const elementPositionAndSize: IPositionAndSize = getElementPositionAndSize(element);
   return clampHue((event.clientY - elementPositionAndSize.top) / elementPositionAndSize.height);
 }
 
-function getAlphaFromMouseEvent(event: MouseEvent, element: HTMLElement): number {
+function getAlphaFromPointerEvent(event: PointerEvent, element: HTMLElement): number {
   const elementPositionAndSize: IPositionAndSize = getElementPositionAndSize(element);
   return clampAlpha(1 - ((event.clientY - elementPositionAndSize.top) / elementPositionAndSize.height));
 }

@@ -7,17 +7,17 @@ import { fromAnimationFrame, ISubscribeFunction } from '@lifaon/rx-js-light';
 import style from './mat-select-overlay.component.scss';
 // @ts-ignore
 import html from './mat-select-overlay.component.html?raw';
-import { ISize } from '../../../../../misc/types/size/size.type';
-import { IPositionAndSize } from '../../../../../misc/types/position-and-size/position-and-size.type';
+import { ISize } from '../../../../../../misc/types/size/size.type';
+import { IPositionAndSize } from '../../../../../../misc/types/position-and-size/position-and-size.type';
 import { map$$ } from '@lifaon/rx-js-light-shortcuts';
-import { positionAndSizeToCSSPositionAndSize } from '../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
-import { ICSSPositionAndSize } from '../../../../../misc/types/position-and-size/css-position-and-size.type';
-import { getElementPositionAndSize } from '../../../../../misc/types/position-and-size/get-element-position-and-size';
-import { MatSimpleOverlayComponent } from '../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
-import { MatOverlayManagerComponent } from '../../../overlay/overlay/manager/mat-overlay-manager.component';
+import { positionAndSizeToCSSPositionAndSize } from '../../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
+import { ICSSPositionAndSize } from '../../../../../../misc/types/position-and-size/css-position-and-size.type';
+import { getElementPositionAndSize } from '../../../../../../misc/types/position-and-size/get-element-position-and-size';
+import { MatSimpleOverlayComponent } from '../../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
+import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import {
   fitBoxRelativeToTargetBoxWith$BottomLeft$TopLeftPreference, getElementExpectedSize
-} from '../../../overlay/overlay/built-in/simple/helper/fit-box-relative-to-target-box';
+} from '../../../../overlay/overlay/built-in/simple/helper/fit-box-relative-to-target-box';
 import { INormalizedMatSelectOption } from '../types/mat-select-option.type';
 
 
@@ -46,7 +46,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'mat-select-overlay',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatSelectOverlayComponent<GValue> extends MatSimpleOverlayComponent implements OnCreate<IData<GValue>> {
   protected readonly data: IData<GValue>;

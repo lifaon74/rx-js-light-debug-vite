@@ -23,7 +23,7 @@ type IMatIconComponentInputs = [
 
 @Component({
   name: 'mat-icon',
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatIconComponent extends havingMultipleSubscribeFunctionProperties<IMatIconComponentInputs, HTMLElementConstructor>(HTMLElement) {
   constructor() {

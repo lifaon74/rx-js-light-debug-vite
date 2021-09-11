@@ -1,13 +1,8 @@
 import { MatColorInputComponent } from './mat-color-input.component';
 import { bootstrap } from '@lifaon/rx-dom';
-import { MatOverlayManagerComponent } from '../../overlay/overlay/manager/mat-overlay-manager.component';
-import { parseCSSTime } from '../../../../misc/css/quantities/time/parse-css-time';
-import { parseCSSRGBAColor } from '../../../../misc/css/color/colors/rgba/parse/parse-css-rgba-color';
-import { parseCSSHexColor, parseCSSHexColorAsNumber } from '../../../../misc/css/color/colors/rgba/parse/parse-css-hex-color';
-import { parseCSSRGBALikeColor } from '../../../../misc/css/color/colors/rgba/parse/parse-css-rgba-like-color';
-import { parseCSSAngle } from '../../../../misc/css/quantities/angle/parse-css-angle';
-import { parseCSSTurnsAsTurnsValueAndUnit } from '../../../../misc/css/quantities/angle/units/turns/parse-css-turns-as-turns-value-and-unit';
-import { parseCSSHSLAColor, parseCSSHSLColor } from '../../../../misc/css/color/colors/hsla/parse/parse-css-hsla-color';
+import { MatOverlayManagerComponent } from '../../../overlay/overlay/manager/mat-overlay-manager.component';
+import { interval } from '../../../../../../../../rx-js-light/dist';
+import { map$$, shareR$$ } from '../../../../../../../../rx-js-light-shortcuts/dist';
 
 /** BOOTSTRAP FUNCTION **/
 
@@ -23,6 +18,13 @@ export function matColorInputExample() {
 
   const colorInput = new MatColorInputComponent();
   bootstrap(colorInput);
+
+  // colorInput.value$ = shareR$$(map$$(interval(1000), () => {
+  //   const rand = () => Math.floor(Math.random() * 255);
+  //   return `rgb(${ rand() }, ${ rand() }, ${ rand() })`;
+  // }));
+  //
+  // colorInput.readonly = true;
 
   // console.log(parseCSSTime('15ms'));/*/
   // console.log(parseCSSRGBAColor('rgba(100%, 2, 3,0.1)'));

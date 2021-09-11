@@ -1,0 +1,17 @@
+import {
+  createHigherOrderVariable, ICreateHigherOrderVariable
+} from '../../../../../misc/create-higher-order-variable';
+import { createMatInputValue$, IMatInputComponentInputs } from '../input/mat-input.component';
+
+export type IMatInputFieldComponentInputs = [
+  ...IMatInputComponentInputs<string>,
+  ['placeholder', string],
+];
+
+export function createMatInputFieldValue$(): ICreateHigherOrderVariable<string> {
+  return createMatInputValue$<string>('');
+}
+
+export function createMatInputFieldPlaceholder$(): ICreateHigherOrderVariable<string> {
+  return createHigherOrderVariable<string>('');
+}

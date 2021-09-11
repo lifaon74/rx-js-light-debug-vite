@@ -1,5 +1,5 @@
-@import '../../../../../../../style/mixins';
-@import '../style/constrast-background-image-url';
+@import '../../../../../../../../style/mixins';
+@import '../style/contrast-background-image-url';
 
 $mat-color-input-overlay-border-color: #aaa;
 
@@ -103,6 +103,11 @@ $mat-color-input-overlay-border-color: #aaa;
       & > .cursor {
         @extend %mat-color-input-overlay-flat-cursor;
       }
+    }
+
+    & > .focus-loop-helper {
+      width: 0;
+      border: 0;
     }
   }
 

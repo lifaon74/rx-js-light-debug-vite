@@ -40,7 +40,7 @@ const CONSTANTS_TO_IMPORT = {
       {{ item.text$ }}
     </div>
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
       padding: 20px;
@@ -61,7 +61,7 @@ const CONSTANTS_TO_IMPORT = {
     :host > .item.selected {
       background-color: #ddd;
     }
-  `),
+  `)],
 })
 export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;

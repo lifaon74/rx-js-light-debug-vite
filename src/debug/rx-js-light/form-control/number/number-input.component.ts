@@ -74,7 +74,7 @@ const CONSTANTS_TO_IMPORT = {
       </div>
     </div>
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppNumberInputComponent extends havingMultipleSubscribeFunctionProperties<IAppNumberInputComponentInputs, HTMLElementConstructor>(HTMLElement) implements OnCreate<IData>, OnInit {
   readonly validity: NumberInputValidity;

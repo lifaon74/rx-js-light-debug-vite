@@ -48,7 +48,7 @@ const CONSTANTS_TO_IMPORT = {
     </svg>
   `, CONSTANTS_TO_IMPORT),
   // template: (variables: ICompiledComponentTemplateFunctionVariables<IData>) => template(variables, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: inline-block;
     }
@@ -57,7 +57,7 @@ const CONSTANTS_TO_IMPORT = {
       stroke: var(--app-progress-ring-color, #87c5fa);
       transition: stroke-dashoffset var(--app-progress-ring-transition-duration, 250ms);
     }
-  `),
+  `)],
 })
 export class AppProgressRingComponent extends HTMLElement implements OnCreate<IData> {
 

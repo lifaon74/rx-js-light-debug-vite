@@ -5,7 +5,11 @@ import { MatOverlayComponent } from '../mat-overlay.component';
 export function makeMatOverlayComponentBackdropClosable(
   node: MatOverlayComponent,
 ): IUnsubscribeFunction {
-  return subscribeOnNodeConnectedTo(
+  const originalValue: string = node.style.getPropertyValue('pointer-events');
+  const originalPriority: string = node.style.getPropertyPriority('pointer-events');
+  node.style.setProperty('pointer-events', 'auto');
+
+  const unsubscribe = subscribeOnNodeConnectedTo(
     node,
     fromEventTarget<'click', MouseEvent>(node, 'click'),
     (event: MouseEvent): void => {
@@ -14,4 +18,9 @@ export function makeMatOverlayComponentBackdropClosable(
       }
     },
   );
+
+  return () => {
+    unsubscribe();
+    node.style.setProperty('pointer-events', originalValue, originalPriority);
+  };
 }

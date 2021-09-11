@@ -1,0 +1,31 @@
+<div
+  class="color-preview"
+  [attr.tabindex]="$.disabledTabindex$"
+  (click)="$.$clickColorPreview"
+  (keydown)="$.$keyDownColorPreview"
+>
+  <div [style.background-color]="$.previewColor$"></div>
+</div>
+
+<div
+  class="color-value-input"
+>
+  <input
+    type="text"
+    [disabled]="$.disabled$"
+    [readonly]="$.readonly$"
+    $input-value="[$.$inputValue$]"
+  >
+</div>
+
+<div
+  class="color-format-button"
+  tabindex="0"
+  (click)="$.$clickColorFormatButton"
+  (keydown)="$.$keyDownColorFormatButton"
+>
+  {{ $.selectedColorFormat$ }}
+</div>
+
+
+

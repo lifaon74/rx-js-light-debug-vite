@@ -63,7 +63,7 @@ const CONSTANTS_TO_IMPORT = {
       [style.width]="$.percent"
     >{{ $.percent }}</div>
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       --app-progress-bar-color: #87c5fa;
 
@@ -84,7 +84,7 @@ const CONSTANTS_TO_IMPORT = {
       background-color: var(--app-progress-bar-color, #87c5fa);
       transition: width 500ms;
     }
-  `),
+  `)],
 })
 export class AppProgressBarComponent extends HTMLElement implements OnCreate<IData> {
 

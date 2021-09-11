@@ -48,11 +48,11 @@ function customElementWithoutObservable() {
     }
 
     // NEW - START
-    get prefix(): string {
+    override get prefix(): string {
       return this._prefix;
     }
 
-    set prefix(value: string) {
+    override set prefix(value: string) {
       this._prefix = value;
       // OOPS every other assignation of this.fullName have been forgotten leading to invalid value if someone set 'lastName' for example
       this.fullName = `${ this._prefix } ${ this._firstName } ${ this._lastName }`;
@@ -123,11 +123,11 @@ function customElementWithObservable() {
       this._$lastName$.emit(value);
     }
 
-    get prefix(): string {
+    override get prefix(): string {
       return this._$prefix$.getValue();
     }
 
-    set prefix(value: string) {
+    override set prefix(value: string) {
       this._$prefix$.emit(value);
     }
   }

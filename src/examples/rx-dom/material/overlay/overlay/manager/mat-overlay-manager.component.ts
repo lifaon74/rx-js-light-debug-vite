@@ -35,7 +35,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'mat-overlay-manager',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatOverlayManagerComponent extends HTMLElement implements OnCreate<IData> {
 
@@ -103,6 +103,14 @@ export class MatOverlayManagerComponent extends HTMLElement implements OnCreate<
         overlays.splice(index, 1);
       });
     }
+  }
+
+  isClosed(
+    component: MatOverlayComponent,
+  ): boolean {
+    return !this._$overlays$.getValue().some((overlay: IOverlay): boolean => {
+      return overlay.component === component;
+    });
   }
 
   onCreate(): IData {

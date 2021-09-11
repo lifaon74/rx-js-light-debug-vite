@@ -3,16 +3,16 @@
 :host {
   $icon-vertical-offset: 5%;
 
-  --mat-icon-size-inner: 20px;
-  --mat-icon-size-outer-x: var(--mat-icon-size-inner);
-  --mat-icon-size-outer-y: var(--mat-icon-size-outer-x);
+  $mat-icon-size-inner: var(--mat-icon-size-inner, 20px);
+  $mat-icon-size-outer-x: var(--mat-icon-size-outer-x, $mat-icon-size-inner);
+  $mat-icon-size-outer-y: var(--mat-icon-size-outer-y, $mat-icon-size-outer-x);
 
   display: inline-block;
   cursor: inherit;
   user-select: none;
   position: relative;
-  width: var(--mat-icon-size-outer-x);
-  height: var(--mat-icon-size-outer-y);
+  width: $mat-icon-size-outer-x;
+  height: var($mat-icon-size-outer-y);
   overflow: hidden;
 
   &::before {
@@ -22,12 +22,12 @@
     text-align: center;
     left: 50%;
     top: 50% + $icon-vertical-offset;
-    margin-left: calc(var(--mat-icon-size-inner) * -0.5);
-    margin-top: calc(var(--mat-icon-size-inner) * -0.5);
-    width: var(--mat-icon-size-inner);
-    height: var(--mat-icon-size-inner);
-    font-size: var(--mat-icon-size-inner);
-    line-height: var(--mat-icon-size-inner);
+    margin-left: calc(#{$mat-icon-size-inner} * -0.5);
+    margin-top: calc(#{$mat-icon-size-inner} * -0.5);
+    width: $mat-icon-size-inner;
+    height: $mat-icon-size-inner;
+    font-size: $mat-icon-size-inner;
+    line-height: $mat-icon-size-inner;
   }
 }
 

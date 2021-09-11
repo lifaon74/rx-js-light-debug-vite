@@ -102,7 +102,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'app-files-list',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppFilesListComponent extends HTMLElement implements OnCreate<IData> {
 

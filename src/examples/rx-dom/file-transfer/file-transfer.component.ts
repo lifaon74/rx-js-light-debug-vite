@@ -46,7 +46,7 @@ const NO_PROGRESS = createProgress(0, Number.POSITIVE_INFINITY);
 @Component({
   name: 'app-file-transfer',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppFileTransferComponent extends HTMLElement implements OnCreate<IData>, OnDisconnect {
   protected readonly data: IData;

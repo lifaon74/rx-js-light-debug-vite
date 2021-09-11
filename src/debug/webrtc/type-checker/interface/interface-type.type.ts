@@ -6,5 +6,5 @@ export type IInterfaceTypeProperty = [PropertyKey, IAnyTypeUnion];
 export interface IInterfaceType extends IType {
   name: 'interface';
   properties: Iterable<IInterfaceTypeProperty>;
-  extraPropertiesType?: IAnyTypeUnion;
+  extraPropertiesType?: IAnyTypeUnion | undefined;
 }

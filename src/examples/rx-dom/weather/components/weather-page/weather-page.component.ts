@@ -195,7 +195,7 @@ const CONSTANTS_TO_IMPORT = {
 @Component({
   name: 'app-weather-page',
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppWeatherPageComponent extends HTMLElement implements OnCreate<IData> {
 

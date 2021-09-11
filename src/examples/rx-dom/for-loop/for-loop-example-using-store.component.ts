@@ -3,12 +3,8 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
 import { IMulticastReplayLastSource, ISubscribeFunction, of } from '@lifaon/rx-js-light';
-import { createStore } from '../../store/store/create-store';
-import { createAction } from '../../store/action/create-action';
-import { mapState } from '../../store/selector/map-state';
-import { immutableArrayReplace } from '../../store/helpers/immutable/array/immutable-array-replace';
-import { let$$ } from '../../../../../rx-js-light-shortcuts/dist';
-import { getStoreState } from '../../store/store/get-store-state';
+import { let$$ } from '@lifaon/rx-js-light-shortcuts';
+import { createAction, createStore, getStoreState, immutableArrayReplace, mapState } from '@lifaon/rx-store';
 
 
 /** STORE **/
@@ -137,7 +133,7 @@ const CONSTANTS_TO_IMPORT = {
       {{ of(item.text) }}
     </div>
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
       padding: 20px;
@@ -158,7 +154,7 @@ const CONSTANTS_TO_IMPORT = {
     :host > .item.selected {
       background-color: #ddd;
     }
-  `),
+  `)],
 })
 export class AppForLoopExampleUsingStoreComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;

@@ -51,7 +51,7 @@ const CONSTANTS_TO_IMPORT = {
     </div>
   `, CONSTANTS_TO_IMPORT),
   // template: (variables: any) => template(variables, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
       /* all: inherit; */
@@ -60,7 +60,7 @@ const CONSTANTS_TO_IMPORT = {
     :host > .max-length-container:not(.valid) {
       color: red;
     }
-  `),
+  `)],
   useShadowDOM: true,
 })
 export class AppHelloWorldComponent extends HTMLElement implements OnCreate<IData> {

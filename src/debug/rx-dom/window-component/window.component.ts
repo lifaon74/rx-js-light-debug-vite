@@ -261,7 +261,7 @@ type IWindowData = any;
   //   // @ts-ignore
   //   new URL('./window.component.css', import.meta.url).href,
   // ),
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowData>, OnConnect, OnDisconnect, OnInit {
   protected readonly data: IWindowData;

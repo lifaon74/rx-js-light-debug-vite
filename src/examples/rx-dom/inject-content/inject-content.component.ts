@@ -61,11 +61,11 @@ const CONSTANTS_TO_IMPORT = {
       ></rx-inject-content>
     </div>
   `, CONSTANTS_TO_IMPORT),
-  style: compileReactiveCSSAsComponentStyle(`
+  styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
     }
-  `),
+  `)],
 })
 export class AppInjectContentComponent extends HTMLElement implements OnCreate<IData> {
 

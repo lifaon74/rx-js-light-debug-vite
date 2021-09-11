@@ -3,7 +3,7 @@ import { fromEventTarget, of } from '@lifaon/rx-js-light';
 import { MatAlertModalComponent } from './build-in/alert/mat-alert-modal.component';
 import { MatOverlayManagerComponent } from './overlay/manager/mat-overlay-manager.component';
 import { MatTooltipModalComponent } from './build-in/tooltip/mat-tooltip.component';
-import { createTooltipModifier } from './build-in/tooltip/mat-tooltip.modifier';
+import { createMatTooltipModifier } from './build-in/tooltip/mat-tooltip.modifier';
 
 const LOREM_IPSUM = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -82,7 +82,7 @@ export function overlayComponentExampleTooltip2() {
 
   /*---*/
 
-  const TOOLTIP_MODIFIER = createTooltipModifier(manager);
+  const TOOLTIP_MODIFIER = createMatTooltipModifier(manager);
 
   TOOLTIP_MODIFIER.modify(button, toReactiveContent(LOREM_IPSUM));
 }

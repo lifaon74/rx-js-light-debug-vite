@@ -1,0 +1,18 @@
+@import './style/mat-input-field.variables';
+
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: $mat-input-field-height;
+  border: $mat-input-field-border-width solid $mat-input-field-border-color;
+  background-color: $mat-input-field-background-color;
+  border-radius: 3px;
+
+  & > * {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+}
+

@@ -1,0 +1,36 @@
+@import '../../../../../../../style/mixins';
+
+$mat-field-height: 40px;
+
+$mat-field-color: #333;
+$mat-field-border-width: 1px;
+$mat-field-border-color: #aaa;
+$mat-field-background-color: #fff;
+
+$mat-field-placeholder-color: #999;
+
+%mat-field {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: $mat-field-height;
+  border: $mat-field-border-width solid $mat-field-border-color;
+  background-color: $mat-field-background-color;
+  border-radius: 3px;
+
+  & > * {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+}
+
+%mat-field-input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0 10px;
+  font-size: 16px;
+  color: $mat-field-color;
+  background-color: transparent;
+}

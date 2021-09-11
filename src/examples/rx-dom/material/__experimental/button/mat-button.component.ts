@@ -26,7 +26,7 @@ type IMatButtonComponentInputs = [
 
 @Component({
   name: 'mat-button',
-  style: compileReactiveCSSAsComponentStyle(style),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatButtonComponent extends havingMultipleSubscribeFunctionProperties<IMatButtonComponentInputs, HTMLElementConstructor>(HTMLElement) {
   constructor() {
