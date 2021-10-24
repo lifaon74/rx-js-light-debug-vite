@@ -1,0 +1,111 @@
+@import '../../../../../../../../style/mixins';
+
+$mat-select-height: 40px;
+
+$mat-select-color: #333;
+$mat-select-border-width: 1px;
+$mat-select-border-color: #aaa;
+$mat-select-background-color: #fff;
+//$mat-select-background-color: green;
+
+$mat-select-placeholder-color: #999;
+$mat-select-filter-input-color: #555;
+$mat-select-clear-icon-width: $mat-select-height;
+
+:host {
+  display: block;
+  width: 100%;
+  height: $mat-select-height;
+  border: $mat-select-border-width solid $mat-select-border-color;
+  background-color: $mat-select-background-color;
+
+  & > .field-container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+
+    & > .select-value,
+    & > .select-placeholder,
+    & > .filter-input,
+    & > .clear-icon {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+    }
+
+    & > .select-value,
+    & > .select-placeholder,
+    & > .filter-input {
+      left: 0;
+      right: 0;
+      background-color: transparent;
+      padding: 0 10px;
+      font-size: 16px;
+    }
+
+    & > .select-value,
+    & > .select-placeholder {
+      line-height: ($mat-select-height - (2 * $mat-select-border-width));
+      user-select: none;
+    }
+
+    & > .select-placeholder {
+      color: $mat-select-placeholder-color;
+      font-style: italic;
+    }
+
+    & > .select-value {
+      color: $mat-select-color;
+    }
+
+    & > .filter-input {
+      & > input {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        font-size: 16px;
+        color: $mat-select-filter-input-color;
+      }
+    }
+
+    & > .clear-icon {
+      width: $mat-select-clear-icon-width;
+      right: 0;
+      background-color: red;
+    }
+
+    &.mode-value {
+      & > .select-placeholder,
+      & > .filter-input {
+        display: none;
+      }
+
+      & > .select-value {
+        right: $mat-select-clear-icon-width;
+      }
+    }
+
+    &.mode-placeholder {
+      & > .select-value,
+      & > .filter-input,
+      & > .clear-icon {
+        display: none;
+      }
+    }
+
+    &.mode-filter {
+      & > .select-value,
+      & > .select-placeholder {
+        display: none;
+      }
+
+      & > .filter-input {
+        right: $mat-select-clear-icon-width;
+      }
+    }
+  }
+
+
+}
+

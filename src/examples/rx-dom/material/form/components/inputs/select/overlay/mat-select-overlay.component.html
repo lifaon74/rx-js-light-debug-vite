@@ -1,0 +1,17 @@
+<div class="content">
+  <div class="options">
+<!--    ; trackBy: $.trackById-->
+    <div
+      class="option"
+      *for="let option of $.options$"
+      (mousedown)="() => $.onClickOption(option)"
+      [class.selected]="option.$selected$.subscribe"
+      [class.disabled]="option.disabled$"
+    >
+      <div class="label">
+        {{ option.label$ }}
+      </div>
+    </div>
+  </div>
+</div>
+

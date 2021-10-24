@@ -8,6 +8,7 @@
     "serve": "vite preview",
     "__aot__": "",
     "build:aot": "vite build",
+    "build:aot:run": "vite build",
     "__plugins__": "",
     "plugins:tsc:watch": "tsc -p plugins/tsconfig.json -w",
     "plugins:functional:debug": "node --experimental-specifier-resolution=node plugins/functional/helpers/debug-functional.js",
@@ -18,19 +19,19 @@
   },
   "sideEffects": false,
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
     "@types/dompurify": "^2.2.3",
     "@types/estree": "^0.0.50",
-    "@types/requestidlecallback": "^0.3.1",
-    "@types/resize-observer-browser": "^0.1.5",
-    "acorn": "^8.4.1",
-    "acorn-walk": "^8.1.1",
+    "@types/requestidlecallback": "^0.3.4",
+    "@types/resize-observer-browser": "^0.1.6",
+    "acorn": "^8.5.0",
+    "acorn-walk": "^8.2.0",
     "astring": "^1.7.5",
     "btoa": "^1.2.1",
     "puppeteer": "^10.2.0",
-    "sass": "^1.38.1",
-    "typescript": "^4.4.2",
-    "vite": "^2.5.2"
+    "sass": "^1.41.0",
+    "typescript": "^4.4.3",
+    "vite": "^2.5.7"
   },
   "__dependencies": {
     "@lifaon/rx-js-light": "lastest",
@@ -39,9 +40,10 @@
   },
   "dependencies": {
     "@lifaon/rx-dom": "1.2.0",
-    "@lifaon/rx-js-light": "1.1.4",
-    "@lifaon/rx-js-light-shortcuts": "1.1.4",
+    "@lifaon/rx-js-light": "1.2.0",
+    "@lifaon/rx-js-light-shortcuts": "1.2.0",
     "@lifaon/rx-store": "1.0.0",
+    "@lifaon/rx-dom-aot-plugin": "1.0.0",
     "dompurify": "^2.3.1",
     "rxjs": "^7.3.0",
     "tslib": "^2.3.1"

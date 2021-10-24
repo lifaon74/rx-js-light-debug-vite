@@ -5,12 +5,10 @@
   "scripts": {
     "__SELF_BUILD__": "",
     "self:dev": "npm run self:tsc:watch",
-    "self:tsc:watch": "tsc -p ./tsconfig.json -w --outfile dist/index.js",
-    "plugins:aot:aot": "node --experimental-specifier-resolution=node plugins/aot/aot",
-    "plugins:aot:rollup": "rollup --input plugins/aot/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format umd --name compiler --plugin @rollup/plugin-node-resolve --watch"
+    "self:tsc:watch": "tsc -p ./tsconfig.json -w"
   },
   "sideEffects": false,
   "dependencies": {
-    "typescript": "^4.3.4"
+    "typescript": "^4.4.3"
   }
 }

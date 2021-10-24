@@ -24,7 +24,6 @@ import { i18nExample } from './examples/rx-js-light/i18n/i18n.example';
 import { rxjsLightShortcutsExample } from './examples/rx-js-light/shortcuts/rx-js-light-shortcuts.example';
 import { forLoopExample } from './examples/rx-dom/for-loop/for-loop.example';
 import { rxJSLightPerformancesExample } from './examples/rx-js-light/performances/performances.example';
-import { helloWorldDebug } from './examples/rx-dom/hello-world/hello-world.debug';
 import { lazyLoadExample } from './examples/rx-dom/lazy-load/lazy-load.example';
 import { injectContentExample } from './examples/rx-dom/inject-content/inject-content.example';
 import { sensorsExample } from './examples/rx-js-light/sensors/sensors.example';
@@ -34,14 +33,21 @@ import { stateMachineDebug } from './debug/state-machine/state-machine.debug';
 import { observableArrayExample } from './examples/rx-js-light/observable-array/observable-array.example';
 import { webRTCDebug } from './debug/webrtc/webrtc.debug';
 import { storeExample } from './examples/rx-js-light/store/store.example';
-import { debugReactiveDOMCompiler } from './debug/rx-dom/debug-reactive-dom-compiler';
+import { debugReactiveDOMCompiler } from './debug/rx-dom/aot/debug-reactive-dom-compiler';
 import { weatherExample } from './examples/rx-dom/weather/weather.example';
 import { overlayComponentExample } from './examples/rx-dom/material/overlay/overlay-component.example';
 import { pictureExample } from './examples/rx-js-light/picture/picture.example';
 import { matIconExample } from './examples/rx-dom/material/icon/mat-icon.example';
 import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
-import { matSelectExample } from './examples/rx-dom/material/form/elements/select/mat-select.example';
-import { matColorInputExample } from './examples/rx-dom/material/form/elements/color/mat-color-input.example';
+import { matSelectExample } from './examples/rx-dom/material/form/components/inputs/select/mat-select.example';
+import { matColorInputExample } from './examples/rx-dom/material/form/components/inputs/color/mat-color-input.example';
+import { Component } from '@lifaon/rx-dom';
+import { aotExample } from './debug/rx-dom/aot-component/aot.example';
+import { debugTSX } from './debug/tsx/debug-tsx';
+import { matSwitchInputExample } from './examples/rx-dom/material/form/components/inputs/switch/mat-switch-input.example';
+import { matCheckboxInputExample } from './examples/rx-dom/material/form/components/inputs/checkbox/mat-checkbox-input.example';
+import { materialExample } from './examples/rx-dom/material/material.example';
+
 
 function run() {
   // debugObservableV5();
@@ -49,7 +55,6 @@ function run() {
   // debugReactiveDOM();
   // debugReactiveDOMCompiler();
   // formControlDebug();
-  // helloWorldDebug();
   // stateMachineDebug();
   // webRTCDebug();
 
@@ -59,10 +64,6 @@ function run() {
   // dynamicDateExample();
   // mousePositionExample();
   // overlayComponentExample();
-  // matIconExample();
-  // matButtonExample();
-  // matSelectExample();
-  matColorInputExample();
   // infinitePostsExample();
   // progressBarExample();
   // progressBarLazyExample();
@@ -91,6 +92,9 @@ function run() {
   // storeExample();
   // weatherExample();
   // pictureExample();
+  // aotExample();
+  // debugTSX();
+  materialExample();
 }
 
 run();

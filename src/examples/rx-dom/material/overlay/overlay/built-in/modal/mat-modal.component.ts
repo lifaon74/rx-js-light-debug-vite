@@ -1,5 +1,5 @@
 // @ts-ignore
-import style from './mat-modal.component.scss';
+import style from './mat-modal.component.scss?inline';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
 import { compileReactiveCSSAsComponentStyle, injectComponentStyle } from '@lifaon/rx-dom';
 import { MatOverlayWithAnimationComponent } from '../../component/with-animation/overlay-with-animation.component';

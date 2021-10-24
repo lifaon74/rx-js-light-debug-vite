@@ -1,8 +1,6 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  createDocumentFragment, DEFAULT_CONSTANTS_TO_IMPORT, getDocument, IReactiveContent, nodeAppendChild, OnCreate,
-  querySelectorOrThrow,
-  subscribeOnNodeConnectedTo
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, createDocumentFragment,
+  getDocument, IReactiveContent, nodeAppendChild, OnCreate, querySelectorOrThrow, subscribeOnNodeConnectedTo
 } from '@lifaon/rx-dom';
 import {
   IMulticastReplayLastSource, ISubscribeFunction, mutateReadonlyReplayLastSourceArray, single
@@ -11,10 +9,11 @@ import { MatOverlayComponent } from '../component/mat-overlay.component';
 import { let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 // @ts-ignore
-import style from './mat-overlay-manager.component.scss';
+import style from './mat-overlay-manager.component.scss?inline';
 // @ts-ignore
 import html from './mat-overlay-manager.component.html?raw';
 import { IMatOverlayComponentConstructor } from '../component/mat-overlay-component-constructor.type';
+
 /** INTERFACES **/
 
 interface IOverlay {
@@ -28,13 +27,9 @@ interface IData {
 
 /** COMPONENT **/
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
-
 @Component({
   name: 'mat-overlay-manager',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatOverlayManagerComponent extends HTMLElement implements OnCreate<IData> {

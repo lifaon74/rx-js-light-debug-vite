@@ -43,7 +43,10 @@
     "baseUrl": ".",
     "module": "esnext",
     "importHelpers": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment"
   },
   "formatCodeOptions": {
     "indentSize": 2,

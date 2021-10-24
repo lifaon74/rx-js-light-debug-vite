@@ -1,6 +1,5 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate
 } from '@lifaon/rx-dom';
 import { IEmitFunction, ISubscribeFunction, single } from '@lifaon/rx-js-light';
 // @ts-ignore
@@ -23,13 +22,9 @@ interface IData {
 
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
-
 @Component({
   name: 'mat-alert-modal',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatAlertModalComponent extends MatModalComponent implements OnCreate<IData> {

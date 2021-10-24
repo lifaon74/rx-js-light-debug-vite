@@ -1,6 +1,6 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, IDocumentFragmentOrNull, IReactiveContent, OnCreate, querySelector,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDocumentFragmentOrNull,
+  IReactiveContent, OnCreate, querySelector,
 } from '@lifaon/rx-dom';
 import { fromAnimationFrame, ISubscribeFunction } from '@lifaon/rx-js-light';
 // @ts-ignore
@@ -35,13 +35,9 @@ interface IData {
   readonly content$: ISubscribeFunction<IDocumentFragmentOrNull>;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
-
 @Component({
   name: 'mat-tooltip-modal',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatTooltipModalComponent extends MatSimpleOverlayComponent implements OnCreate<IData> {

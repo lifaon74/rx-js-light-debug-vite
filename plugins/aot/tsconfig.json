@@ -37,9 +37,10 @@
       "../node_modules/@types"
     ],
     "baseUrl": ".",
-    "module": "CommonJS",
+    "module": "ESNext",
     "importHelpers": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "outDir": "dist"
   },
   "formatCodeOptions": {
     "indentSize": 2,

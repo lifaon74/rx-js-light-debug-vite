@@ -1,5 +1,5 @@
 // @ts-ignore
-import style from './mat-simple-overlay.component.scss';
+import style from './mat-simple-overlay.component.scss?inline';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
 import { compileReactiveCSSAsComponentStyle, injectComponentStyle, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
 import { combineLatest, ISubscribeFunction } from '@lifaon/rx-js-light';

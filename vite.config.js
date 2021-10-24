@@ -1,12 +1,11 @@
-// import aot from './plugins/aot/aot.js';
-import optimizeFunctionalPlugin from './plugins/functional/functional.bundled.mjs';
+import { aotPlugin } from '@lifaon/rx-dom-aot-plugin';
 
 /**
  * @type {import('vite').UserConfig}
  */
 const config = {
-
   build: {
+    target: 'es2015',
     terserOptions: {
       toplevel: true,
       ecma: 2020,
@@ -30,8 +29,7 @@ const config = {
     },
   },
   plugins: [
-    // aot(),
-    // optimizeFunctionalPlugin(),
+    aotPlugin(),
   ],
   server: {
     https: false,

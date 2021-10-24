@@ -1,0 +1,18 @@
+<label
+  class="checkbox-wrapper"
+  [htmlFor]="$.id$"
+  tabindex="0"
+>
+  <input
+    type="checkbox"
+    tabindex="-1"
+    [id]="$.id$"
+    [disabled]="$.disabled$"
+    [readonly]="$.readonly$"
+    [checked]="$.inputChecked$"
+    [indeterminate]="$.inputIndeterminate$"
+    (input)="$.$inputChange"
+  >
+
+  <div class="icon"></div>
+</label>
