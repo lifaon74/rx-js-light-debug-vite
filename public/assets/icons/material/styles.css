@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+[data-icon]:before {
+  font-family: "material" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-mat-"]:before,
+[class*=" icon-mat-"]:before {
+  font-family: "material" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-mat-eyedropper:before {
+  content: "\62";
+}
+.icon-mat-check:before {
+  content: "\61";
+}
+.icon-mat-minus:before {
+  content: "\63";
+}
+.icon-mat-search:before {
+  content: "\64";
+}
+.icon-mat-search-minus:before {
+  content: "\65";
+}
+.icon-mat-search-plus:before {
+  content: "\66";
+}
+.icon-mat-calendar:before {
+  content: "\67";
+}

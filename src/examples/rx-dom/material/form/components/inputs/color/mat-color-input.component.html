@@ -1,8 +1,8 @@
 <div
   class="color-preview"
   [attr.tabindex]="$.disabledTabindex$"
-  (click)="$.$clickColorPreview"
-  (keydown)="$.$keyDownColorPreview"
+  (click)="$.$onClickColorPreview"
+  (keydown)="$.$onKeyDownColorPreview"
 >
   <div [style.background-color]="$.previewColor$"></div>
 </div>
@@ -21,8 +21,8 @@
 <div
   class="color-format-button"
   tabindex="0"
-  (click)="$.$clickColorFormatButton"
-  (keydown)="$.$keyDownColorFormatButton"
+  (click)="$.$onClickColorFormatButton"
+  (keydown)="$.$onKeyDownColorFormatButton"
 >
   {{ $.selectedColorFormat$ }}
 </div>

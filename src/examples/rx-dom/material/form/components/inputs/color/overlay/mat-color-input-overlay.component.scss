@@ -1,7 +1,10 @@
 @import '../../../../../../../../../style/mixins';
+@import '../../shared/input-field/style/mat-input-field.variables';
 @import '../style/contrast-background-image-url';
 
 $mat-color-input-overlay-border-color: #aaa;
+$mat-color-input-overlay-icon-color: #333;
+$mat-color-input-overlay-icon-color-hover: #000;
 
 %mat-color-input-overlay-cursor {
   //$border-color-1: #666;
@@ -14,7 +17,7 @@ $mat-color-input-overlay-border-color: #aaa;
   outline: none;
 
   &:focus {
-    box-shadow: 0 0 0 2px #000, $inset-border;
+    box-shadow: 0 0 0 2px $mat-input-field-border-color-focused, $inset-border;
   }
 
   &:not(:focus) {
@@ -44,8 +47,10 @@ $mat-color-input-overlay-border-color: #aaa;
   $mat-color-input-overlay-vertical-margin: 10px;
   $mat-color-input-overlay-hue-select-width: 14px;
   $mat-color-input-overlay-alpha-select-width: 14px;
+  $mat-color-input-overlay-tools-width: 20px;
 
   display: block;
+  font-size: 0;
 
   & > .content {
     padding: 0;
@@ -62,7 +67,11 @@ $mat-color-input-overlay-border-color: #aaa;
 
     & > .saturation-and-value-select {
       left: $mat-color-input-overlay-horizontal-margin;
-      right: $mat-color-input-overlay-hue-select-width + $mat-color-input-overlay-alpha-select-width + ($mat-color-input-overlay-horizontal-margin * 3);
+      right: $mat-color-input-overlay-hue-select-width
+        + $mat-color-input-overlay-alpha-select-width
+        + $mat-color-input-overlay-tools-width
+        + ($mat-color-input-overlay-horizontal-margin * 4);
+
       background-image: linear-gradient(to bottom, transparent 0%, black 100%), linear-gradient(to right, white 0%, rgba(white, 0) 100%);
 
       & > .cursor {
@@ -81,7 +90,9 @@ $mat-color-input-overlay-border-color: #aaa;
 
     & > .hue-select {
       width: $mat-color-input-overlay-hue-select-width;
-      right: $mat-color-input-overlay-alpha-select-width + ($mat-color-input-overlay-horizontal-margin * 2);
+      right: $mat-color-input-overlay-alpha-select-width
+        + $mat-color-input-overlay-tools-width
+        + ($mat-color-input-overlay-horizontal-margin * 3);
       background-image: linear-gradient(to bottom, #ff0000 0%, #ff6000 6.25%, #ffbf00 12.5%, #dfff00 18.75%, #80ff00 25%, #20ff00 31.25%, #00ff40 37.5%, #00ff9f 43.75%, #00ffff 50%, #009fff 56.25%, #0040ff 62.5%, #2000ff 68.75%, #7f00ff 75%, #df00ff 81.25%, #ff00bf 87.5%, #ff0060 93.75%, #ff0000 100%);
 
       & > .cursor {
@@ -93,7 +104,8 @@ $mat-color-input-overlay-border-color: #aaa;
       @include contrast-background-image-mixin(50%);
 
       width: $mat-color-input-overlay-alpha-select-width;
-      right: $mat-color-input-overlay-horizontal-margin;
+      right: $mat-color-input-overlay-tools-width
+        + ($mat-color-input-overlay-horizontal-margin * 2);
 
       & > .alpha-select-gradient {
         position: absolute;
@@ -105,6 +117,33 @@ $mat-color-input-overlay-border-color: #aaa;
       }
     }
 
+    & > .tools-container {
+      width: $mat-color-input-overlay-tools-width;
+      right: $mat-color-input-overlay-horizontal-margin;
+      border: 0;
+
+      & > * {
+        border: 1px solid $mat-color-input-overlay-border-color;
+        border-radius: 3px;
+        color: $mat-color-input-overlay-icon-color;
+
+        &:focus {
+          box-shadow: inset 0 0 0 1px $mat-input-field-border-color-focused;
+          border-color: $mat-input-field-border-color-focused;
+        }
+
+        &:not(:focus) {
+          &:hover {
+            color: $mat-color-input-overlay-icon-color-hover;
+          }
+        }
+      }
+
+      & > .color-picker-icon {
+        @include square-icon-mixin($mat-color-input-overlay-tools-width * 0.6, $mat-color-input-overlay-tools-width);
+      }
+    }
+
     & > .focus-loop-helper {
       width: 0;
       border: 0;
@@ -113,16 +152,67 @@ $mat-color-input-overlay-border-color: #aaa;
 
   &.alpha-disabled {
     & > .content {
-      & > .saturation-and-value-select {
-        right: $mat-color-input-overlay-hue-select-width + ($mat-color-input-overlay-horizontal-margin * 2);
-      }
-
-      & > .hue-select {
-        right: $mat-color-input-overlay-horizontal-margin;
-      }
-
       & > .alpha-select {
         display: none;
+      }
+    }
+
+    &.tools-disabled {
+      & > .content {
+        & > .saturation-and-value-select {
+          right: $mat-color-input-overlay-hue-select-width
+            + ($mat-color-input-overlay-horizontal-margin * 2);
+        }
+
+        & > .hue-select {
+          right: $mat-color-input-overlay-horizontal-margin;
+        }
+      }
+    }
+
+    &:not(.tools-disabled) {
+      & > .content {
+        & > .saturation-and-value-select {
+          right: $mat-color-input-overlay-hue-select-width
+            + $mat-color-input-overlay-tools-width
+            + ($mat-color-input-overlay-horizontal-margin * 3);
+        }
+
+        & > .hue-select {
+          right: $mat-color-input-overlay-tools-width
+            + ($mat-color-input-overlay-horizontal-margin * 2);
+        }
+
+        & > .tools-select {
+          right: $mat-color-input-overlay-horizontal-margin;
+        }
+      }
+    }
+  }
+
+  &.tools-disabled {
+    & > .content {
+      & > .tools-container {
+        display: none;
+      }
+    }
+
+    &:not(.alpha-disabled) {
+      & > .content {
+        & > .saturation-and-value-select {
+          right: $mat-color-input-overlay-hue-select-width
+            + $mat-color-input-overlay-alpha-select-width
+            + ($mat-color-input-overlay-horizontal-margin * 3);
+        }
+
+        & > .hue-select {
+          right: $mat-color-input-overlay-alpha-select-width
+            + ($mat-color-input-overlay-horizontal-margin * 2);
+        }
+
+        & > .alpha-select {
+          right: $mat-color-input-overlay-horizontal-margin;
+        }
       }
     }
   }

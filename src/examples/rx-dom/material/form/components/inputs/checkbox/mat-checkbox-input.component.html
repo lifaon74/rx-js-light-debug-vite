@@ -1,11 +1,9 @@
 <label
   class="checkbox-wrapper"
   [htmlFor]="$.id$"
-  tabindex="0"
 >
   <input
     type="checkbox"
-    tabindex="-1"
     [id]="$.id$"
     [disabled]="$.disabled$"
     [readonly]="$.readonly$"
@@ -14,5 +12,6 @@
     (input)="$.$inputChange"
   >
 
-  <div class="icon"></div>
+  <div class="on-icon icon-mat-check"></div>
+  <div class="indeterminate-icon icon-mat-minus"></div>
 </label>

@@ -3,7 +3,7 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements,
   OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
-import { AppProgressRingComponent } from '../progress-ring/progress-ring.component';
+import { AppProgressRingComponent } from '../material/progress-ring/mat-progress-ring.component';
 import {
   createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IEmitFunction, IProgress, ISubscribeFunction,
   ISubscribeFunctionFromPromiseNotifications, ISubscribeFunctionFromXHRNotifications, IUnsubscribeFunction, noop,

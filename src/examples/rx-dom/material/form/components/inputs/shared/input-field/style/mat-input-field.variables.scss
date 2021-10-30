@@ -3,7 +3,10 @@ $mat-input-field-height:  var(--mat-input-field-height, 40px);
 $mat-input-field-color: var(--mat-input-field-color, #333);
 $mat-input-field-border-width: var(--mat-input-field-border-width, 1px);
 $mat-input-field-border-color: var(--mat-input-field-border-color, #aaa);
+$mat-input-field-border-color-disabled: var(--mat-input-field-border-color, #cecece);
+$mat-input-field-border-color-focused: var(--mat-input-field-border-color-focused, #000);
 $mat-input-field-background-color: var(--mat-input-field-background-color, #fff);
+$mat-input-field-background-color-disabled: var(--mat-input-field-background-color, #f3f3f3);
 
 $mat-input-field-placeholder-color: var(--mat-input-field-placeholder-color, #999);
 $mat-input-field-input-horizontal-padding: var(--mat-input-field-input-horizontal-padding, 10px);

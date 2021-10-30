@@ -2,12 +2,12 @@
   <div
     class="focus-loop-helper"
     tabindex="0"
-    (focus)="$.$focusFirst"
+    (focus)="$.$onFocusFirst"
   ></div>
 
   <div
     class="saturation-and-value-select"
-    (pointerdown)="$.$pointerDownSaturationAndValueSelect"
+    (pointerdown)="$.$onPointerDownSaturationAndValueSelect"
     [style.background-color]="$.saturationAndValueSelectElementBackgroundColor$"
   >
     <div
@@ -15,25 +15,25 @@
       tabindex="0"
       [style.left]="$.saturationAndValueSelectCursorElementLeft$"
       [style.top]="$.saturationAndValueSelectCursorElementTop$"
-      (keydown)="$.$keyDownSaturationAndValueSelectCursor"
+      (keydown)="$.$onKeyDownSaturationAndValueSelectCursor"
     ></div>
   </div>
 
   <div
     class="hue-select"
-    (pointerdown)="$.$pointerDownHueSelect"
+    (pointerdown)="$.$onPointerDownHueSelect"
   >
     <div
       class="cursor"
       tabindex="0"
       [style.top]="$.hueSelectCursorElementTop$"
-      (keydown)="$.$keyDownHueSelectCursor"
+      (keydown)="$.$onKeyDownHueSelectCursor"
     ></div>
   </div>
 
   <div
     class="alpha-select"
-    (pointerdown)="$.$pointerDownAlphaSelect"
+    (pointerdown)="$.$onPointerDownAlphaSelect"
   >
     <div
       class="alpha-select-gradient"
@@ -43,14 +43,25 @@
       class="cursor"
       tabindex="0"
       [style.top]="$.alphaSelectCursorElementTop$"
-      (keydown)="$.$keyDownAlphaSelectCursor"
+      (keydown)="$.$onKeyDownAlphaSelectCursor"
+    ></div>
+  </div>
+
+  <div
+    class="tools-container"
+  >
+    <div
+      class="color-picker-icon icon-mat-eyedropper"
+      tabindex="0"
+      (click)="$.$onClickColorPicker"
+      (keydown)="$.$onKeyDownColorPicker"
     ></div>
   </div>
 
   <div
     class="focus-loop-helper"
     tabindex="0"
-    (focus)="$.$focusLast"
+    (focus)="$.$onFocusLast"
   ></div>
 </div>
 

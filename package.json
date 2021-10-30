@@ -4,18 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run fix:index-html",
     "serve": "vite preview",
-    "__aot__": "",
-    "build:aot": "vite build",
-    "build:aot:run": "vite build",
-    "__plugins__": "",
-    "plugins:tsc:watch": "tsc -p plugins/tsconfig.json -w",
-    "plugins:functional:debug": "node --experimental-specifier-resolution=node plugins/functional/helpers/debug-functional.js",
-    "plugins:functional:rollup": "rollup --input plugins/functional/functional.js --file plugins/functional/functional.bundled.mjs --format es --plugin @rollup/plugin-node-resolve --watch",
-    "plugins:aot:aot": "node --experimental-specifier-resolution=node plugins/aot/aot",
-    "plugins:aot:rollup": "rollup --input plugins/aot/__old/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format umd --name compiler --plugin @rollup/plugin-node-resolve --watch",
-    "_dev:rollup": "rollup --input plugins/aot/__old/helpers/compiler.js --file plugins/aot/helpers/compiler.bundled.js --format es --plugin @rollup/plugin-node-resolve --watch"
+    "fix:index-html": "node ./plugins/fix-index-html.js"
   },
   "sideEffects": false,
   "devDependencies": {
@@ -39,8 +30,8 @@
     "@lifaon/rx-js-light-shortcuts": "1.0.0"
   },
   "dependencies": {
-    "@lifaon/rx-dom": "1.2.0",
-    "@lifaon/rx-js-light": "1.2.0",
+    "@lifaon/rx-dom": "1.2.1",
+    "@lifaon/rx-js-light": "1.2.1",
     "@lifaon/rx-js-light-shortcuts": "1.2.0",
     "@lifaon/rx-store": "1.0.0",
     "@lifaon/rx-dom-aot-plugin": "1.0.0",

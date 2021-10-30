@@ -30,6 +30,7 @@ import { hslaColorToHSL$AString } from '../../../../../../misc/css/color/colors/
 import { parseCSSHexColorAsNumber } from '../../../../../../misc/css/color/colors/rgba/parse/parse-css-hex-color';
 import { hsvaColorToHSVAString } from '../../../../../../misc/css/color/colors/hsva/to/string/hsla-color-to-hsva-string';
 import { MatInputFieldComponent } from '../shared/input-field/mat-input-field.component';
+import { colorStringToColor } from './misc/color-string-to-color';
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color
 
@@ -45,15 +46,15 @@ type IColorFormat = 'hex' | 'rgb' | 'hsl' | typeof USER_COLOR_FORMAT;
 
 interface IData {
   readonly previewColor$: ISubscribeFunction<IDynamicStyleValue>;
-  readonly $clickColorPreview: IEmitFunction<MouseEvent>;
-  readonly $keyDownColorPreview: IEmitFunction<KeyboardEvent>;
+  readonly $onClickColorPreview: IEmitFunction<MouseEvent>;
+  readonly $onKeyDownColorPreview: IEmitFunction<KeyboardEvent>;
   readonly disabled$: ISubscribeFunction<boolean>;
   readonly readonly$: ISubscribeFunction<boolean>;
   readonly disabledTabindex$: ISubscribeFunction<string | null>;
   readonly $inputValue$: ISource<string>;
   readonly selectedColorFormat$: ISubscribeFunction<IColorFormat>;
-  readonly $clickColorFormatButton: IEmitFunction<MouseEvent>;
-  readonly $keyDownColorFormatButton: IEmitFunction<KeyboardEvent>;
+  readonly $onClickColorFormatButton: IEmitFunction<MouseEvent>;
+  readonly $onKeyDownColorFormatButton: IEmitFunction<KeyboardEvent>;
 }
 
 /*-----*/
@@ -69,7 +70,7 @@ interface IData {
   styles: [compileReactiveCSSAsComponentStyle(style)],
   // useShadowDOM: true,
 })
-export class MatColorInputComponent extends MatInputFieldComponent implements OnCreate<IData> {
+export class MatColorInputComponent extends MatInputFieldComponent<string> implements OnCreate<IData> {
 
   alphaDisabled$!: ISubscribeFunction<boolean>;
   readonly $alphaDisabled!: IEmitFunction<boolean>;
@@ -80,7 +81,7 @@ export class MatColorInputComponent extends MatInputFieldComponent implements On
   protected readonly _data: IData;
 
   constructor() {
-    super();
+    super('');
 
     /** VARIABLES **/
 
@@ -140,18 +141,19 @@ export class MatColorInputComponent extends MatInputFieldComponent implements On
         }]);
     });
 
-    /** COLOR PREVIEW **/
-
-    const previewColor$ = map$$(hsvaColor$, hsvaColorToHexString);
-
     const toggleMatColorInputOverlay = () => {
       if (!this.disabled && !this.readonly) {
         toggle([]);
       }
     };
 
-    const $clickColorPreview = toggleMatColorInputOverlay;
-    const $keyDownColorPreview = $$filter(toggleMatColorInputOverlay, (event: KeyboardEvent) => (event.key === 'Enter'));
+    /** COLOR PREVIEW **/
+
+    const previewColor$ = map$$(hsvaColor$, hsvaColorToHexString);
+    // setTimeout(toggleMatColorInputOverlay, 50);
+
+    const $onClickColorPreview = toggleMatColorInputOverlay;
+    const $onKeyDownColorPreview = $$filter(toggleMatColorInputOverlay, (event: KeyboardEvent) => (event.key === 'Enter'));
 
     /** INPUT **/
 
@@ -184,11 +186,11 @@ export class MatColorInputComponent extends MatInputFieldComponent implements On
 
     /**  COLOR FORMAT BUTTON**/
 
-    const $clickColorFormatButton = $$map($selectedColorFormat, (): IColorFormat => {
+    const $onClickColorFormatButton = $$map($selectedColorFormat, (): IColorFormat => {
       return getNextColorFormat($selectedColorFormat$.getValue(), this.value);
     });
 
-    const $keyDownColorFormatButton = $$mapFilter($selectedColorFormat, (event: KeyboardEvent): IColorFormat | IMapFilterDiscard => {
+    const $onKeyDownColorFormatButton = $$mapFilter($selectedColorFormat, (event: KeyboardEvent): IColorFormat | IMapFilterDiscard => {
       if ((event.key === 'ArrowDown') || (event.key === 'ArrowRight') || (event.key === 'Enter')) {
         return getNextColorFormat($selectedColorFormat$.getValue(), this.value);
       } else if ((event.key === 'ArrowUp') || (event.key === 'ArrowLeft')) {
@@ -207,15 +209,15 @@ export class MatColorInputComponent extends MatInputFieldComponent implements On
 
     this._data = {
       previewColor$,
-      $clickColorPreview,
-      $keyDownColorPreview,
+      $onClickColorPreview,
+      $onKeyDownColorPreview,
       disabled$,
       readonly$,
       disabledTabindex$,
       $inputValue$,
       selectedColorFormat$,
-      $clickColorFormatButton,
-      $keyDownColorFormatButton,
+      $onClickColorFormatButton,
+      $onKeyDownColorFormatButton,
     };
   }
 
@@ -226,14 +228,6 @@ export class MatColorInputComponent extends MatInputFieldComponent implements On
 
 
 /** FUNCTIONS **/
-
-function colorStringToColor(colorString: string): IColor {
-  const color: IColor | null = parseCSSColor(colorString);
-  return (color === null)
-    ? DEFAULT_MAT_COLOR_INPUT_COLOR
-    : color;
-}
-
 
 function getPreviousColorFormat(
   selectedColorFormat: IColorFormat,

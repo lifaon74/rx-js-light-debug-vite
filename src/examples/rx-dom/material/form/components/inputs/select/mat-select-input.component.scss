@@ -1,0 +1,117 @@
+//@import '../../../../../../../../style/mixins';
+@import '../shared/input-field/style/mat-input-field.variables';
+@import '../shared/input-field/style/mat-input-field.mixins';
+
+$mat-select-input-height: 40px;
+
+$mat-select-input-color: #333;
+$mat-select-input-border-width: 1px;
+$mat-select-input-border-color: #aaa;
+$mat-select-input-background-color: #fff;
+//$mat-select-input-background-color: green;
+
+$mat-select-input-placeholder-color: #999;
+$mat-select-input-filter-input-color: #555;
+$mat-select-input-clear-icon-width: $mat-select-input-height;
+
+:host {
+  & > .select-value {
+    @include mat-input-field-input-mixin();
+    line-height: calc(#{$mat-select-input-height} - (2 * #{$mat-select-input-border-width}));
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+    cursor: default;
+  }
+
+  //& > .field-container {
+  //  height: 100%;
+  //  width: 100%;
+  //  position: relative;
+  //
+  //  & > .select-value,
+  //  & > .select-placeholder,
+  //  & > .filter-input,
+  //  & > .clear-icon {
+  //    position: absolute;
+  //    top: 0;
+  //    bottom: 0;
+  //  }
+  //
+  //  & > .select-value,
+  //  & > .select-placeholder,
+  //  & > .filter-input {
+  //    left: 0;
+  //    right: 0;
+  //    background-color: transparent;
+  //    padding: 0 10px;
+  //    font-size: 16px;
+  //  }
+  //
+  //  & > .select-value,
+  //  & > .select-placeholder {
+  //    line-height: ($mat-select-input-height - (2 * $mat-select-input-border-width));
+  //    user-select: none;
+  //  }
+  //
+  //  & > .select-placeholder {
+  //    color: $mat-select-input-placeholder-color;
+  //    font-style: italic;
+  //  }
+  //
+  //  & > .select-value {
+  //    color: $mat-select-input-color;
+  //  }
+  //
+  //  & > .filter-input {
+  //    & > input {
+  //      width: 100%;
+  //      height: 100%;
+  //      padding: 0;
+  //      border: 0;
+  //      font-size: 16px;
+  //      color: $mat-select-input-filter-input-color;
+  //    }
+  //  }
+  //
+  //  & > .clear-icon {
+  //    width: $mat-select-input-clear-icon-width;
+  //    right: 0;
+  //    background-color: red;
+  //  }
+  //
+  //  &.mode-value {
+  //    & > .select-placeholder,
+  //    & > .filter-input {
+  //      display: none;
+  //    }
+  //
+  //    & > .select-value {
+  //      right: $mat-select-input-clear-icon-width;
+  //    }
+  //  }
+  //
+  //  &.mode-placeholder {
+  //    & > .select-value,
+  //    & > .filter-input,
+  //    & > .clear-icon {
+  //      display: none;
+  //    }
+  //  }
+  //
+  //  &.mode-filter {
+  //    & > .select-value,
+  //    & > .select-placeholder {
+  //      display: none;
+  //    }
+  //
+  //    & > .filter-input {
+  //      right: $mat-select-input-clear-icon-width;
+  //    }
+  //  }
+  //}
+  //
+
+}
+

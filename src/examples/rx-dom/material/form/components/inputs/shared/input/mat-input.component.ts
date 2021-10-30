@@ -21,16 +21,16 @@ export abstract class MatInputComponent<GValue> extends HTMLElement {
   protected constructor(
     initialValue: GValue,
   ) {
-
-    const $value$ = let$$<ISubscribeFunction<GValue>>(single(initialValue));
-    const $readonly$ = let$$<ISubscribeFunction<boolean>>(single(false));
-    const $disabled$ = let$$<ISubscribeFunction<boolean>>(single(false));
-
     super();
     this._initialValue = initialValue;
 
+    const $value$ = let$$<ISubscribeFunction<GValue>>(single(initialValue));
     setComponentSubscribeFunctionProperties(this, 'value', $value$);
+
+    const $readonly$ = let$$<ISubscribeFunction<boolean>>(single(false));
     setComponentSubscribeFunctionProperties(this, 'readonly', $readonly$);
+
+    const $disabled$ = let$$<ISubscribeFunction<boolean>>(single(false));
     setComponentSubscribeFunctionProperties(this, 'disabled', $disabled$);
 
     setReactiveClass(this.readonly$, this, 'readonly');

@@ -1,0 +1,4 @@
+@import '../../public/assets/icons/player/styles.css';
+@import './load-fontastic-icons.mixin';
+
+@include load-fontastic-icons('../assets/icons/fonts/player/', 'player');

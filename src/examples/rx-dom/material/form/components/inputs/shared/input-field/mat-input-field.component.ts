@@ -11,17 +11,17 @@ const componentStyle = compileReactiveCSSAsComponentStyle(style);
 
 /** COMPONENT **/
 
-export abstract class MatInputFieldComponent extends MatInputComponent<string> {
+export abstract class MatInputFieldComponent<GValue> extends MatInputComponent<GValue> {
   placeholder$!: ISubscribeFunction<string>;
   readonly $placeholder!: IEmitFunction<string>;
   placeholder!: string;
 
-  protected constructor() {
+  protected constructor(
+    initialValue: GValue,
+  ) {
+    super(initialValue);
 
     const $placeholder$ = let$$<ISubscribeFunction<string>>(single(''));
-
-    super('');
-
     setComponentSubscribeFunctionProperties(this, 'placeholder', $placeholder$);
 
     injectComponentStyle(componentStyle, this);

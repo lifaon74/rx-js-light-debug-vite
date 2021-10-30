@@ -3,15 +3,15 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
-import { AppProgressBarComponent } from '../progress-bar/progress-bar.component';
-import { AppProgressRingComponent } from '../progress-ring/progress-ring.component';
+import { MatProgressBarComponent } from '../material/progress-bar/mat-progress-bar.component';
+import { AppProgressRingComponent } from '../material/progress-ring/mat-progress-ring.component';
 import {
   conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, interval,
   ISubscribeFunction, mapSubscribePipe, of, pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
 } from '@lifaon/rx-js-light';
 
 export const APP_GUIDELINE_CUSTOM_ELEMENTS = [
-  AppProgressBarComponent,
+  MatProgressBarComponent,
   AppProgressRingComponent
 ];
 

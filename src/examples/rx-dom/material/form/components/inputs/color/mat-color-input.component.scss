@@ -25,7 +25,7 @@ $mat-color-input-color-format-button-background-color-hover: var(--mat-color-inp
 
     &:focus {
       & > * {
-        box-shadow: inset 0 0 0 1px black, inset 0 0 0 2px white;
+        box-shadow: inset 0 0 0 1px $mat-input-field-border-color-focused, inset 0 0 0 2px white;
       }
     }
   }
@@ -36,7 +36,7 @@ $mat-color-input-color-format-button-background-color-hover: var(--mat-color-inp
 
     & > input {
       @include mat-input-field-input-mixin;
-      padding-right: $mat-input-field-input-horizontal-padding + $mat-color-input-color-format-button-width;
+      padding-right: calc(#{$mat-input-field-input-horizontal-padding} + #{$mat-color-input-color-format-button-width});
     }
   }
 
@@ -44,7 +44,7 @@ $mat-color-input-color-format-button-background-color-hover: var(--mat-color-inp
     $offset-x: 10px;
     $offset-y: 10px;
 
-    width: $mat-color-input-color-format-button-width - $offset-x;
+    width: calc(#{$mat-color-input-color-format-button-width} - #{$offset-x});
 
     top: $offset-y;
     bottom: $offset-y;
@@ -67,7 +67,7 @@ $mat-color-input-color-format-button-background-color-hover: var(--mat-color-inp
     }
 
     &:focus {
-      box-shadow: 0 0 0 2px black;
+      box-shadow: 0 0 0 2px $mat-input-field-border-color-focused;
     }
   }
 

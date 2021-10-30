@@ -1,14 +1,2 @@
-@import '../public/assets/icons/styles';
-
-@mixin load-fontastic-icons($font-root, $font-name) {
-  @font-face {
-    font-family: $font-name;
-    src: url(quote($font-root + $font-name + '.woff')) format('woff'),
-    url(quote($font-root + $font-name + '.ttf')) format('truetype'),
-    url(quote($font-root + $font-name + '.svg#' + $font-name)) format('svg');
-    font-weight: 200;
-    font-style: normal;
-  }
-}
-
-@include load-fontastic-icons('../assets/icons/fonts/', 'player');
+@import './icons/material-icons';
+//@import './icons/player-icons';

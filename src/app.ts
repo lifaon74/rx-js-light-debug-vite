@@ -8,13 +8,9 @@ import { infinitePostsExample } from './examples/rx-dom/infinite-posts/infinite-
 import { intersectionObserverExample } from './examples/rx-js-light/intersection-observer.example';
 import { matchMediaExample } from './examples/rx-js-light/match-media.example';
 import { helloWorldExample } from './examples/rx-dom/hello-world/hello-world.example';
-import { progressBarExample } from './examples/rx-dom/progress-bar/progress-bar.example';
-import { progressBarLazyExample } from './examples/rx-dom/progress-bar/progress-bar.lazy.example';
 import { trustedTypesExample } from './examples/trusted-types/trusted-types.example';
 import { routerExample } from './examples/rx-dom/router/router.example';
-import { progressRingExample } from './examples/rx-dom/progress-ring/progress-ring.example';
 import { composeExample } from './examples/rx-js-light/compose.example';
-import { progressRingLazyExample } from './examples/rx-dom/progress-ring/progress-ring.lazy.example';
 import { guidelineExample } from './examples/rx-dom/guideline/guideline.example';
 import { formControlDebug } from './debug/rx-js-light/form-control/form-control.debug';
 import { commonPitfallExample } from './examples/rx-js-light/common-pitfall/common-pitfall.example';
@@ -39,13 +35,11 @@ import { overlayComponentExample } from './examples/rx-dom/material/overlay/over
 import { pictureExample } from './examples/rx-js-light/picture/picture.example';
 import { matIconExample } from './examples/rx-dom/material/icon/mat-icon.example';
 import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
-import { matSelectExample } from './examples/rx-dom/material/form/components/inputs/select/mat-select.example';
+import { matSelectInputExample } from './examples/rx-dom/material/form/components/inputs/select/mat-select-input.example';
 import { matColorInputExample } from './examples/rx-dom/material/form/components/inputs/color/mat-color-input.example';
 import { Component } from '@lifaon/rx-dom';
 import { aotExample } from './debug/rx-dom/aot-component/aot.example';
 import { debugTSX } from './debug/tsx/debug-tsx';
-import { matSwitchInputExample } from './examples/rx-dom/material/form/components/inputs/switch/mat-switch-input.example';
-import { matCheckboxInputExample } from './examples/rx-dom/material/form/components/inputs/checkbox/mat-checkbox-input.example';
 import { materialExample } from './examples/rx-dom/material/material.example';
 
 
@@ -65,10 +59,6 @@ function run() {
   // mousePositionExample();
   // overlayComponentExample();
   // infinitePostsExample();
-  // progressBarExample();
-  // progressBarLazyExample();
-  // progressRingExample();
-  // progressRingLazyExample();
   // trustedTypesExample();
   // intersectionObserverExample();
   // matchMediaExample();

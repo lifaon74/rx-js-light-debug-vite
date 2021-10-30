@@ -1,0 +1,5 @@
+@import '../../public/assets/icons/material/styles';
+@import './load-fontastic-icons.mixin';
+
+//@include load-fontastic-icons('./icons/material/fonts/', 'material');
+@include load-fontastic-icons('../assets/icons/material/fonts/', 'material');

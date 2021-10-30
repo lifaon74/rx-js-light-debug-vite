@@ -1,11 +1,11 @@
 import { bootstrap } from '@lifaon/rx-dom';
-import { AppProgressRingComponent } from './progress-ring.component';
-import { createProgressAnimation } from '../progress-bar/create-progress-animation';
+import { AppProgressRingComponent } from './mat-progress-ring.component';
+import { createProgressAnimation } from '../progress-bar/misc/create-progress-animation';
 
 
 /** BOOTSTRAP FUNCTION **/
 
-export function progressRingExample() {
+export function matProgressRingExample() {
   // progressRingDebug();
 
   const progressRing = new AppProgressRingComponent();
