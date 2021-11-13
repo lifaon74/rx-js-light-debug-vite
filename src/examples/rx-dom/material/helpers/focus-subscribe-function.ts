@@ -1,56 +1,55 @@
-import { fromEventTarget, interval, ISubscribeFunction, merge } from '@lifaon/rx-js-light';
-import { debounce$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { debounceTime$$, fromEventTarget, interval, IObservable, map$$, merge } from '@lifaon/rx-js-light';
 import { isElementFocused, isElementOrChildrenFocused } from './is-element-focused';
 
-export function onFocusChangeEventSubscribeFunction(
+export function onFocusChangeEventObservable(
   element: Element,
-): ISubscribeFunction<Event> {
+): IObservable<Event> {
   return merge([
     fromEventTarget<'focusin', Event>(element, 'focusin'),
     fromEventTarget<'focusout', Event>(element, 'focusout'),
   ]);
 }
 
-export function focusSubscribeFunction(
+export function focusObservable(
   element: Element,
-): ISubscribeFunction<boolean> {
+): IObservable<boolean> {
   return map$$<any, boolean>(
-    onFocusChangeEventSubscribeFunction(element),
+    onFocusChangeEventObservable(element),
     (): boolean => {
       return isElementFocused(element);
     },
   );
 }
 
-export function focusSubscribeFunctionDebounced(
+export function focusObservableDebounced(
   element: Element,
   debounceTime: number = 50,
-): ISubscribeFunction<boolean> {
-  return debounce$$(focusSubscribeFunction(element), debounceTime);
+): IObservable<boolean> {
+  return debounceTime$$(focusObservable(element), debounceTime);
 }
 
-export function isElementOrChildrenFocusedSubscribeFunction(
+export function isElementOrChildrenFocusedObservable(
   element: Element,
-): ISubscribeFunction<boolean> {
+): IObservable<boolean> {
   return map$$<any, boolean>(
-    onFocusChangeEventSubscribeFunction(element),
+    onFocusChangeEventObservable(element),
     (): boolean => {
       return isElementOrChildrenFocused(element);
     },
   );
 }
 
-export function isElementOrChildrenFocusedSubscribeFunctionDebounced(
+export function isElementOrChildrenFocusedObservableDebounced(
   element: Element,
   debounceTime: number = 50,
-): ISubscribeFunction<boolean> {
-  return debounce$$(isElementOrChildrenFocusedSubscribeFunction(element), debounceTime);
+): IObservable<boolean> {
+  return debounceTime$$(isElementOrChildrenFocusedObservable(element), debounceTime);
 }
 
 
-// export function focusSubscribeFunction(
+// export function focusObservable(
 //   element: Element,
-// ): ISubscribeFunction<boolean> {
+// ): IObservable<boolean> {
 //   return mapFilter$$<Event, boolean>(
 //     merge([
 //       fromEventTarget<'focusin', Event>(element, 'focusin'),
@@ -64,9 +63,9 @@ export function isElementOrChildrenFocusedSubscribeFunctionDebounced(
 //   );
 // }
 
-// export function focusSubscribeFunction(
+// export function focusObservable(
 //   element: Element,
-// ): ISubscribeFunction<boolean> {
+// ): IObservable<boolean> {
 //   return merge([
 //     mapFilter$$<Event, boolean>(
 //       fromEventTarget<'focusin', Event>(element, 'focusin'),

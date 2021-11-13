@@ -1,12 +1,12 @@
 import { createElementModifier, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
-import { IEmitFunction } from '@lifaon/rx-js-light';
-import { isElementOrChildrenFocusedSubscribeFunctionDebounced } from '../../helpers/focus-subscribe-function';
+import { IObserver } from '@lifaon/rx-js-light';
+import { isElementOrChildrenFocusedObservableDebounced } from '../../helpers/focus-subscribe-function';
 
 export function onFocusedModifierFunction(
   element: HTMLElement,
-  focused$: IEmitFunction<boolean>,
+  focused$: IObserver<boolean>,
 ): HTMLElement {
-  subscribeOnNodeConnectedTo(element, isElementOrChildrenFocusedSubscribeFunctionDebounced(element), focused$);
+  subscribeOnNodeConnectedTo(element, isElementOrChildrenFocusedObservableDebounced(element), focused$);
   return element;
 }
 

@@ -1,4 +1,4 @@
-import { fromIntersectionObserver, fromMatchMedia, mapSubscribePipe, pipeSubscribeFunction } from '@lifaon/rx-js-light';
+import { fromIntersectionObserver, fromMatchMedia, mapObservablePipe, pipeObservable } from '@lifaon/rx-js-light';
 
 
 
@@ -9,8 +9,8 @@ export function intersectionObserverExample() {
   element.style.marginTop = '150%';
   document.body.appendChild(element);
 
-  const subscribe = pipeSubscribeFunction(fromIntersectionObserver(element, { threshold: [0, 1] }), [
-    mapSubscribePipe((entry: IntersectionObserverEntry): string => {
+  const subscribe = pipeObservable(fromIntersectionObserver(element, { threshold: [0, 1] }), [
+    mapObservablePipe((entry: IntersectionObserverEntry): string => {
       if (entry.intersectionRatio <= 0) {
         return 'red';
       } else if (entry.intersectionRatio >= 1) {

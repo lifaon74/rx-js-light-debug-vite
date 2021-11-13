@@ -2,7 +2,7 @@ import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDocumentFragmentOrNull,
   IReactiveContent, OnCreate, querySelector,
 } from '@lifaon/rx-dom';
-import { fromAnimationFrame, ISubscribeFunction } from '@lifaon/rx-js-light';
+import { fromAnimationFrame, IObservable, map$$ } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-tooltip.component.scss';
 // @ts-ignore
@@ -11,13 +11,13 @@ import { MatOverlayManagerComponent } from '../../overlay/manager/mat-overlay-ma
 import { MatSimpleOverlayComponent } from '../../overlay/built-in/simple/mat-simple-overlay.component';
 import { IPartialSize, ISize } from '../../../../../misc/types/size/size.type';
 import { IPositionAndSize } from '../../../../../misc/types/position-and-size/position-and-size.type';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
 import {
-  fitBoxRelativeToTargetBoxWith$BottomLeft$TopLeftPreference, getElementExpectedSize,
+  fitBoxRelativeToTargetBoxWith$BottomLeft$TopLeftPreference,
 } from '../../overlay/built-in/simple/helper/fit-box-relative-to-target-box';
 import { positionAndSizeToCSSPositionAndSize } from '../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
 import { ICSSPositionAndSize } from '../../../../../misc/types/position-and-size/css-position-and-size.type';
 import { getElementPositionAndSize } from '../../../../../misc/types/position-and-size/get-element-position-and-size';
+import { getElementExpectedSize } from '../../overlay/built-in/simple/helper/get-element-expected-size';
 
 /** COMPONENT **/
 
@@ -32,7 +32,7 @@ export interface IMatTooltipModalComponentOptions {
 
 
 interface IData {
-  readonly content$: ISubscribeFunction<IDocumentFragmentOrNull>;
+  readonly content$: IObservable<IDocumentFragmentOrNull>;
 }
 
 @Component({
@@ -61,7 +61,7 @@ export class MatTooltipModalComponent extends MatSimpleOverlayComponent implemen
     // (window as any).emit = $trigger$.emit;
     // const trigger$ = $trigger$.subscribe;
 
-    const positionAndSize$: ISubscribeFunction<ICSSPositionAndSize> = map$$<void, ICSSPositionAndSize>(trigger$, () => {
+    const positionAndSize$: IObservable<ICSSPositionAndSize> = map$$<void, ICSSPositionAndSize>(trigger$, () => {
       const contentElement: HTMLElement | null = querySelector(this, `:scope > .content`);
       if (contentElement === null) {
         return {

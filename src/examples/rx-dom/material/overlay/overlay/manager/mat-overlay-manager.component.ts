@@ -3,10 +3,9 @@ import {
   getDocument, IReactiveContent, nodeAppendChild, OnCreate, querySelectorOrThrow, subscribeOnNodeConnectedTo
 } from '@lifaon/rx-dom';
 import {
-  IMulticastReplayLastSource, ISubscribeFunction, mutateReadonlyReplayLastSourceArray, single
+  IMulticastReplayLastSource, IObservable, let$$, map$$, mutateReadonlyReplayLastSourceArray, single
 } from '@lifaon/rx-js-light';
 import { MatOverlayComponent } from '../component/mat-overlay.component';
-import { let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 // @ts-ignore
 import style from './mat-overlay-manager.component.scss?inline';
@@ -22,7 +21,7 @@ interface IOverlay {
 }
 
 interface IData {
-  readonly overlays$: ISubscribeFunction<readonly IOverlay[]>;
+  readonly overlays$: IObservable<readonly IOverlay[]>;
 }
 
 /** COMPONENT **/

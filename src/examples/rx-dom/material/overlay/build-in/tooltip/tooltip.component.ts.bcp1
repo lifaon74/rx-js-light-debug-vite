@@ -2,7 +2,7 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, querySelector
 } from '@lifaon/rx-dom';
-import { empty, fromAnimationFrame, interval, ISubscribeFunction } from '@lifaon/rx-js-light';
+import { empty, fromAnimationFrame, interval, IObservable } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './tooltip.component.scss';
 // @ts-ignore
@@ -62,7 +62,7 @@ export class MatTooltipModalComponent extends MatSimpleOverlayComponent implemen
     (window as any).emit = $trigger$.emit;
     const trigger$ = $trigger$.subscribe;
 
-    const positionAndSize$: ISubscribeFunction<ICSSPositionAndSize> = map$$<void, ICSSPositionAndSize>(trigger$, () => {
+    const positionAndSize$: IObservable<ICSSPositionAndSize> = map$$<void, ICSSPositionAndSize>(trigger$, () => {
       const contentElement: HTMLElement | null = querySelector(this, `:scope > .content`);
       if (contentElement === null) {
         return {

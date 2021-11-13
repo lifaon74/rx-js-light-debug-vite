@@ -1,26 +1,23 @@
-import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
-} from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
 
 /** COMPONENT **/
 
 interface IData {
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
 
 // @Page({
 //   path: new Path('/sub'),
 // })
 @Component({
   name: 'app-sub-list-page',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <div class="header">
-      Sub-list page
-    </div>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <div class="header">
+        Sub-list page
+      </div>
+    `,
+  }),
 })
 export class AppSubListPageComponent extends HTMLElement implements OnCreate<IData> {
 

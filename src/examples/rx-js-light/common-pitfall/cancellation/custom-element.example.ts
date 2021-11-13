@@ -1,7 +1,7 @@
 import {
-  debounceTimeSubscribePipe, fromEventTarget, fromFetch, fromPromise, IDefaultNotificationsUnion, ISubscribeFunction,
-  ISubscribeFunctionFromFetchNotifications, IUnsubscribeFunction, mergeMapSubscribePipe,
-  mergeMapSubscribePipeWithNotifications, noop, notificationObserver, pipeSubscribeFunction
+  debounceTimeObservablePipe, fromEventTarget, fromFetch, fromPromise, IDefaultNotificationsUnion, IObservable,
+  IObservableFromFetchNotifications, IUnsubscribe, mergeMapObservablePipe,
+  mergeMapObservablePipeWithNotifications, noop, notificationObserver, pipeObservable
 } from '@lifaon/rx-js-light';
 
 
@@ -70,13 +70,13 @@ function withObservableWithoutCancel() {
   const resultContainer = document.createElement('div');
   container.appendChild(resultContainer);
 
-  const subscribe = pipeSubscribeFunction(fromEventTarget<'click', MouseEvent>(button, 'click'), [ // creates an observable listening to 'clicks' on 'button'
-    debounceTimeSubscribePipe<MouseEvent>(1000), // if the user clics twice or more, we only keep the last event for a period of 1000ms
-    mergeMapSubscribePipe<MouseEvent, ISubscribeFunctionFromFetchNotifications>( // mergeMap maps incoming values and converts an Observable of Observables into a lower order Observable
+  const subscribe = pipeObservable(fromEventTarget<'click', MouseEvent>(button, 'click'), [ // creates an observable listening to 'clicks' on 'button'
+    debounceTimeObservablePipe<MouseEvent>(1000), // if the user clics twice or more, we only keep the last event for a period of 1000ms
+    mergeMapObservablePipe<MouseEvent, IObservableFromFetchNotifications>( // mergeMap maps incoming values and converts an Observable of Observables into a lower order Observable
       () => fromFetch(API_URL), // creates an Observable performing an http request using the fetch API
       1, // limit to one the number of parallel merged Observables (optimization)
     ),
-    mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, IAPIResponseJSON>( // same as mergeMap but works with notifications instead
+    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, IAPIResponseJSON>( // same as mergeMap but works with notifications instead
       (response: Response) => fromPromise<IAPIResponseJSON>(response.json()), // creates an Observable from a Promise
       1,
     ),
@@ -110,21 +110,21 @@ function withObservableAndCancel() {
   const resultContainer = document.createElement('div');
   container.appendChild(resultContainer);
 
-  const callAPI = pipeSubscribeFunction(fromFetch(API_URL), [ // creates an Observable performing an http request using the fetch API
-    mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, IAPIResponseJSON>( // maps incoming values and converts an Observable of Observables into a lower order Observable
+  const callAPI = pipeObservable(fromFetch(API_URL), [ // creates an Observable performing an http request using the fetch API
+    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, IAPIResponseJSON>( // maps incoming values and converts an Observable of Observables into a lower order Observable
       (response: Response) => fromPromise<IAPIResponseJSON>(response.json()), // creates an Observable from a Promise
       1, // limit to 1 the number of parallel merged Observables (optimization)
     ),
   ]);
 
-  const onClickDoRequest = pipeSubscribeFunction(fromEventTarget<'click', MouseEvent>(doRequestButton, 'click'), [ // creates an Observable listening to 'clicks' on 'button'
-    debounceTimeSubscribePipe<MouseEvent>(1000), // if the user clics twice or more, we only keep the last event for a period of 1000ms
+  const onClickDoRequest = pipeObservable(fromEventTarget<'click', MouseEvent>(doRequestButton, 'click'), [ // creates an Observable listening to 'clicks' on 'button'
+    debounceTimeObservablePipe<MouseEvent>(1000), // if the user clics twice or more, we only keep the last event for a period of 1000ms
   ]);
 
   const onClickCancelRequest = fromEventTarget<'click', MouseEvent>(cancelRequestButton, 'click');
 
 
-  let unsubscribeCallAPI: IUnsubscribeFunction = noop;
+  let unsubscribeCallAPI: IUnsubscribe = noop;
 
   const doRequest = () => {
     doRequestButton.disabled = true;

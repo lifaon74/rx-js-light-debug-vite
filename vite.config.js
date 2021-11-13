@@ -1,11 +1,12 @@
 import { aotPlugin } from '@lifaon/rx-dom-aot-plugin';
+// import { defineConfig } from 'vite'
 
 /**
  * @type {import('vite').UserConfig}
  */
 const config = {
   build: {
-    target: 'es2015',
+    target: 'esnext',
     terserOptions: {
       toplevel: true,
       ecma: 2020,
@@ -33,7 +34,13 @@ const config = {
   ],
   server: {
     https: false,
-  }
+  },
+  optimizeDeps: {
+    include: [
+      '@lifaon/rx-js-light',
+      '@lifaon/rx-dom',
+    ],
+  },
 };
 
 export default config;

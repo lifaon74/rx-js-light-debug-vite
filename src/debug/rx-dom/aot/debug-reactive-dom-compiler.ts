@@ -1,11 +1,4 @@
-import {
-  createMulticastReplayLastSource, createUnicastReplayLastSource, expression, interval, ISubscribeFunction, of,
-  pipeSubscribeFunction, sourceSubscribePipe,
-} from '@lifaon/rx-js-light';
-import {
-  compileReactiveHTMLAsGenericComponentTemplate, getDocumentBody, nodeAppendChild,
-  transpileReactiveHTMLAsComponentTemplateFunctionToReactiveDOMJSLines, loadReactiveHTMLAsGenericComponentTemplate,
-} from '@lifaon/rx-dom';
+import { getDocumentBody, loadReactiveHTMLAsGenericComponentTemplate, nodeAppendChild } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './debug-reactive-dom-compiler.rxhtml?raw';
 
@@ -51,10 +44,6 @@ async function debugReactiveDOMCompiler1() {
   const result = template({
     data: {},
     content: null as any,
-    getNodeReference: null as any,
-    setNodeReference: null as any,
-    getTemplateReference: null as any,
-    setTemplateReference: null as any,
   });
 
   nodeAppendChild(getDocumentBody(), result);
@@ -243,9 +232,9 @@ async function debugReactiveDOMCompiler1() {
 //   // const url = `https://www.w3.org/TR/2021/WD-css-cascade-5-20210119/`;
 //   // const html = await (await fetch(noCORS(url))).text();
 //
-//   function $of<GValue>(value: GValue): ISubscribeFunction<GValue> {
-//     return pipeSubscribeFunction(of<GValue>(value), [
-//       sourceSubscribePipe<GValue>(() => createUnicastReplayLastSource<GValue>()),
+//   function $of<GValue>(value: GValue): IObservable<GValue> {
+//     return pipeObservable(of<GValue>(value), [
+//       sourceObservablePipe<GValue>(() => createUnicastReplayLastSource<GValue>()),
 //     ]);
 //   }
 //

@@ -1,6 +1,4 @@
-import { interval, ISubscribeFunction } from '@lifaon/rx-js-light';
-
-;
+import { interval, IObservable, map$$ } from '@lifaon/rx-js-light';
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
@@ -8,12 +6,11 @@ import {
 import html from './aot.component.html?raw';
 // @ts-ignore
 import style from './aot.component.scss?inline';
-import { map$$ } from '../../../../../rx-js-light-shortcuts/dist';
 
 /** COMPONENT **/
 
 interface IData {
-  readonly now$: ISubscribeFunction<string>;
+  readonly now$: IObservable<string>;
 }
 
 

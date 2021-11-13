@@ -3,8 +3,7 @@ import {
   compileReactiveCSSAsComponentStyle, Component, createDocumentFragmentFilledWithNodes, DEFAULT_CONSTANTS_TO_IMPORT,
   IHTMLTemplate, Input, OnCreate, querySelector, querySelectorAll
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, ISubscribeFunction, of } from '@lifaon/rx-js-light';
-import { letU$$, map$$$, mergeAll$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
+import { IMulticastReplayLastSource, IObservable, letU$$, map$$$, mergeAll$$$, of, pipe$$ } from '@lifaon/rx-js-light';
 
 export function selectComponentContentElements(
   content: DocumentFragment,
@@ -30,8 +29,8 @@ export function selectComponentContentNodes(
 type IHeaderTemplate = IHTMLTemplate<any>;
 
 interface IData {
-  // header$: ISubscribeFunction<IHeaderTemplate>;
-  header$: ISubscribeFunction<DocumentFragment>;
+  // header$: IObservable<IHeaderTemplate>;
+  header$: IObservable<DocumentFragment>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -70,14 +69,14 @@ const CONSTANTS_TO_IMPORT = {
 export class AppInjectContentComponent extends HTMLElement implements OnCreate<IData> {
 
   @Input((instance: AppInjectContentComponent) => instance._$header$)
-  header$!: ISubscribeFunction<IHeaderTemplate>;
+  header$!: IObservable<IHeaderTemplate>;
 
   protected readonly _data: IData;
-  protected readonly _$header$: IMulticastReplayLastSource<ISubscribeFunction<IHeaderTemplate>>;
+  protected readonly _$header$: IMulticastReplayLastSource<IObservable<IHeaderTemplate>>;
 
   constructor() {
     super();
-    const $header$ = letU$$<ISubscribeFunction<IHeaderTemplate>>();
+    const $header$ = letU$$<IObservable<IHeaderTemplate>>();
     this._$header$ = $header$;
 
     const header$ = pipe$$($header$.subscribe, [

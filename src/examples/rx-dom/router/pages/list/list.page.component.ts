@@ -1,28 +1,15 @@
-import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
-  generateCreateElementFunctionWithCustomElements, generateCreateElementFunctionWithRouterOutlet, OnCreate
-} from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
 import { INavigation, NAVIGATION } from '../../navigation/navigation';
-import { idle, ISubscribeFunction } from '@lifaon/rx-js-light';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { idle, IObservable, map$$ } from '@lifaon/rx-js-light';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
-import { generateRouterOutletHTML, ROUTER_OUTLET_TAG_NAME } from '../../router/router-outlet/rx-router-outlet';
-
-const APP_LIST_PAGE_CUSTOM_ELEMENTS = [
-  AppMenuPageComponent,
-];
+import { generateRouterOutletHTML } from '../../router/router-outlet/rx-router-outlet';
 
 /** COMPONENT **/
 
 interface IData {
-  navigation: INavigation;
-  canBack$: ISubscribeFunction<boolean>;
+  readonly navigation: INavigation;
+  readonly canBack$: IObservable<boolean>;
 }
-
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  createElement: generateCreateElementFunctionWithRouterOutlet(ROUTER_OUTLET_TAG_NAME, generateCreateElementFunctionWithCustomElements(APP_LIST_PAGE_CUSTOM_ELEMENTS)),
-};
 
 // @Page({
 //   path: new Path('/list'),
@@ -35,22 +22,27 @@ const CONSTANTS_TO_IMPORT = {
 // })
 @Component({
   name: 'app-list-page',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <div class="header">
-      List page
-    </div>
-    
-    <div
-      *if="$.canBack$"
-      class="back"
-      (click)="$.navigation.back"
-    >
-      Back
-    </div>
-    
-    <app-menu></app-menu>
-    ${ generateRouterOutletHTML() }
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <div class="header">
+        List page
+      </div>
+      
+      <div
+        *if="$.canBack$"
+        class="back"
+        (click)="$.navigation.back"
+      >
+        Back
+      </div>
+      
+      <app-menu></app-menu>
+      ${ generateRouterOutletHTML() }
+    `,
+    customElements: [
+      AppMenuPageComponent,
+    ],
+  }),
 })
 export class AppListPageComponent extends HTMLElement implements OnCreate<IData> {
 

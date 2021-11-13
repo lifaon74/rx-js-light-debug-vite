@@ -1,9 +1,8 @@
 import {
-  DATE_TIME_FORMAT_MEDIUM_DATE, dateTimeFormatSubscribePipe, fromEventTarget, ILocales, interval, ISubscribeFunction,
-  mapSubscribePipe, merge, of, pipeSubscribeFunction, single
+  fromEventTarget, function$$, interval, IObservable, map$$, map$$$, merge, of, pipe$$, single
 } from '@lifaon/rx-js-light';
 import { createLocaleFormatContext } from './shared-functions';
-import { function$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { DATE_TIME_FORMAT_MEDIUM_DATE, dateTimeFormatObservablePipe, ILocales } from '@lifaon/rx-i18n';
 
 /*----------------------*/
 
@@ -194,11 +193,11 @@ function formatDateExample1() {
 /*----------------------*/
 
 function formatDateExample2() {
-  createLocaleFormatContext((locales$: ISubscribeFunction<ILocales>) => {
-    return pipeSubscribeFunction(interval(1000), [
-      mapSubscribePipe<void, number>(() => Date.now()),
-      dateTimeFormatSubscribePipe(locales$, of(DATE_TIME_FORMAT_MEDIUM_DATE)),
-      // dateTimeShortcutFormatSubscribePipe(locales$, of<IDateTimeShortcutFormat>('medium')),
+  createLocaleFormatContext((locales$: IObservable<ILocales>) => {
+    return pipe$$(interval(1000), [
+      map$$$<void, number>(() => Date.now()),
+      dateTimeFormatObservablePipe(locales$, of(DATE_TIME_FORMAT_MEDIUM_DATE)),
+      // dateTimeShortcutFormatObservablePipe(locales$, of<IDateTimeShortcutFormat>('medium')),
     ]);
   });
 }

@@ -1,10 +1,10 @@
 import {
-  createMulticastSource, fromEventTarget, IMulticastReplayLastSource, IMulticastSource, ISubscribeFunction, Subscription
+  createMulticastSource, fromEventTarget, IMulticastReplayLastSource, IMulticastSource, IObservable, Subscription
 } from '@lifaon/rx-js-light';
 
 
 export class ObservableArray<GItem> {
-  public readonly subscribe: ISubscribeFunction<readonly GItem[]>;
+  public readonly subscribe: IObservable<readonly GItem[]>;
 
   protected _$items$: IMulticastSource<readonly GItem[]>;
   protected _items: GItem[];

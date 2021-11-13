@@ -1,6 +1,6 @@
 import {
-  fromFetch, fromPromise, IDefaultNotificationsUnion, ISubscribeFunction, ISubscribeFunctionFromFetchNotifications,
-  mergeMapSubscribePipeWithNotifications, pipeSubscribeFunction
+  fromFetch, fromPromise, IDefaultNotificationsUnion, IObservable, IObservableFromFetchNotifications,
+  mergeMapObservablePipeWithNotifications, pipeObservable
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../../misc/no-cors';
 
@@ -53,7 +53,7 @@ export interface INineGagJSONResponse {
 
 export function fetchNineGagPosts(
   request: INineGagJSONRequest,
-): ISubscribeFunction<IDefaultNotificationsUnion<INineGagJSONResponse>> {
+): IObservable<IDefaultNotificationsUnion<INineGagJSONResponse>> {
   const url = new URL(`https://9gag.com/v1/group-posts/group/default/type/${ request.section }`);
 
   if (request.after !== void 0) {
@@ -62,8 +62,8 @@ export function fetchNineGagPosts(
 
   url.searchParams.set('c', String((request.count === void 0) ? 10 : request.count));
 
-  return pipeSubscribeFunction(fromFetch(noCORS(url.href)), [
-    mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, any>((response: Response) => {
+  return pipeObservable(fromFetch(noCORS(url.href)), [
+    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, any>((response: Response) => {
       return fromPromise<INineGagJSONResponse>(response.json());
     }, 1),
   ]);

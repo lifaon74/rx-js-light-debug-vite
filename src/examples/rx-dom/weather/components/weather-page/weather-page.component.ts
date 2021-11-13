@@ -9,14 +9,11 @@ import style from './weather-page.component.scss';
 import { getCurrentPosition } from '../../helpers/get-current-position';
 import {
   fromPromise, IDefaultNotificationsUnion,
-  IEmitFunction, ILocaleToTranslationKeyToTranslationValueMap, INextNotification, IRelativeTimeFormatValueAndUnit,
+  IObserver, ILocaleToTranslationKeyToTranslationValueMap, INextNotification, IRelativeTimeFormatValueAndUnit,
   isNextNotification,
-  ISubscribeFunction,
-  ITranslationKeyToTranslationValueMap, LOCALES, single
+  IObservable,
+  ITranslationKeyToTranslationValueMap, LOCALES, single, map$$, map$$$, pipe$$, letU$$, mergeMapS$$$, filter$$$
 } from '@lifaon/rx-js-light';
-import {
-  dateTimeFormat$$$, letU$$, map$$, map$$$, mergeMapS$$$, numberFormat$$$, pipe$$, pipe$$$, relativeTimeFormat$$$
-} from '@lifaon/rx-js-light-shortcuts';
 import { getReverseNominatimCached } from '../../api/get-reverse-nominatim/get-reverse-nominatim';
 import { IGetReverseNominatimJSONResponse } from '../../api/get-reverse-nominatim/response.type';
 import { Immutable, ImmutableArray } from '@lifaon/rx-store';
@@ -25,7 +22,6 @@ import { getWeather } from '../../api/get-weather/get-weather';
 import { getWeatherImageURLFromId } from '../../api/get-weather/weather-state-id/image/get-weather-image-url-from-id';
 import { getWeatherDescriptionFromId } from '../../api/get-weather/weather-state-id/get-weather-description-from-id';
 import { generateWeatherImage, IWeatherData } from '../../helpers/generate-weather-image/generate-weather-image';
-import { filter$$$ } from '../../../../../../../rx-js-light-shortcuts/dist/src/subscribe-pipe/emit-pipe-related/filter.shortcuts';
 import {
   kelvinToCelsius, metreToMillimetre, MM_PER_DAY_TO_METER_PER_SECOND, MS_PER_DAY
 } from '../../helpers/units/converters';
@@ -77,7 +73,7 @@ function getWeatherEndDate(
 
 function getWeatherImageURL(
   weather: IWeatherData,
-): ISubscribeFunction<string> {
+): IObservable<string> {
   return pipe$$(fromPromise<HTMLCanvasElement>(generateWeatherImage(weather, 120)), [
     filter$$$<IDefaultNotificationsUnion<HTMLCanvasElement>, INextNotification<HTMLCanvasElement>>(isNextNotification),
     map$$$<INextNotification<HTMLCanvasElement>, string>((notification: INextNotification<HTMLCanvasElement>) => {
@@ -101,7 +97,7 @@ const formatWeekDay$$$ = dateTimeFormat$$$(locales$, single({
   weekday: 'long',
 }));
 
-const formatDay$$$ = mergeMapS$$$<number, string>((timestamp: number): ISubscribeFunction<string> => {
+const formatDay$$$ = mergeMapS$$$<number, string>((timestamp: number): IObservable<string> => {
   const days: number = Math.floor((timestamp - Date.now()) / MS_PER_DAY);
   if (days <= 1) {
     return pipe$$(single<IRelativeTimeFormatValueAndUnit>({ value: days, unit: 'days' }), [
@@ -154,32 +150,32 @@ const formatHour$$$ = dateTimeFormat$$$(locales$, single({
 type IDailyState = Immutable<{
   timestamp: number;
   // data
-  day$: ISubscribeFunction<string>;
-  date$: ISubscribeFunction<string>;
-  illustration$: ISubscribeFunction<string>;
-  weatherTitle$: ISubscribeFunction<string>;
-  // probabilityOfPrecipitation$: ISubscribeFunction<string>;
-  precipitation$: ISubscribeFunction<string>;
-  minTemperature$: ISubscribeFunction<string>;
-  maxTemperature$: ISubscribeFunction<string>;
+  day$: IObservable<string>;
+  date$: IObservable<string>;
+  illustration$: IObservable<string>;
+  weatherTitle$: IObservable<string>;
+  // probabilityOfPrecipitation$: IObservable<string>;
+  precipitation$: IObservable<string>;
+  minTemperature$: IObservable<string>;
+  maxTemperature$: IObservable<string>;
 }>;
 
 type IHourlyState = Immutable<{
-  hour$: ISubscribeFunction<string>;
+  hour$: IObservable<string>;
 }>;
 
 type IData = Immutable<{
   // data
-  place$: ISubscribeFunction<string>;
-  daily$: ISubscribeFunction<ImmutableArray<IDailyState>>;
-  selectedDailyForecast$: ISubscribeFunction<IDailyState>;
-  // hourly$: ISubscribeFunction<ImmutableArray<IHourlyState>>;
+  place$: IObservable<string>;
+  daily$: IObservable<ImmutableArray<IDailyState>>;
+  selectedDailyForecast$: IObservable<IDailyState>;
+  // hourly$: IObservable<ImmutableArray<IHourlyState>>;
 
   // events
-  onClickDailyForecast: IEmitFunction<IDailyState>;
+  onClickDailyForecast: IObserver<IDailyState>;
 
   // others
-  isDailyForecastSelected: (dailyForecast: IDailyState) => ISubscribeFunction<boolean>;
+  isDailyForecastSelected: (dailyForecast: IDailyState) => IObservable<boolean>;
 
 }>;
 
@@ -210,7 +206,7 @@ export class AppWeatherPageComponent extends HTMLElement implements OnCreate<IDa
     const selectedDailyForecast$ = $selectedDailyForecast$.subscribe;
     const onClickDailyForecast = $selectedDailyForecast$.emit;
 
-    const isDailyForecastSelected = (dailyForecast: IDailyState): ISubscribeFunction<boolean> => {
+    const isDailyForecastSelected = (dailyForecast: IDailyState): IObservable<boolean> => {
       return map$$(selectedDailyForecast$, (selectedDailyForecast: IDailyState) => (selectedDailyForecast === dailyForecast));
     };
 

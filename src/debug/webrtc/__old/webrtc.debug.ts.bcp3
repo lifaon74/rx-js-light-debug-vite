@@ -1,4 +1,4 @@
-import { ISubscribeFunction } from '@lifaon/rx-js-light';
+import { IObservable } from '@lifaon/rx-js-light';
 
 function arraySum(
   values: ArrayLike<number>,
@@ -82,7 +82,7 @@ interface IOfferProposals {
     offer: IOffer,
   ): void;
 
-  subscribeOfferAnswer: ISubscribeFunction<IOfferAnswer>;
+  subscribeOfferAnswer: IObservable<IOfferAnswer>;
 }
 
 // const TRANSACTIONS = {

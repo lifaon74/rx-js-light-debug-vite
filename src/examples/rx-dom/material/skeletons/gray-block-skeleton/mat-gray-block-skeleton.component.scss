@@ -1,0 +1,46 @@
+$mat-gray-block-skeleton-background-color: var(--mat-gray-block-skeleton-background-color, #fafafa);
+$mat-gray-block-skeleton-shimmer-animation-duration: var(--mat-gray-block-skeleton-shimmer-animation-duration, 2s);
+$mat-gray-block-skeleton-shimmer-color: #fff;
+$mat-gray-block-skeleton-shimmer-width: 20%;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 0;
+  border-radius: 6px;
+  background-color: $mat-gray-block-skeleton-background-color;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+        90deg,
+        rgba($mat-gray-block-skeleton-shimmer-color, 0) 0%,
+        rgba($mat-gray-block-skeleton-shimmer-color, 0) (50% - $mat-gray-block-skeleton-shimmer-width),
+        rgba($mat-gray-block-skeleton-shimmer-color, 1) 50%,
+        rgba($mat-gray-block-skeleton-shimmer-color, 0) (50% + $mat-gray-block-skeleton-shimmer-width),
+        rgba($mat-gray-block-skeleton-shimmer-color, 0) 100%
+    );
+
+    animation-duration: $mat-gray-block-skeleton-shimmer-animation-duration;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    //animation-timing-function: ease-in-out;
+    //animation-direction: alternate;
+    animation-name: mat-gray-block-skeleton-shimmer-animation;
+  }
+}
+
+@keyframes mat-gray-block-skeleton-shimmer-animation {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}

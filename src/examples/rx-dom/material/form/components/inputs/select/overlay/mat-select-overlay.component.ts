@@ -1,26 +1,39 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate, querySelector,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  onNodeConnectedToWithImmediateCached,
+  querySelectorOrThrow, subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
-import { fromAnimationFrame, IEmitFunction, ISubscribeFunction } from '@lifaon/rx-js-light';
+import { IObserver, IObservable, IUnsubscribe, timeout, map$$, $$distinct, let$$ } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-select-overlay.component.scss';
 // @ts-ignore
 import html from './mat-select-overlay.component.html?raw';
-import { ISize } from '../../../../../../../misc/types/size/size.type';
-import { IPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size.type';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
-import { positionAndSizeToCSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
 import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/css-position-and-size.type';
-import { getElementPositionAndSize } from '../../../../../../../misc/types/position-and-size/get-element-position-and-size';
 import { MatSimpleOverlayComponent } from '../../../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
 import { MatOverlayManagerComponent } from '../../../../../overlay/overlay/manager/mat-overlay-manager.component';
-import { IMatSelectInputOption, IMatSelectInputReadonlySelectedOptions } from '../types/mat-select-input-option.type';
-import { POSITION_AND_SIZE_OUT_OF_WINDOW } from '../../../../../overlay/overlay/built-in/simple/helper/position-and-size-out-of-window.constant';
-import { getFittingBoxForContainer$Target$ContentElements } from '../../../../../overlay/overlay/built-in/simple/helper/get-fitting-box-for-container-target-content-elements';
+import {
+  IMatSelectInputOption, IMatSelectInputOptionsList, IMatSelectInputReadonlySelectedOptions
+} from '../types/mat-select-input-option.type';
 import { makeMatOverlayComponentBackdropClosable } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-backdrop-closable';
 import { makeMatOverlayComponentClosableWithEscape } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-closable-with-escape';
 import { IOverlayCloseOrigin } from '../../../../../overlay/overlay/component/mat-overlay.component';
+import { getElementExpectedSize } from '../../../../../overlay/overlay/built-in/simple/helper/get-element-expected-size';
+import {
+  getPositionAndSizeObservableForSimpleOverlay, IContentElementSizeOptions
+} from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-subscribe-function-for-simple-overlay';
+import { isOptionSelected } from '../../../../../helpers/options/is-option-selected';
+import { toggleOptionSelect } from '../../../../../helpers/options/toggle-option-select';
+import { readMultipleObservableValue } from '../../../../../helpers/options/read-multiple-observable-value';
+import { readOptionsObservableValue } from '../../../../../helpers/options/read-options-observable-value';
+import { readSelectedOptionsObservableValue } from '../../../../../helpers/options/read-selected-options-observable-value';
+import { findDOMElement } from '../../../../../../../misc/find-dom-element';
+import { eventPreventDefault } from '../../../../../../../misc/event-prevent-default';
+import { toggleOptionSelectWithResolvers } from '../../../../../helpers/options/toggle-option-select-with-resolvers';
 
+
+/** TYPE **/
+
+type IActiveOption<GValue> = IMatSelectInputOption<GValue> | null;
 
 /** COMPONENT **/
 
@@ -30,14 +43,21 @@ export interface IMatSelectOverlayComponentOnClickOption<GValue> {
 
 export interface IMatSelectOverlayComponentOptions<GValue> {
   readonly targetElement: HTMLElement;
-  readonly $close: IEmitFunction<void>;
-  readonly optionsSet$: ISubscribeFunction<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly $close: IObserver<void>;
+  readonly options$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly selectedOptions$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly $rawSelectedOptions: IObserver<IMatSelectInputOptionsList<GValue>>;
+  readonly multiple$: IObservable<boolean>;
 }
 
 
 interface IData<GValue> {
-  readonly optionsSet$: ISubscribeFunction<IMatSelectInputReadonlySelectedOptions<GValue>>;
-  readonly $onPointerDownOption: IMatSelectOverlayComponentOnClickOption<GValue>;
+  readonly $onFocusOut: IObserver<Event>;
+  readonly $onKeyDownOptionsList: IObserver<KeyboardEvent>;
+  readonly options$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly $onClickOption: IMatSelectOverlayComponentOnClickOption<GValue>;
+  readonly isOptionSelected: (option: IMatSelectInputOption<GValue>) => IObservable<boolean>;
+  readonly isOptionActive: (option: IMatSelectInputOption<GValue>) => IObservable<boolean>;
 }
 
 @Component({
@@ -47,18 +67,21 @@ interface IData<GValue> {
 })
 export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComponent implements OnCreate<IData<GValue>> {
   protected readonly data: IData<GValue>;
-  protected readonly $close: IEmitFunction<void>;
+  protected readonly $close: IObserver<void>;
 
   constructor(
     manager: MatOverlayManagerComponent,
     {
       targetElement,
       $close,
-      optionsSet$,
+      options$,
+      selectedOptions$,
+      $rawSelectedOptions,
+      multiple$,
     }: IMatSelectOverlayComponentOptions<GValue>,
   ) {
 
-    const positionAndSize$: ISubscribeFunction<ICSSPositionAndSize> = getPositionAndSizeSubscribeFunctionForMatSelectInputOverlay<GValue>(
+    const positionAndSize$: IObservable<ICSSPositionAndSize> = getPositionAndSizeObservableForMatSelectInputOverlay<GValue>(
       () => this,
       targetElement,
     );
@@ -69,70 +92,106 @@ export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComp
     makeMatOverlayComponentBackdropClosable(this);
     makeMatOverlayComponentClosableWithEscape(this);
 
+
+    /** VARIABLES **/
+
     this.$close = $close;
 
-    /** REFLECT COLOR ON ELEMENTS **/
+
+    const _isOptionSelected = (option: IMatSelectInputOption<GValue>): IObservable<boolean> => {
+      return isOptionSelected({
+        selectedOptions$,
+        option,
+      });
+    };
 
 
-    // const trigger$ = fromAnimationFrame();
-    //
-    // // TODO improve
-    // const positionAndSize$: ISubscribeFunction<ICSSPositionAndSize> = map$$<void, ICSSPositionAndSize>(trigger$, () => {
-    //   const contentElement: HTMLElement | null = querySelector(this, `:scope > .content`);
-    //   if (contentElement === null) {
-    //     return {
-    //       left: '-1000px',
-    //       top: '-1000px',
-    //       width: '0',
-    //       height: '0',
-    //     };
-    //   } else {
-    //     const containerHorizontalMargin: number = 5;
-    //     const containerVerticalMargin: number = 5;
-    //     const elementMargin: number = 5;
-    //
-    //     const containerElementAndSize: IPositionAndSize = getElementPositionAndSize(this);
-    //     const targetElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(targetElement);
-    //
-    //     contentElement.style.setProperty('margin-right', `${ containerHorizontalMargin }px`);
-    //     contentElement.style.setProperty('margin-bottom', `${ containerVerticalMargin }px`);
-    //
-    //     const contentElementSize: ISize = getElementExpectedSize(
-    //       contentElement,
-    //       { width: targetElementPositionAndSize.width },
-    //     );
-    //
-    //
-    //     const _containerHorizontalMargin: number = Math.min(containerHorizontalMargin, containerElementAndSize.width / 2);
-    //     const _containerVerticalMargin: number = Math.min(containerVerticalMargin, containerElementAndSize.height / 2);
-    //
-    //     const externalBox: IPositionAndSize = {
-    //       left: _containerHorizontalMargin,
-    //       top: _containerVerticalMargin,
-    //       width: containerElementAndSize.width - (_containerHorizontalMargin * 2),
-    //       height: containerElementAndSize.height - (_containerVerticalMargin * 2),
-    //     };
-    //
-    //     const targetBox: IPositionAndSize = {
-    //       left: targetElementPositionAndSize.left,
-    //       top: targetElementPositionAndSize.top - elementMargin,
-    //       width: targetElementPositionAndSize.width,
-    //       height: targetElementPositionAndSize.height + (elementMargin * 2),
-    //     };
-    //
-    //     return positionAndSizeToCSSPositionAndSize(
-    //       fitBoxRelativeToTargetBoxWith$BottomLeft$TopLeftPreference(externalBox, targetBox, contentElementSize),
-    //     );
-    //   }
-    // });
+    /* ACTIVE OPTION */
 
-    const $onPointerDownOption = (option: IMatSelectInputOption<GValue>) => {
-      // option.$selected$.emit(!option.$selected$.getValue());
+    const {
+      emit: _$activeOption,
+      subscribe: activeOption$,
+      getValue: getActiveOptionValue,
+    } = let$$<IActiveOption<GValue>>(null);
+
+    const $activeOption = $$distinct(_$activeOption);
+
+    // if options change, reset activeOption
+    subscribeOnNodeConnectedTo(this, options$, (optionsSet: IMatSelectInputReadonlySelectedOptions<GValue>): void => {
+      // $activeOption(null);
+      focusFirstActiveOption(
+        optionsSet,
+        selectedOptions$,
+        $activeOption,
+      );
+    });
+
+    subscribeOnNodeConnectedTo(this, activeOption$, (activeOption: IActiveOption<GValue>): void => {
+      scrollToActiveOption(
+        this,
+        activeOption,
+        options$,
+      );
+    });
+
+    const isOptionActive = (option: IMatSelectInputOption<GValue>): IObservable<boolean> => {
+      return map$$(activeOption$, (activeOption: IActiveOption<GValue>): boolean => {
+        return (option === activeOption);
+      });
+    };
+
+    /** EVENTS **/
+
+    const $onFocusOut = (): void => {
+      this.close();
+    };
+
+    const $onKeyDownOptionsList = (event: KeyboardEvent): void => {
+      if (event.key === 'ArrowDown') {
+        eventPreventDefault(event);
+        focusNextActiveOption(
+          getActiveOptionValue,
+          options$,
+          $activeOption,
+        );
+      } else if (event.key === 'ArrowUp') {
+        eventPreventDefault(event);
+        focusPreviousActiveOption(
+          getActiveOptionValue,
+          options$,
+          $activeOption,
+        );
+      } else if (event.key === 'Enter') {
+        eventPreventDefault(event);
+        const activeOption: IMatSelectInputOption<GValue> | null = getActiveOptionValue();
+        if (activeOption !== null) {
+          $onClickOption(activeOption);
+        }
+      }
+    };
+
+    const $onClickOption = (option: IMatSelectInputOption<GValue>): void => {
+      toggleOptionSelectWithResolvers({
+        selectedOptions$,
+        $rawSelectedOptions: $rawSelectedOptions,
+        option,
+        multiple$,
+      });
+
+      const multiple: boolean = readMultipleObservableValue(multiple$);
+
+      if (!multiple) {
+        this.close();
+      }
     };
 
     this.data = {
-      optionsSet$,
-      $onPointerDownOption,
+      $onFocusOut,
+      $onKeyDownOptionsList,
+      options$,
+      $onClickOption,
+      isOptionSelected: _isOptionSelected,
+      isOptionActive,
     };
   }
 
@@ -144,47 +203,175 @@ export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComp
     this.$close();
     return super.close(origin);
   }
+
+  // TODO
+  // override onInit(): void {
+  //   super.onInit();
+  //   querySelectorOrThrow<HTMLElement>(this, '.options').focus();
+  // }
 }
 
 
 /** FUNCTIONS **/
 
-const elementMargin: number = 5;
-const containerHorizontalMargin: number = 5;
-const containerVerticalMargin: number = 5;
-
-export function getPositionAndSizeSubscribeFunctionForMatSelectInputOverlay<GValue>(
+function getPositionAndSizeObservableForMatSelectInputOverlay<GValue>(
   getContainerElement: () => MatSelectInputOverlayComponent<GValue>,
   targetElement: HTMLElement,
-): ISubscribeFunction<ICSSPositionAndSize> {
-  return map$$<void, ICSSPositionAndSize>(fromAnimationFrame(), () => {
-    const containerElement: HTMLElement = getContainerElement();
-    const contentElement: HTMLElement | null = querySelector(containerElement, `:scope > .content`);
-
-    if (contentElement === null) {
-      return POSITION_AND_SIZE_OUT_OF_WINDOW;
-    } else {
-      const containerElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(containerElement);
-      const targetElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(targetElement);
-
-      const contentElementSize: ISize = {
-        width: 250,
-        height: 120,
-      };
-
-      return positionAndSizeToCSSPositionAndSize(
-        getFittingBoxForContainer$Target$ContentElements({
-          containerElementPositionAndSize,
-          targetElementPositionAndSize,
-          contentElementSize,
-          // extra
-          elementMargin,
-          containerHorizontalMargin,
-          containerVerticalMargin,
-        }),
+): IObservable<ICSSPositionAndSize> {
+  return getPositionAndSizeObservableForSimpleOverlay({
+    getContainerElement,
+    targetElement,
+    getContentElementSize: (
+      {
+        contentElement,
+        targetElementPositionAndSize,
+      }: IContentElementSizeOptions,
+    ) => {
+      return getElementExpectedSize(
+        contentElement,
+        { width: targetElementPositionAndSize.width },
       );
-    }
+    },
   });
+}
+
+/** FUNCTIONS **/
+
+const SCROLL_TO_ACTIVE_OPTION_SUBSCRIPTIONS = new WeakMap<MatSelectInputOverlayComponent<any>, IUnsubscribe>();
+
+/**
+ * TODO Pretty ugly
+ */
+function scrollToActiveOption<GValue>(
+  element: MatSelectInputOverlayComponent<GValue>,
+  activeOption: IActiveOption<GValue>,
+  optionsSet$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
+): void {
+  if (SCROLL_TO_ACTIVE_OPTION_SUBSCRIPTIONS.has(element)) {
+    (SCROLL_TO_ACTIVE_OPTION_SUBSCRIPTIONS.get(element) as IUnsubscribe)();
+  }
+  if (activeOption !== null) {
+    const selector: string = `:scope > .content > .options > [index="${getOptionIndex(activeOption, optionsSet$)}"]`;
+
+    const clear = () => {
+      unsubscribeOfFindDOMElement();
+      unsubscribeOfTimeout();
+    };
+
+    const unsubscribeOfFindDOMElement = findDOMElement(selector, element)((optionElement: HTMLElement | null): void => {
+      if (optionElement !== null) {
+        optionElement.scrollIntoView({
+          block: 'nearest',
+        });
+        clear();
+      }
+    });
+
+    const unsubscribeOfTimeout = timeout(500)(clear);
+
+    // onNodeConnectedToWithImmediateCached(element)((connected: boolean) => {
+    //   if (!connected) {
+    //     clear();
+    //   }
+    // });
+  }
+}
+
+function getOptionIndex<GValue>(
+  option: IMatSelectInputOption<GValue>,
+  optionsSet$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
+): number {
+  const optionsSet = readOptionsObservableValue(optionsSet$);
+  let i: number = 0;
+  const iterator: Iterator<IMatSelectInputOption<GValue>> = optionsSet.values();
+  let result: IteratorResult<IMatSelectInputOption<GValue>>;
+  while (!(result = iterator.next()).done) {
+    const _option: IMatSelectInputOption<GValue> = result.value;
+    if (_option === option) {
+      return i;
+    } else {
+      i++;
+    }
+  }
+  return -1;
+}
+
+function focusFirstActiveOption<GValue>(
+  optionsSet: IMatSelectInputReadonlySelectedOptions<GValue>,
+  selectedOptions$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
+  $activeOption: IObserver<IActiveOption<GValue>>,
+): void {
+  const selectedOptions: IMatSelectInputReadonlySelectedOptions<GValue> = readSelectedOptionsObservableValue(selectedOptions$);
+  let activeOption: IActiveOption<GValue> = null;
+
+  const iterator: Iterator<IMatSelectInputOption<GValue>> = optionsSet.values();
+  let result: IteratorResult<IMatSelectInputOption<GValue>>;
+  while (!(result = iterator.next()).done) {
+    const option: IMatSelectInputOption<GValue> = result.value;
+    if (selectedOptions.has(option)) {
+      activeOption = option;
+      break;
+    }
+  }
+
+  $activeOption(activeOption);
+}
+
+function focusNextActiveOption<GValue>(
+  getActiveOptionValue: () => IActiveOption<GValue>,
+  optionsSet$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
+  $activeOption: IObserver<IActiveOption<GValue>>,
+): void {
+  const activeOption: IActiveOption<GValue> = getActiveOptionValue();
+  const optionsSet = readOptionsObservableValue(optionsSet$);
+  const iterator: Iterator<IMatSelectInputOption<GValue>> = optionsSet.values();
+
+  if (activeOption !== null) {
+    let result: IteratorResult<IMatSelectInputOption<GValue>>;
+    while (!(result = iterator.next()).done) {
+      if (result.value === activeOption) {
+        break;
+      }
+    }
+  }
+
+  let nextActiveOptionResult: IteratorResult<IMatSelectInputOption<GValue>> = iterator.next();
+  if (nextActiveOptionResult.done) {
+    nextActiveOptionResult = optionsSet.values().next();
+  }
+
+  const nextActiveOption: IActiveOption<GValue> = nextActiveOptionResult.done
+    ? null
+    : nextActiveOptionResult.value;
+
+  $activeOption(nextActiveOption);
+}
+
+function focusPreviousActiveOption<GValue>(
+  getActiveOptionValue: () => IActiveOption<GValue>,
+  optionsSet$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
+  $activeOption: IObserver<IActiveOption<GValue>>,
+): void {
+  const activeOption: IActiveOption<GValue> = getActiveOptionValue();
+  const optionsSet = readOptionsObservableValue(optionsSet$);
+  const iterator: Iterator<IMatSelectInputOption<GValue>> = optionsSet.values();
+
+  let previousActiveOption: IActiveOption<GValue> = null;
+
+  let result: IteratorResult<IMatSelectInputOption<GValue>>;
+  while (!(result = iterator.next()).done) {
+    const option: IMatSelectInputOption<GValue> = result.value;
+    if (
+      (option === activeOption)
+      && (previousActiveOption !== null)
+    ) {
+      break;
+    } else {
+      previousActiveOption = option;
+    }
+  }
+
+  $activeOption(previousActiveOption);
 }
 
 

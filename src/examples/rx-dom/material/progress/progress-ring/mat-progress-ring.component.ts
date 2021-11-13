@@ -1,25 +1,24 @@
-import { IEmitFunction, ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import { IObserver, IObservable, single, map$$, function$$, let$$ } from '@lifaon/rx-js-light';
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, IDynamicStyleValue, OnCreate,
-  setComponentSubscribeFunctionProperties, setReactiveStyle
+  defineObservableProperty, setReactiveStyle
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-progress-ring.component.html?raw';
 // @ts-ignore
 import style from './mat-progress-ring.component.scss?inline';
-import { function$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 /** COMPONENT **/
 
 interface IData {
-  readonly strokeWidth$: ISubscribeFunction<number>;
-  readonly strokeDashOffset$: ISubscribeFunction<IDynamicStyleValue>;
-  readonly strokeDashArray$: ISubscribeFunction<string>;
-  readonly radius$: ISubscribeFunction<number>;
-  readonly diameter$: ISubscribeFunction<number>;
-  readonly innerRadius$: ISubscribeFunction<number>;
-  readonly transform$: ISubscribeFunction<string>;
+  readonly strokeWidth$: IObservable<number>;
+  readonly strokeDashOffset$: IObservable<IDynamicStyleValue>;
+  readonly strokeDashArray$: IObservable<string>;
+  readonly radius$: IObservable<number>;
+  readonly diameter$: IObservable<number>;
+  readonly innerRadius$: IObservable<number>;
+  readonly transform$: IObservable<string>;
 }
 
 // https://css-tricks.com/building-progress-ring-quickly/
@@ -32,16 +31,16 @@ interface IData {
 })
 export class AppProgressRingComponent extends HTMLElement implements OnCreate<IData> {
 
-  progress$!: ISubscribeFunction<number>;
-  readonly $progress!: IEmitFunction<number>;
+  progress$!: IObservable<number>;
+  readonly $progress!: IObserver<number>;
   progress!: number;
 
-  radius$!: ISubscribeFunction<number>;
-  readonly $radius!: IEmitFunction<number>;
+  radius$!: IObservable<number>;
+  readonly $radius!: IObserver<number>;
   radius!: number;
 
-  stroke$!: ISubscribeFunction<number>;
-  readonly $stroke!: IEmitFunction<number>;
+  stroke$!: IObservable<number>;
+  readonly $stroke!: IObserver<number>;
   stroke!: number;
 
   protected readonly _data: IData;
@@ -51,16 +50,16 @@ export class AppProgressRingComponent extends HTMLElement implements OnCreate<ID
 
     /** SETUP PROPERTIES **/
 
-    const $progress$ = let$$<ISubscribeFunction<number>>(single(0));
-    setComponentSubscribeFunctionProperties(this, 'progress', $progress$);
+    const $progress$ = let$$<IObservable<number>>(single(0));
+    defineObservableProperty(this, 'progress', $progress$);
     const progress$ = this.progress$;
 
-    const $radius$ = let$$<ISubscribeFunction<number>>(single(50));
-    setComponentSubscribeFunctionProperties(this, 'radius', $radius$);
+    const $radius$ = let$$<IObservable<number>>(single(50));
+    defineObservableProperty(this, 'radius', $radius$);
     const radius$ = this.radius$;
 
-    const $stroke$ = let$$<ISubscribeFunction<number>>(single(5));
-    setComponentSubscribeFunctionProperties(this, 'stroke', $stroke$);
+    const $stroke$ = let$$<IObservable<number>>(single(5));
+    defineObservableProperty(this, 'stroke', $stroke$);
     const stroke$ = this.stroke$;
 
     /** SETUP SUBSCRIBE FUNCTIONS **/

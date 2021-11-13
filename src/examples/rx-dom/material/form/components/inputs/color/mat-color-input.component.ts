@@ -1,6 +1,6 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDynamicStyleValue,
-  OnCreate, querySelectorOrThrow, setComponentSubscribeFunctionProperties,
+  OnCreate, querySelectorOrThrow, defineObservableProperty,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-color-input.component.html?raw';
@@ -8,17 +8,13 @@ import html from './mat-color-input.component.html?raw';
 import style from './mat-color-input.component.scss?inline';
 import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
-  combineLatest, IEmitFunction, IMapFilterDiscard, ISource, ISubscribeFunction, MAP_FILTER_DISCARD, single
+  $$distinct, $$map, $$mapFilter, combineLatest, function$$, IMapFilterDiscard, IObservable, IObserver, ISource, let$$,
+  map$$, MAP_FILTER_DISCARD, mapFilter$$, or$$, shareR$$, single
 } from '@lifaon/rx-js-light';
-import {
-  $$distinct, $$filter, $$map, $$mapFilter, function$$, let$$, map$$, mapFilter$$, or$$, shareR$$
-} from '@lifaon/rx-js-light-shortcuts';
 import { MatColorInputOverlayComponent } from './overlay/mat-color-input-overlay.component';
 import { createMatOverlayController } from '../../../../overlay/overlay/component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { IHSVAColor } from '../../../../../../misc/css/color/colors/hsva/hsva-color.type';
-import { DEFAULT_MAT_COLOR_INPUT_COLOR } from './misc/default-mat-color-input-color.constant';
-import { parseCSSColor } from '../../../../../../misc/css/color/parse-css-color';
 import { colorToHSVAColor } from '../../../../../../misc/css/color/to/color-to-hsva-color';
 import { IColor } from '../../../../../../misc/css/color/color.type';
 import { hsvaColorToHexString } from '../../../../../../misc/css/color/colors/hsva/to/string/hsva-color-to-hex-string';
@@ -31,6 +27,7 @@ import { parseCSSHexColorAsNumber } from '../../../../../../misc/css/color/color
 import { hsvaColorToHSVAString } from '../../../../../../misc/css/color/colors/hsva/to/string/hsla-color-to-hsva-string';
 import { MatInputFieldComponent } from '../shared/input-field/mat-input-field.component';
 import { colorStringToColor } from './misc/color-string-to-color';
+import { $$filter } from '../../../../../../../../../rx-js-light/dist/src/observer/pipes/built-in/filter/filter-observer.shortcut';
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color
 
@@ -45,16 +42,16 @@ type IColorFormat = 'hex' | 'rgb' | 'hsl' | typeof USER_COLOR_FORMAT;
 /** COMPONENT **/
 
 interface IData {
-  readonly previewColor$: ISubscribeFunction<IDynamicStyleValue>;
-  readonly $onClickColorPreview: IEmitFunction<MouseEvent>;
-  readonly $onKeyDownColorPreview: IEmitFunction<KeyboardEvent>;
-  readonly disabled$: ISubscribeFunction<boolean>;
-  readonly readonly$: ISubscribeFunction<boolean>;
-  readonly disabledTabindex$: ISubscribeFunction<string | null>;
+  readonly previewColor$: IObservable<IDynamicStyleValue>;
+  readonly $onClickColorPreview: IObserver<MouseEvent>;
+  readonly $onKeyDownColorPreview: IObserver<KeyboardEvent>;
+  readonly disabled$: IObservable<boolean>;
+  readonly readonly$: IObservable<boolean>;
+  readonly disabledTabindex$: IObservable<string | null>;
   readonly $inputValue$: ISource<string>;
-  readonly selectedColorFormat$: ISubscribeFunction<IColorFormat>;
-  readonly $onClickColorFormatButton: IEmitFunction<MouseEvent>;
-  readonly $onKeyDownColorFormatButton: IEmitFunction<KeyboardEvent>;
+  readonly selectedColorFormat$: IObservable<IColorFormat>;
+  readonly $onClickColorFormatButton: IObserver<MouseEvent>;
+  readonly $onKeyDownColorFormatButton: IObserver<KeyboardEvent>;
 }
 
 /*-----*/
@@ -72,11 +69,11 @@ interface IData {
 })
 export class MatColorInputComponent extends MatInputFieldComponent<string> implements OnCreate<IData> {
 
-  alphaDisabled$!: ISubscribeFunction<boolean>;
-  readonly $alphaDisabled!: IEmitFunction<boolean>;
+  alphaDisabled$!: IObservable<boolean>;
+  readonly $alphaDisabled!: IObserver<boolean>;
   alphaDisabled!: boolean;
 
-  readonly colorValue$: ISubscribeFunction<IHSVAColor>;
+  readonly colorValue$: IObservable<IHSVAColor>;
 
   protected readonly _data: IData;
 
@@ -91,8 +88,8 @@ export class MatColorInputComponent extends MatInputFieldComponent<string> imple
     const disabled$ = this.disabled$;
     const readonly$ = this.readonly$;
 
-    const $alphaDisabled$ = let$$<ISubscribeFunction<boolean>>(single(true));
-    setComponentSubscribeFunctionProperties(this, 'alphaDisabled', $alphaDisabled$);
+    const $alphaDisabled$ = let$$<IObservable<boolean>>(single(true));
+    defineObservableProperty(this, 'alphaDisabled', $alphaDisabled$);
     const alphaDisabled$ = this.alphaDisabled$;
 
     const disabledTabindex$ = map$$(or$$(disabled$, readonly$), (disabled: boolean) => disabled ? null : '0');

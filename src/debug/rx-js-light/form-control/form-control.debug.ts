@@ -3,9 +3,9 @@ import {
   DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
   generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
-import { single$$ } from '@lifaon/rx-js-light-shortcuts';
 import { AppNumberInputComponent } from './number/number-input.component';
 import { AppFormComponent } from './form/form.component';
+import { single } from '@lifaon/rx-js-light';
 
 
 /** MAIN **/
@@ -60,8 +60,8 @@ function formControlDebug1() {
   const input = new AppNumberInputComponent();
   bootstrap(input);
 
-  input.required$ = single$$(true);
-  input.min$ = single$$(5);
+  input.required$ = single(true);
+  input.min$ = single(5);
   // input.required = true;
 
   input.validity.valid$((value: boolean) => {
@@ -69,7 +69,7 @@ function formControlDebug1() {
   });
 
   (window as any).input = input;
-  (window as any).single$$ = single$$;
+  (window as any).single$$ = single;
 }
 
 function formControlDebug2() {

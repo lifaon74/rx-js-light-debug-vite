@@ -1,4 +1,5 @@
-import { andM$$, single$$, let$$, map$$, share$$ } from '@lifaon/rx-js-light-shortcuts';
+import { andM$$, let$$, map$$, share$$, single } from '../../../../../rx-js-light/dist';
+
 
 function rxjsLightShortcutsExample1() {
   const $inputA$ = let$$('abc');
@@ -7,7 +8,7 @@ function rxjsLightShortcutsExample1() {
 
   const isInputAValid$ = map$$($inputA$.subscribe, (value: string) => (value.length >= 10));
   const isInputBValid$ = map$$($inputB$.subscribe, (value: string) => (value.length <= 10));
-  const isInputCValid$ = single$$(true); // let's assume that inputC is always valid
+  const isInputCValid$ = single(true); // let's assume that inputC is always valid
 
   const isFormValid$ = andM$$(isInputAValid$, isInputBValid$, isInputCValid$);
 

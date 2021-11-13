@@ -1,14 +1,33 @@
 <div class="content">
-  <div class="options">
+  <div
+    class="focus-out-helper"
+    tabindex="0"
+    (focus)="$.$onFocusOut"
+  ></div>
+
+  <div
+    class="options"
+    tabindex="0"
+    (keydown)="$.$onKeyDownOptionsList"
+  >
     <div
       class="option"
-      *for="let option of $.optionsSet$"
-      (pointerdown)="() => $.$onPointerDownOption(option)"
+      *for="let option of $.options$; index as index$"
+      [class.selected]="$.isOptionSelected(option)"
+      [class.active]="$.isOptionActive(option)"
+      (click)="() => $.$onClickOption(option)"
+      [attr.index]="index$"
     >
       <div class="label">
         {{ option.label$ }}
       </div>
     </div>
   </div>
+
+  <div
+    class="focus-out-helper"
+    tabindex="0"
+    (focus)="$.$onFocusOut"
+  ></div>
 </div>
 

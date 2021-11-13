@@ -1,41 +1,41 @@
 import {
-  IGenericSubscribeFunctionProperty, IHavingMultipleSubscribeFunctionProperties,
-  ISubscribeFunctionPropertiesToSubscribeFunctionSourceProperties,
-  setComponentMultipleSubscribeFunctionProperties
+  IGenericObservableProperty, IHavingMultipleObservableProperties,
+  IObservablePropertiesToObservableSourceProperties,
+  setComponentMultipleObservableProperties
 } from '@lifaon/rx-dom';
 
-// export type IHavingMultipleSubscribeFunctionPropertiesReturn<
+// export type IHavingMultipleObservablePropertiesReturn<
 //   // generics
-//   GProperties extends readonly IGenericSubscribeFunctionProperty[],
+//   GProperties extends readonly IGenericObservableProperty[],
 //   GBaseClass extends (new(...args: any[]) => any)
 //   //
 //   > =
-//   GBaseClass & IHavingMultipleSubscribeFunctionProperties<GProperties>
+//   GBaseClass & IHavingMultipleObservableProperties<GProperties>
 //   ;
 
 
-export type IHavingMultipleSubscribeFunctionPropertiesReturn<
+export type IHavingMultipleObservablePropertiesReturn<
   // generics
-  GProperties extends readonly IGenericSubscribeFunctionProperty[],
+  GProperties extends readonly IGenericObservableProperty[],
   GBaseClass extends (new(...args: any[]) => any)
   //
   > =
   GBaseClass
-  & (new(properties: ISubscribeFunctionPropertiesToSubscribeFunctionSourceProperties<GProperties>, ...args: ConstructorParameters<GBaseClass>) => (InstanceType<GBaseClass> & IHavingMultipleSubscribeFunctionProperties<GProperties>));
+  & (new(properties: IObservablePropertiesToObservableSourceProperties<GProperties>, ...args: ConstructorParameters<GBaseClass>) => (InstanceType<GBaseClass> & IHavingMultipleObservableProperties<GProperties>));
 
 
-export function havingMultipleSubscribeFunctionProperties<
+export function havingMultipleObservableProperties<
   // generics
-  GProperties extends readonly IGenericSubscribeFunctionProperty[],
+  GProperties extends readonly IGenericObservableProperty[],
   GBaseClass extends (new(...args: any[]) => any)
   //
   >(
   baseClass: GBaseClass
-): IHavingMultipleSubscribeFunctionPropertiesReturn<GProperties, GBaseClass> {
+): IHavingMultipleObservablePropertiesReturn<GProperties, GBaseClass> {
   return class extends baseClass {
     constructor(...args: any[]) {
       super(...args.slice(1));
-      setComponentMultipleSubscribeFunctionProperties<this, GProperties>(this, args[0]);
+      setComponentMultipleObservableProperties<this, GProperties>(this, args[0]);
     }
-  } as IHavingMultipleSubscribeFunctionPropertiesReturn<GProperties, GBaseClass>;
+  } as IHavingMultipleObservablePropertiesReturn<GProperties, GBaseClass>;
 }

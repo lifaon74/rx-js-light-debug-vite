@@ -1,6 +1,6 @@
 import {
   abortSignalPromiseBranching, createAbortError, createErrorNotification, createNextNotification, createTimeout,
-  fromEventTarget, IDefaultNotificationsUnion, idle, IEmitFunction, ISubscribeFunction, IUnsubscribeFunction,
+  fromEventTarget, IDefaultNotificationsUnion, idle, IObserver, IObservable, IUnsubscribe,
   STATIC_COMPLETE_NOTIFICATION
 } from '@lifaon/rx-js-light';
 import { createElementNode } from '@lifaon/rx-dom';
@@ -77,8 +77,8 @@ export function locateRouterOutletElementObservable(
   routerOutletSelector: string,
   parentNode: ParentNode,
   timeout: number = 200,
-): ISubscribeFunction<IDefaultNotificationsUnion<HTMLElement>> {
-  return (emit: IEmitFunction<IDefaultNotificationsUnion<HTMLElement>>): IUnsubscribeFunction => {
+): IObservable<IDefaultNotificationsUnion<HTMLElement>> {
+  return (emit: IObserver<IDefaultNotificationsUnion<HTMLElement>>): IUnsubscribe => {
     let running: boolean = true;
 
     const clear = () => {

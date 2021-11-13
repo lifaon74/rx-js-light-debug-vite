@@ -1,9 +1,9 @@
 import { createElementModifier } from '@lifaon/rx-dom';
-import { IEmitFunction } from '@lifaon/rx-js-light';
+import { IObserver } from '@lifaon/rx-js-light';
 
 export function nodeReferenceModifierFunction<GElement extends HTMLElement>(
   element: GElement,
-  $destination: IEmitFunction<GElement>,
+  $destination: IObserver<GElement>,
 ): GElement {
   $destination(element);
   return element;

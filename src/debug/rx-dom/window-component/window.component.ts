@@ -1,5 +1,5 @@
 import {
-  createDragSubscribeFunction, IDragObject, IDragSubscribeFunctionNotifications
+  createDragObservable, IDragObject, IDragObservableNotifications
 } from './create-drag-subscribe-function';
 import {
   compileReactiveCSSAsComponentStyle, Component, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
@@ -7,8 +7,8 @@ import {
   querySelectorOrThrow
 } from '@lifaon/rx-dom';
 import {
-  createMulticastReplayLastSource, freeze, IEmitFunction, IMulticastReplayLastSource, ISubscribeFunction,
-  IUnsubscribeFunction, noop, reactiveFunction, Subscription, SubscriptionManager,
+  createMulticastReplayLastSource, freeze, IObserver, IMulticastReplayLastSource, IObservable,
+  IUnsubscribe, noop, reactiveFunction, Subscription, SubscriptionManager,
 } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './window.component.scss';
@@ -58,21 +58,21 @@ function getContainerOfAppWindowComponent(
 type IHorizontalPosition = 'left' | 'center' | 'right';
 type IVerticalPosition = 'top' | 'center' | 'bottom';
 
-// const drag = createDragSubscribeFunction(this);
+// const drag = createDragObservable(this);
 // drag((notification) => {
 //   console.log('dragging', notification);
 // });
 
-function createResizeSubscribeFunctionForAppWindowComponent(
+function createResizeObservableForAppWindowComponent(
   instance: AppWindowComponent,
   horizontalPosition: IHorizontalPosition,
   verticalPosition: IVerticalPosition
-): ISubscribeFunction<never> {
-  return (): IUnsubscribeFunction => {
+): IObservable<never> {
+  return (): IUnsubscribe => {
     let elementPositionX: number;
     let elementPositionY: number;
 
-    const subscribeToDrag = createDragSubscribeFunction(querySelectorOrThrow<HTMLDivElement>(
+    const subscribeToDrag = createDragObservable(querySelectorOrThrow<HTMLDivElement>(
       instance,
       `:scope > .resize-container > .resize.${ verticalPosition }.${ horizontalPosition }`,
     ));
@@ -127,7 +127,7 @@ function createResizeSubscribeFunctionForAppWindowComponent(
       }
     };
 
-    return subscribeToDrag((notification: IDragSubscribeFunctionNotifications) => {
+    return subscribeToDrag((notification: IDragObservableNotifications) => {
       switch (notification.name) {
         case 'drag-start':
           onDragStart();
@@ -140,24 +140,24 @@ function createResizeSubscribeFunctionForAppWindowComponent(
   };
 }
 
-function createAllResizeSubscribeFunctionForAppWindowComponent(
+function createAllResizeObservableForAppWindowComponent(
   instance: AppWindowComponent,
-): ISubscribeFunction<never> {
+): IObservable<never> {
   const subscribe = [
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'left', 'top'),
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'left', 'center'),
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'left', 'bottom'),
+    createResizeObservableForAppWindowComponent(instance, 'left', 'top'),
+    createResizeObservableForAppWindowComponent(instance, 'left', 'center'),
+    createResizeObservableForAppWindowComponent(instance, 'left', 'bottom'),
 
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'right', 'top'),
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'right', 'center'),
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'right', 'bottom'),
+    createResizeObservableForAppWindowComponent(instance, 'right', 'top'),
+    createResizeObservableForAppWindowComponent(instance, 'right', 'center'),
+    createResizeObservableForAppWindowComponent(instance, 'right', 'bottom'),
 
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'center', 'top'),
-    createResizeSubscribeFunctionForAppWindowComponent(instance, 'center', 'bottom'),
+    createResizeObservableForAppWindowComponent(instance, 'center', 'top'),
+    createResizeObservableForAppWindowComponent(instance, 'center', 'bottom'),
   ];
 
-  return (): IUnsubscribeFunction => {
-    const unsubscribe = subscribe.map((subscribe: ISubscribeFunction<never>) => subscribe(noop));
+  return (): IUnsubscribe => {
+    const unsubscribe = subscribe.map((subscribe: IObservable<never>) => subscribe(noop));
     return () => {
       for (let i = 0, l = unsubscribe.length; i < l; i++) {
         unsubscribe[i]();
@@ -166,14 +166,14 @@ function createAllResizeSubscribeFunctionForAppWindowComponent(
   };
 }
 
-function createMoveSubscribeFunctionForAppWindowComponent(
+function createMoveObservableForAppWindowComponent(
   instance: AppWindowComponent
-): ISubscribeFunction<never> {
-  return (): IUnsubscribeFunction => {
+): IObservable<never> {
+  return (): IUnsubscribe => {
     let elementPositionX: number;
     let elementPositionY: number;
 
-    const subscribeToDrag = createDragSubscribeFunction(querySelectorOrThrow<HTMLDivElement>(
+    const subscribeToDrag = createDragObservable(querySelectorOrThrow<HTMLDivElement>(
       instance,
       ':scope > .frame > .header',
     ));
@@ -192,7 +192,7 @@ function createMoveSubscribeFunctionForAppWindowComponent(
       // instance.setTopKeepingHeight(ratioY + elementPositionY);
     };
 
-    return subscribeToDrag((notification: IDragSubscribeFunctionNotifications) => {
+    return subscribeToDrag((notification: IDragObservableNotifications) => {
       switch (notification.name) {
         case 'drag-start':
           onDragStart();
@@ -270,16 +270,16 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
   /** HORIZONTAL **/
   protected readonly left: IMulticastReplayLastSource<number>;
   protected readonly width: IMulticastReplayLastSource<number>;
-  protected readonly right: ISubscribeFunction<number>;
+  protected readonly right: IObservable<number>;
 
   /** VERTICAL **/
   protected readonly top: IMulticastReplayLastSource<number>;
   protected readonly height: IMulticastReplayLastSource<number>;
-  protected readonly bottom: ISubscribeFunction<number>;
+  protected readonly bottom: IObservable<number>;
 
   /** OTHERS **/
   protected readonly userBorderResize: IMulticastReplayLastSource<IUserBordersResize | null>;
-  protected readonly isMaximised: ISubscribeFunction<boolean>;
+  protected readonly isMaximised: IObservable<boolean>;
 
   constructor() {
     super();
@@ -395,7 +395,7 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
     this.width.emit(Math.max(0, leftPlusWidth - left));
   }
 
-  subscribeLeft(emit: IEmitFunction<number>): IUnsubscribeFunction {
+  subscribeLeft(emit: IObserver<number>): IUnsubscribe {
     return this.left.subscribe(emit);
   }
 
@@ -415,7 +415,7 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
     this.width.emit(width);
   }
 
-  subscribeWidth(emit: IEmitFunction<number>): IUnsubscribeFunction {
+  subscribeWidth(emit: IObserver<number>): IUnsubscribe {
     return this.width.subscribe(emit);
   }
 
@@ -433,7 +433,7 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
     this.width.emit(Math.max(0, 1 - this.getLeft() - right));
   }
 
-  subscribeRight(emit: IEmitFunction<number>): IUnsubscribeFunction {
+  subscribeRight(emit: IObserver<number>): IUnsubscribe {
     return this.right(emit);
   }
 
@@ -497,12 +497,12 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
 
   onInit(): void {
     this.subscriptions.set('resize', new Subscription<any>(
-      createAllResizeSubscribeFunctionForAppWindowComponent(this),
+      createAllResizeObservableForAppWindowComponent(this),
       noop,
     ));
 
     this.subscriptions.set('move', new Subscription<any>(
-      createMoveSubscribeFunctionForAppWindowComponent(this),
+      createMoveObservableForAppWindowComponent(this),
       noop,
     ));
 

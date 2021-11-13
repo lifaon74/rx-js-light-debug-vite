@@ -1,4 +1,4 @@
-import { IMapFunction, ISubscribeFunction, mapSubscribePipe } from '@lifaon/rx-js-light';
+import { IMapFunction, IObservable, mapObservablePipe } from '@lifaon/rx-js-light';
 
 /**
  * DO NOT USE
@@ -11,10 +11,10 @@ import { IMapFunction, ISubscribeFunction, mapSubscribePipe } from '@lifaon/rx-j
  */
 
 class Observable<GValue> {
-  readonly subscribe: ISubscribeFunction<GValue>;
+  readonly subscribe: IObservable<GValue>;
 
   constructor(
-    subscribe: ISubscribeFunction<GValue>,
+    subscribe: IObservable<GValue>,
   ) {
     this.subscribe = subscribe;
   }
@@ -22,7 +22,7 @@ class Observable<GValue> {
   map<GOut>(
     mapFunction: IMapFunction<GValue, GOut>,
   ): Observable<GOut> {
-    return new Observable<GOut>(mapSubscribePipe(mapFunction)(this.subscribe));
+    return new Observable<GOut>(mapObservablePipe(mapFunction)(this.subscribe));
   }
 }
 

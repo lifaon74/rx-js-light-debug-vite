@@ -1,6 +1,5 @@
 import { createElementModifier, setReactiveEventListener, setReactiveProperty } from '@lifaon/rx-dom';
-import { ISource } from '@lifaon/rx-js-light';
-import { $$map } from '@lifaon/rx-js-light-shortcuts';
+import { $$map, ISource } from '@lifaon/rx-js-light';
 
 export function inputValueModifierFunction(
   element: HTMLElement,

@@ -3,13 +3,12 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT,
   HTMLElementConstructor, Input, nodeAppendChild, OnCreate
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, ISubscribeFunction, of } from '@lifaon/rx-js-light';
-import { letU$$, map$$$, mergeAll$$, mergeAll$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
+import { IMulticastReplayLastSource, IObservable, letU$$, map$$$, mergeAll$$$, of, pipe$$ } from '@lifaon/rx-js-light';
 
 /** COMPONENT **/
 
 interface IData {
-  content$: ISubscribeFunction<DocumentFragment>;
+  content$: IObservable<DocumentFragment>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -26,15 +25,15 @@ const CONSTANTS_TO_IMPORT = {
 })
 export class AppLazyComponent extends HTMLElement implements OnCreate<IData> {
   @Input((instance: AppLazyComponent) => instance._$component$)
-  component$!: ISubscribeFunction<HTMLElementConstructor>;
+  component$!: IObservable<HTMLElementConstructor>;
 
   protected readonly _data: IData;
 
-  protected readonly _$component$: IMulticastReplayLastSource<ISubscribeFunction<HTMLElementConstructor>>;
+  protected readonly _$component$: IMulticastReplayLastSource<IObservable<HTMLElementConstructor>>;
 
   constructor() {
     super();
-    const $component$ = letU$$<ISubscribeFunction<HTMLElementConstructor>>();
+    const $component$ = letU$$<IObservable<HTMLElementConstructor>>();
     this._$component$ = $component$;
 
     const content$ = pipe$$($component$.subscribe, [
@@ -65,7 +64,7 @@ export async function lazyLoadExample() {
   bootstrap(lazy);
 
   const load = async () => {
-    const { MatProgressBarComponent } = await import('../material/progress-bar/mat-progress-bar.component');
+    const { MatProgressBarComponent } = await import('../material/progress/progress-bar/mat-progress-bar.component');
     lazy.component$ = of(MatProgressBarComponent);
   };
 

@@ -1,14 +1,13 @@
-import { ISubscribeFunction, single } from '@lifaon/rx-js-light';
-import { function$$, map$$, notOrM$$ } from '@lifaon/rx-js-light-shortcuts';
+import { function$$, IObservable, map$$, notOrM$$, single } from '@lifaon/rx-js-light';
 import { isStepValid } from '../misc/number-helpers';
 import { distinctDebouncedShared$$ } from '../misc/rx-js-light-helpers';
 import { IInputValidityOptions, InputValidity } from '../shared/input-validity';
 
 /** FUNCTIONS **/
 
-export function getStepBaseSubscribeFunction(
-  min$: ISubscribeFunction<number>,
-): ISubscribeFunction<number> {
+export function getStepBaseObservable(
+  min$: IObservable<number>,
+): IObservable<number> {
   return map$$(min$, getStepBase);
 }
 
@@ -25,23 +24,23 @@ export function getStepBase(
 export type INumberInputValue = number | null;
 
 export interface INumberInputValidityOptions extends IInputValidityOptions {
-  value$: ISubscribeFunction<INumberInputValue>;
-  required$?: ISubscribeFunction<boolean>;
-  min$?: ISubscribeFunction<number>;
-  max$?: ISubscribeFunction<number>;
-  step$?: ISubscribeFunction<number>;
+  value$: IObservable<INumberInputValue>;
+  required$?: IObservable<boolean>;
+  min$?: IObservable<number>;
+  max$?: IObservable<number>;
+  step$?: IObservable<number>;
 }
 
 /** CLASS **/
 
 export class NumberInputValidity extends InputValidity {
-  readonly valid$: ISubscribeFunction<boolean>;
+  readonly valid$: IObservable<boolean>;
 
-  readonly badInput$: ISubscribeFunction<boolean>;
-  readonly rangeUnderflow$: ISubscribeFunction<boolean>;
-  readonly rangeOverflow$: ISubscribeFunction<boolean>;
-  readonly stepMismatch$: ISubscribeFunction<boolean>;
-  readonly valueMissing$: ISubscribeFunction<boolean>;
+  readonly badInput$: IObservable<boolean>;
+  readonly rangeUnderflow$: IObservable<boolean>;
+  readonly rangeOverflow$: IObservable<boolean>;
+  readonly stepMismatch$: IObservable<boolean>;
+  readonly valueMissing$: IObservable<boolean>;
 
   constructor(
     {
@@ -54,7 +53,7 @@ export class NumberInputValidity extends InputValidity {
   ) {
     super();
 
-    const stepBase$ = getStepBaseSubscribeFunction(min$);
+    const stepBase$ = getStepBaseObservable(min$);
 
     /** VALIDITY **/
 

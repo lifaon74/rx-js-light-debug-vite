@@ -2,21 +2,20 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, ISubscribeFunction } from '@lifaon/rx-js-light';
-import { single$$, let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { IMulticastReplayLastSource, IObservable, let$$, map$$ } from '@lifaon/rx-js-light';
 
 
 /** COMPONENT **/
 
 interface IItem {
-  readonly text$: ISubscribeFunction<string>;
+  readonly text$: IObservable<string>;
   readonly $selected$: IMulticastReplayLastSource<boolean>;
 }
 
 interface IData {
-  readonly count$: ISubscribeFunction<number>;
-  readonly time$: ISubscribeFunction<number>;
-  readonly items$: ISubscribeFunction<IItem[]>;
+  readonly count$: IObservable<number>;
+  readonly time$: IObservable<number>;
+  readonly items$: IObservable<IItem[]>;
 
   readonly onClickItem: (item: IItem) => void;
 }

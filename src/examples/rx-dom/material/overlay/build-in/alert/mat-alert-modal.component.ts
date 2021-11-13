@@ -1,7 +1,7 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate
 } from '@lifaon/rx-dom';
-import { IEmitFunction, ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import { IObserver, IObservable, single } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-alert-modal.component.scss';
 // @ts-ignore
@@ -12,13 +12,13 @@ import { MatModalComponent } from '../../overlay/built-in/modal/mat-modal.compon
 /** COMPONENT **/
 
 export interface IMatAlertModalComponentOptions {
-  readonly message: ISubscribeFunction<string>;
+  readonly message: IObservable<string>;
 }
 
 interface IData {
-  readonly message: ISubscribeFunction<string>;
-  readonly closeButtonText: ISubscribeFunction<string>;
-  readonly onClickClose: IEmitFunction<MouseEvent>;
+  readonly message: IObservable<string>;
+  readonly closeButtonText: IObservable<string>;
+  readonly onClickClose: IObserver<MouseEvent>;
 
 }
 

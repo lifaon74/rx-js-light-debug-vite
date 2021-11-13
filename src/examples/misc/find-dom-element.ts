@@ -1,5 +1,5 @@
 import {
-  distinctSubscribePipe, interval, ISubscribeFunction, mapSubscribePipe, pipeSubscribeFunction
+  distinctObservablePipe, interval, IObservable, mapObservablePipe, pipeObservable
 } from '@lifaon/rx-js-light';
 import { getDocument, querySelector, querySelectorAll } from '@lifaon/rx-dom';
 
@@ -14,12 +14,12 @@ export function findDOMElement<Element extends HTMLElement>(
   {
     interval: _interval = 50,
   }: IFindDOMElementOptions = {},
-): ISubscribeFunction<Element | null> {
-  return pipeSubscribeFunction(interval(_interval), [
-    mapSubscribePipe<void, Element | null>((): Element | null => {
+): IObservable<Element | null> {
+  return pipeObservable(interval(_interval), [
+    mapObservablePipe<void, Element | null>((): Element | null => {
       return querySelector<Element>(parentElement, selector);
     }),
-    distinctSubscribePipe<Element | null>(),
+    distinctObservablePipe<Element | null>(),
   ]);
 }
 
@@ -29,9 +29,9 @@ export function findDOMElements<Elements extends ArrayLike<HTMLElement>>(
   {
     interval: _interval = 50,
   }: IFindDOMElementOptions = {},
-): ISubscribeFunction<Elements> {
-  return pipeSubscribeFunction(interval(_interval), [
-    mapSubscribePipe<void, Elements>((): Elements => {
+): IObservable<Elements> {
+  return pipeObservable(interval(_interval), [
+    mapObservablePipe<void, Elements>((): Elements => {
       return querySelectorAll<Element>(parentElement, selector) as unknown as Elements;
     }),
   ]);

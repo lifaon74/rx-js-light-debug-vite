@@ -1,11 +1,11 @@
 import {
-  fromEventTarget, IMapFilterDiscard, ISubscribeFunction, MAP_FILTER_DISCARD, merge
+  fromEventTarget, IMapFilterDiscard, IObservable, MAP_FILTER_DISCARD, mapFilter$$, merge
 } from '@lifaon/rx-js-light';
-import { mapFilter$$ } from '@lifaon/rx-js-light-shortcuts';
 
-export function mouseEnterSubscribeFunction(
+
+export function mouseEnterObservable(
   element: Element,
-): ISubscribeFunction<boolean> {
+): IObservable<boolean> {
   return merge([
     mapFilter$$<MouseEvent, boolean>(
       fromEventTarget<'mouseenter', MouseEvent>(element, 'mouseenter'),

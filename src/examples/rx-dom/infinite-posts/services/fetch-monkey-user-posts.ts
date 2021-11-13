@@ -1,6 +1,6 @@
 import {
-  fromFetch, fromPromise, IDefaultNotificationsUnion, ISubscribeFunction, ISubscribeFunctionFromFetchNotifications,
-  mapSubscribePipeWithNotifications, mergeMapSubscribePipeWithNotifications, pipeSubscribeFunction
+  fromFetch, fromPromise, IDefaultNotificationsUnion, IObservable, IObservableFromFetchNotifications,
+  mapObservablePipeWithNotifications, mergeMapObservablePipeWithNotifications, pipeObservable
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../../misc/no-cors';
 import { IImageResource, IResource, IYoutubeResource } from './resource.type';
@@ -24,15 +24,15 @@ export function fetchMonkeyUsersPosts(
   {
     next = '',
   }: IMonkeyUserRequest = {},
-): ISubscribeFunction<IDefaultNotificationsUnion<IMonkeyUserResponse>> {
+): IObservable<IDefaultNotificationsUnion<IMonkeyUserResponse>> {
   const url = new URL(`https://www.monkeyuser.com`);
   url.pathname = next;
 
-  return pipeSubscribeFunction(fromFetch(noCORS(url.href)), [
-    mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, any>((response: Response) => {
+  return pipeObservable(fromFetch(noCORS(url.href)), [
+    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, any>((response: Response) => {
       return fromPromise<string>(response.text());
     }, 1),
-    mapSubscribePipeWithNotifications<IDefaultNotificationsUnion<string>, IMonkeyUserResponse>((html: string): IMonkeyUserResponse => {
+    mapObservablePipeWithNotifications<IDefaultNotificationsUnion<string>, IMonkeyUserResponse>((html: string): IMonkeyUserResponse => {
       const document: Document = new DOMParser().parseFromString(html, 'text/html');
 
       let resource: IResource;

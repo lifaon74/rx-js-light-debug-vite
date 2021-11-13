@@ -1,5 +1,5 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
+  compileReactiveHTMLAsGenericComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
   generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
@@ -23,12 +23,14 @@ const CONSTANTS_TO_IMPORT = {
 // })
 @Component({
   name: 'app-home-page',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <div class="header">
-      Home page
-    </div>
-    <app-menu/>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <div class="header">
+        Home page
+      </div>
+      <app-menu/>
+    `,
+  }),
 })
 export class AppHomePageComponent extends HTMLElement implements OnCreate<IData> {
 

@@ -1,11 +1,10 @@
-import { ISubscribeFunction, ISubscribePipeFunction } from '@lifaon/rx-js-light';
-import { functionD$$ } from '@lifaon/rx-js-light-shortcuts';
+import { functionD$$, IObservable, IObservablePipe } from '@lifaon/rx-js-light';
 import { IOptionalSource } from '../picture.example';
 
 export function mediaSourceCondition(
-  condition: ISubscribeFunction<boolean>,
-): ISubscribePipeFunction<IOptionalSource, IOptionalSource> {
-  return (subscribe: ISubscribeFunction<IOptionalSource>): ISubscribeFunction<IOptionalSource> => {
+  condition: IObservable<boolean>,
+): IObservablePipe<IOptionalSource, IOptionalSource> {
+  return (subscribe: IObservable<IOptionalSource>): IObservable<IOptionalSource> => {
     return functionD$$(
       [
         subscribe,

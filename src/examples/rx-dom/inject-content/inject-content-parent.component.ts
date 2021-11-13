@@ -1,11 +1,9 @@
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate,
-  OnInit, IOnInitOptions,
 } from '@lifaon/rx-dom';
 import { AppInjectContentComponent } from './inject-content.component';
-import { interval, ISubscribeFunction, of } from '@lifaon/rx-js-light';
-import { single$$, map$$$, pipe$$ } from '@lifaon/rx-js-light-shortcuts';
+import { interval, IObservable, map$$$, of, pipe$$, single } from '@lifaon/rx-js-light';
 import { shuffleArray } from '../../misc/shuffle-array';
 
 export const APP_INJECT_CONTENT_PARENT_CUSTOM_ELEMENTS = [
@@ -16,11 +14,11 @@ export const APP_INJECT_CONTENT_PARENT_CUSTOM_ELEMENTS = [
 /** COMPONENT **/
 
 interface IItem {
-  name$: ISubscribeFunction<string>;
+  name$: IObservable<string>;
 }
 
 interface IData {
-  items$: ISubscribeFunction<readonly IItem[]>;
+  items$: IObservable<readonly IItem[]>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -60,14 +58,14 @@ const CONSTANTS_TO_IMPORT = {
     }
   `)],
 })
-export class AppInjectContentParentComponent extends HTMLElement implements OnCreate<IData>, OnInit {
+export class AppInjectContentParentComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;
 
   constructor() {
     super();
     const items = Array.from({ length: 10 }, (v: any, index: number): IItem => {
       return {
-        name$: single$$(`#${ index }`),
+        name$: single(`#${ index }`),
       };
     });
 
@@ -82,10 +80,6 @@ export class AppInjectContentParentComponent extends HTMLElement implements OnCr
 
   public onCreate(): IData {
     return this.data;
-  }
-
-  public onInit({ getTemplateReference }: IOnInitOptions): void {
-    console.log(getTemplateReference('header'));
   }
 }
 

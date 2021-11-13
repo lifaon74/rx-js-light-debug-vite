@@ -1,17 +1,17 @@
 import { IReference } from './reference.type';
-import { ISubscribeFunction, IUnsubscribeFunction } from '../../../../../rx-js-light/dist';
+import { IObservable, IUnsubscribe } from '../../../../../rx-js-light/dist';
 
 // WARN EXPERIMENTAL
 
-export type ICreateReferenceFromSubscribeFunctionReturn<GValue> = [
+export type ICreateReferenceFromObservableReturn<GValue> = [
   reference: IReference<GValue>,
-  unsubscribe: IUnsubscribeFunction,
+  unsubscribe: IUnsubscribe,
 ];
 
-export function createReferenceFromSubscribeFunction<GValue>(
-  subscribe: ISubscribeFunction<GValue>,
+export function createReferenceFromObservable<GValue>(
+  subscribe: IObservable<GValue>,
   initialValue: GValue,
-): ICreateReferenceFromSubscribeFunctionReturn<GValue> {
+): ICreateReferenceFromObservableReturn<GValue> {
   return [
     () => initialValue,
     subscribe((value: GValue) => {

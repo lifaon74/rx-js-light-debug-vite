@@ -1,15 +1,16 @@
-import { IEmitFunction, IMulticastReplayLastSource, ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import {
+  IObserver, IMulticastReplayLastSource, IObservable, single, map$$, map$$$, pipe$$, function$$, let$$
+} from '@lifaon/rx-js-light';
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, HTMLElementConstructor, IOnInitOptions, OnCreate, OnInit, setReactiveClass
 } from '@lifaon/rx-dom';
-import { function$$, let$$, map$$, map$$$, pipe$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
-import { getStepBaseSubscribeFunction, INumberInputValue, NumberInputValidity } from './number-input-validity';
+import { getStepBaseObservable, INumberInputValue, NumberInputValidity } from './number-input-validity';
 // @ts-ignore
 import style from './number-input.component.scss';
 import { createHigherOrderVariable } from '../../../../examples/misc/create-higher-order-variable';
-import { havingMultipleSubscribeFunctionProperties } from '../../../../examples/misc/having-multiple-subscribe-function-properties';
-import { createPristineSubscribeFunction } from '../misc/create-pristine-subscribe-function';
+import { havingMultipleObservableProperties } from '../../../../examples/misc/having-multiple-subscribe-function-properties';
+import { createPristineObservable } from '../misc/create-pristine-subscribe-function';
 
 
 /** COMPONENT **/
@@ -24,17 +25,17 @@ type IAppNumberInputComponentInputs = [
 
 interface IData {
   $value$: IMulticastReplayLastSource<string>;
-  disabled$: ISubscribeFunction<boolean>;
-  required$: ISubscribeFunction<boolean>;
-  min$: ISubscribeFunction<number>;
-  max$: ISubscribeFunction<number>;
-  step$: ISubscribeFunction<number>;
+  disabled$: IObservable<boolean>;
+  required$: IObservable<boolean>;
+  min$: IObservable<number>;
+  max$: IObservable<number>;
+  step$: IObservable<number>;
   validity: {
-    badInputText$: ISubscribeFunction<string>;
-    rangeUnderflowText$: ISubscribeFunction<string>;
-    rangeOverflowText$: ISubscribeFunction<string>;
-    stepMismatchText$: ISubscribeFunction<string>;
-    valueMissingText$: ISubscribeFunction<string>;
+    badInputText$: IObservable<string>;
+    rangeUnderflowText$: IObservable<string>;
+    rangeOverflowText$: IObservable<string>;
+    stepMismatchText$: IObservable<string>;
+    valueMissingText$: IObservable<string>;
   };
 }
 
@@ -76,13 +77,13 @@ const CONSTANTS_TO_IMPORT = {
   `, CONSTANTS_TO_IMPORT),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class AppNumberInputComponent extends havingMultipleSubscribeFunctionProperties<IAppNumberInputComponentInputs, HTMLElementConstructor>(HTMLElement) implements OnCreate<IData>, OnInit {
+export class AppNumberInputComponent extends havingMultipleObservableProperties<IAppNumberInputComponentInputs, HTMLElementConstructor>(HTMLElement) implements OnCreate<IData>, OnInit {
   readonly validity: NumberInputValidity;
-  readonly numberValue$: ISubscribeFunction<INumberInputValue>;
+  readonly numberValue$: IObservable<INumberInputValue>;
 
   protected readonly _data: IData;
 
-  protected _resetPristine: IEmitFunction<void>;
+  protected _resetPristine: IObserver<void>;
 
   protected readonly _$value$: IMulticastReplayLastSource<string>;
 
@@ -111,10 +112,10 @@ export class AppNumberInputComponent extends havingMultipleSubscribeFunctionProp
     this.numberValue$ = value$;
 
 
-    const [pristine$, resetPristine] = createPristineSubscribeFunction($value$.subscribe);
+    const [pristine$, resetPristine] = createPristineObservable($value$.subscribe);
     this._resetPristine = resetPristine;
 
-    const stepBase$ = getStepBaseSubscribeFunction(min$);
+    const stepBase$ = getStepBaseObservable(min$);
 
     this.validity = new NumberInputValidity({
       value$,

@@ -1,11 +1,10 @@
 import {
-  Component, IHavingMultipleSubscribeFunctionProperties, setComponentMultipleSubscribeFunctionProperties
+  Component, IHavingMultipleObservableProperties, setComponentMultipleObservableProperties
 } from '@lifaon/rx-dom';
 import { NAVIGATION } from '../../navigation/navigation';
 import {
-  createEventListener, ISubscribeFunction
+  createEventListener, IObservable, let$$, single
 } from '@lifaon/rx-js-light';
-import { single$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
 
 
 /** COMPONENT **/
@@ -19,15 +18,15 @@ type IAppVirtualLinkComponentInputs = [
   name: 'v-link',
   extends: 'a',
 })
-export class AppVirtualLinkComponent extends HTMLAnchorElement implements IHavingMultipleSubscribeFunctionProperties<IAppVirtualLinkComponentInputs> {
-  replaceState$!: ISubscribeFunction<boolean>;
+export class AppVirtualLinkComponent extends HTMLAnchorElement implements IHavingMultipleObservableProperties<IAppVirtualLinkComponentInputs> {
+  replaceState$!: IObservable<boolean>;
   replaceState!: boolean;
 
   constructor() {
     super();
-    const $replaceState$ = let$$(single$$<boolean>(false));
+    const $replaceState$ = let$$(single<boolean>(false));
 
-    setComponentMultipleSubscribeFunctionProperties<this, IAppVirtualLinkComponentInputs>(this, [
+    setComponentMultipleObservableProperties<this, IAppVirtualLinkComponentInputs>(this, [
       ['replaceState', $replaceState$],
     ]);
 

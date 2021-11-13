@@ -1,0 +1,213 @@
+import {
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  querySelectorOrThrow, subscribeOnNodeConnectedTo,
+} from '@lifaon/rx-dom';
+import { IEmitFunction, IObservable, readObservableValue } from '@lifaon/rx-js-light';
+// @ts-ignore
+import style from './mat-select-overlay.component.scss';
+// @ts-ignore
+import html from './mat-select-overlay.component.html?raw';
+import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/css-position-and-size.type';
+import { MatSimpleOverlayComponent } from '../../../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
+import { MatOverlayManagerComponent } from '../../../../../overlay/overlay/manager/mat-overlay-manager.component';
+import {
+  IMatSelectInputOption, IMatSelectInputOptionsList, IMatSelectInputReadonlySelectedOptions,
+  IMatSelectInputSelectedOptions
+} from '../types/mat-select-input-option.type';
+import { makeMatOverlayComponentBackdropClosable } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-backdrop-closable';
+import { makeMatOverlayComponentClosableWithEscape } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-closable-with-escape';
+import { IOverlayCloseOrigin } from '../../../../../overlay/overlay/component/mat-overlay.component';
+import { getElementExpectedSize } from '../../../../../overlay/overlay/built-in/simple/helper/get-element-expected-size';
+import {
+  getPositionAndSizeObservableForSimpleOverlay, IContentElementSizeOptions
+} from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-subscribe-function-for-simple-overlay';
+import { isMatSelectInputOptionSelected } from '../helpers/is-mat-select-input-option-selected';
+import { toggleMatSelectInputOptionSelect } from '../helpers/toggle-mat-select-input-option-select';
+import { readMatSelectInputMultipleValue } from '../helpers/read-mat-select-input-multiple-value';
+import { function$$, let$$, letU$$ } from '../../../../../../../../../../rx-js-light-shortcuts/dist';
+import { readMatSelectInputOptionsSet } from '../helpers/read-mat-select-input-options-set';
+
+
+/** COMPONENT **/
+
+export interface IMatSelectOverlayComponentOnClickOption<GValue> {
+  (option: IMatSelectInputOption<GValue>): void;
+}
+
+export interface IMatSelectOverlayComponentOptions<GValue> {
+  readonly targetElement: HTMLElement;
+  readonly $close: IEmitFunction<void>;
+  readonly optionsSet$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly selectedOptions$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly $value: IEmitFunction<IMatSelectInputOptionsList<GValue>>;
+  readonly multiple$: IObservable<boolean>;
+}
+
+
+interface IData<GValue> {
+  readonly $onFocusOut: IEmitFunction<Event>;
+  readonly $onKeyDownOptionsList: IEmitFunction<KeyboardEvent>;
+  readonly optionsSet$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly $onClickOption: IMatSelectOverlayComponentOnClickOption<GValue>;
+  readonly isOptionSelected: (option: IMatSelectInputOption<GValue>) => IObservable<boolean>;
+}
+
+@Component({
+  name: 'mat-select-input-overlay',
+  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  styles: [compileReactiveCSSAsComponentStyle(style)],
+})
+export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComponent implements OnCreate<IData<GValue>> {
+  protected readonly data: IData<GValue>;
+  protected readonly $close: IEmitFunction<void>;
+
+  constructor(
+    manager: MatOverlayManagerComponent,
+    {
+      targetElement,
+      $close,
+      optionsSet$,
+      selectedOptions$,
+      $value,
+      multiple$,
+    }: IMatSelectOverlayComponentOptions<GValue>,
+  ) {
+
+    const positionAndSize$: IObservable<ICSSPositionAndSize> = getPositionAndSizeObservableForMatSelectInputOverlay<GValue>(
+      () => this,
+      targetElement,
+    );
+
+
+    super(manager, positionAndSize$);
+
+    makeMatOverlayComponentBackdropClosable(this);
+    makeMatOverlayComponentClosableWithEscape(this);
+
+
+    /** VARIABLES **/
+
+    this.$close = $close;
+
+    const {
+      emit: $activeOptionIndex,
+      subscribe: activeOptionIndex$,
+      getValue: getActiveOptionIndexValue,
+    } = letU$$<number>();
+
+    // if options change, reset activeOptionIndex
+    subscribeOnNodeConnectedTo(this, optionsSet$, () => {
+      $activeOptionIndex(-1);
+    });
+
+    const activeOption$ = function$$(
+      [optionsSet$, activeOptionIndex$],
+      (
+        optionsSet: IMatSelectInputReadonlySelectedOptions<GValue>,
+        activeOptionIndex: number,
+      ): IMatSelectInputOption<GValue> | null => {
+        return
+      },
+    );
+
+
+    const isOptionSelected = (option: IMatSelectInputOption<GValue>): IObservable<boolean> => {
+      return isMatSelectInputOptionSelected({
+        selectedOptions$,
+        option,
+      });
+    };
+
+    /** EVENTS **/
+
+    const $onFocusOut = (): void => {
+      this.close();
+    };
+
+    const $onKeyDownOptionsList = (event: KeyboardEvent): void => {
+      event.preventDefault();
+      let activeOptionIndex: number = getActiveOptionIndexValue();
+
+      if (event.key === 'ArrowDown') {
+        activeOptionIndex = Math.min(
+          activeOptionIndex + 1,
+          readMatSelectInputOptionsSet(optionsSet$).size - 1,
+        );
+      } else if (event.key === 'ArrowUp') {
+        activeOptionIndex = Math.max(
+          activeOptionIndex - 1,
+          0,
+        );
+      } else if (event.key === 'Enter') {
+        $onClickOption(Array.from(readMatSelectInputOptionsSet(optionsSet$))[activeOptionIndex]);
+      }
+
+      if (activeOptionIndex !== getActiveOptionIndexValue()) {
+        $activeOptionIndex(activeOptionIndex);
+      }
+    };
+
+    const $onClickOption = (option: IMatSelectInputOption<GValue>): void => {
+      toggleMatSelectInputOptionSelect({
+        selectedOptions$,
+        $value,
+        option,
+        multiple$,
+      });
+
+      const multiple: boolean = readMatSelectInputMultipleValue(multiple$);
+
+      if (!multiple) {
+        this.close();
+      }
+    };
+
+    this.data = {
+      $onFocusOut,
+      $onKeyDownOptionsList,
+      optionsSet$,
+      $onClickOption,
+      isOptionSelected,
+    };
+  }
+
+  onCreate(): IData<GValue> {
+    return this.data;
+  }
+
+  override close(origin?: IOverlayCloseOrigin): Promise<void> {
+    this.$close();
+    return super.close(origin);
+  }
+
+  override onInit(): void {
+    super.onInit();
+    querySelectorOrThrow<HTMLElement>(this, '.options').focus();
+  }
+}
+
+
+/** FUNCTIONS **/
+
+function getPositionAndSizeObservableForMatSelectInputOverlay<GValue>(
+  getContainerElement: () => MatSelectInputOverlayComponent<GValue>,
+  targetElement: HTMLElement,
+): IObservable<ICSSPositionAndSize> {
+  return getPositionAndSizeObservableForSimpleOverlay({
+    getContainerElement,
+    targetElement,
+    getContentElementSize: (
+      {
+        contentElement,
+        targetElementPositionAndSize,
+      }: IContentElementSizeOptions,
+    ) => {
+      return getElementExpectedSize(
+        contentElement,
+        { width: targetElementPositionAndSize.width },
+      );
+    },
+  });
+}
+
+

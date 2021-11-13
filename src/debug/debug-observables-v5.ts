@@ -1,14 +1,14 @@
 import {
-  composeEmitPipeFunctions, createMulticastReplayLastSource, createMulticastSource, createSubscribeFunctionProxy,
+  composeEmitPipeFunctions, createMulticastReplayLastSource, createMulticastSource, createObservableProxy,
   createUnicastReplayLastSource,
-  debounceTimeSubscribePipe,
-  distinctEmitPipe, distinctSubscribePipe, fromEventTarget, fromFetch, fromPromise, ISubscribeFunction,
-  ISubscribeFunctionFromFetchNotifications, ISubscribeFunctionProxy, IUnsubscribeFunction, mapEmitPipe,
-  mapSubscribePipe, mergeMapSubscribePipe,
-  mergeMapSubscribePipeWithNotifications, of, pipeSubscribeFunction, pipeSubscribePipeFunctions
+  debounceTimeObservablePipe,
+  distinctEmitPipe, distinctObservablePipe, fromEventTarget, fromFetch, fromPromise, IObservable,
+  IObservableFromFetchNotifications, IObservableProxy, IUnsubscribe, mapEmitPipe,
+  mapObservablePipe, mergeMapObservablePipe,
+  mergeMapObservablePipeWithNotifications, of, pipeObservable, pipeObservablePipes
 } from '@lifaon/rx-js-light';
 
-function unsubscribeIn(unsubscribe: IUnsubscribeFunction, ms: number): void {
+function unsubscribeIn(unsubscribe: IUnsubscribe, ms: number): void {
   setTimeout(unsubscribe, ms);
 }
 
@@ -23,7 +23,7 @@ export function $timeout(ms: number): Promise<void> {
 /*------*/
 
 // async function debugObservable1() {
-//   const unsubscribe = pipeSubscribeFunctionSpread(
+//   const unsubscribe = pipeObservableSpread(
 //     interval(500),
 //     mapOperator<void, number>(() => Math.random()),
 //     filterOperator<number>((value: number) => (value < 0.5))
@@ -35,7 +35,7 @@ export function $timeout(ms: number): Promise<void> {
 // }
 //
 // async function debugObservable2() {
-//   const subscribe = pipeSubscribeFunction(interval(500), [
+//   const subscribe = pipeObservable(interval(500), [
 //     logOperator<void>('timer'),
 //     mapOperator<void, number>(() => Math.random()),
 //     shareOperator<number>(),
@@ -54,8 +54,8 @@ export function $timeout(ms: number): Promise<void> {
 // }
 //
 // async function debugObservable3() {
-//   const subscribe = pipeSubscribeFunction(fromFetch(noCORS(`https://www.w3.org/TR/PNG/iso_8859-1.txt`)), [
-//     shareOperator<ISubscribeFunctionFromFetchNotifications>()
+//   const subscribe = pipeObservable(fromFetch(noCORS(`https://www.w3.org/TR/PNG/iso_8859-1.txt`)), [
+//     shareOperator<IObservableFromFetchNotifications>()
 //   ]);
 //
 //   subscribe(
@@ -74,8 +74,8 @@ export function $timeout(ms: number): Promise<void> {
 //
 // async function debugObservable4() {
 //   const blob = new Blob([new Uint8Array([0, 1, 2, 3])]);
-//   type GNotifications = ISubscribeFunctionReadBlobNotifications<'array-buffer'>;
-//   const subscribe = pipeSubscribeFunctionSpread(
+//   type GNotifications = IObservableReadBlobNotifications<'array-buffer'>;
+//   const subscribe = pipeObservableSpread(
 //     readBlob(blob, 'array-buffer'),
 //     shareOperator<GNotifications>()
 //   );
@@ -118,12 +118,12 @@ export function $timeout(ms: number): Promise<void> {
 //
 //   const request = new Request(`https://file-examples-com.github.io/uploads/2017/02/zip_10MB.zip`); // 10MB download
 //
-//   const subscribe = pipeSubscribeFunctionSpread(
+//   const subscribe = pipeObservableSpread(
 //     fromXHR(request),
-//     shareOperator<ISubscribeFunctionFromXHRNotifications>()
+//     shareOperator<IObservableFromXHRNotifications>()
 //   );
 //
-//   subscribe((notification: ISubscribeFunctionFromXHRNotifications) => {
+//   subscribe((notification: IObservableFromXHRNotifications) => {
 //     console.log(notification);
 //   });
 //
@@ -150,15 +150,15 @@ export function $timeout(ms: number): Promise<void> {
 // }
 //
 // async function debugObservable8() {
-//   const sub1 = pipeSubscribeFunction(interval(500), [
+//   const sub1 = pipeObservable(interval(500), [
 //     mapOperator(() => Math.random()),
 //   ]);
-//   const sub2 = pipeSubscribeFunctionSpread(
+//   const sub2 = pipeObservableSpread(
 //     interval(500),
 //     mapOperator(() => Math.random())
 //   );
 //
-//   const subscribe = pipeSubscribeFunctionSpread(
+//   const subscribe = pipeObservableSpread(
 //     reactiveSum([sub1, sub2]),
 //     debounceOperator<number>(0),
 //   );
@@ -175,7 +175,7 @@ export function $timeout(ms: number): Promise<void> {
 //   // const request = new Request(`https://file-examples-com.github.io/uploads/2017/02/zip_10MB.zip`); // 10MB download
 //   const request = new Request(`https://fakedomain.com`);
 //
-//   const subscribe = pipeSubscribeFunction(fromFetch(request), [
+//   const subscribe = pipeObservable(fromFetch(request), [
 //     thenOperator(
 //       (response: Response) => {
 //         if (response.ok) {
@@ -227,7 +227,7 @@ export function $timeout(ms: number): Promise<void> {
 //   const obj: any = { a: 'a', b: { c: 'c' } };
 //   type TValue = string | undefined;
 //
-//   const subscribe = pipeSubscribeFunction(expression<TValue>((): TValue => obj.b?.c), [
+//   const subscribe = pipeObservable(expression<TValue>((): TValue => obj.b?.c), [
 //     shareOperator<TValue>()
 //   ]);
 //
@@ -249,7 +249,7 @@ export function $timeout(ms: number): Promise<void> {
 //
 //   const source = createSource<number>();
 //
-//   const subscribe = pipeSubscribeFunction(source.subscribe, [
+//   const subscribe = pipeObservable(source.subscribe, [
 //     // replayLastSharedOperator<number>()
 //     replaySharedOperator<number>(3)
 //   ]);
@@ -282,21 +282,21 @@ async function debugObservable12() {
     body: string;
   }
 
-  // const a = mapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, ISubscribeFunction<ISubscribeFunctionFromPromiseNotifications<IJSONResponse>>>((response: Response) => fromPromise<IJSONResponse>(response.json()));
-  // const a = mapSubscribePipeWithNotifications<Union<string>, ISubscribeFunction<ISubscribeFunctionFromPromiseNotifications<IJSONResponse>>>((response: Response) => fromPromise<IJSONResponse>(response.json()));
+  // const a = mapObservablePipeWithNotifications<IObservableFromFetchNotifications, IObservable<IObservableFromPromiseNotifications<IJSONResponse>>>((response: Response) => fromPromise<IJSONResponse>(response.json()));
+  // const a = mapObservablePipeWithNotifications<Union<string>, IObservable<IObservableFromPromiseNotifications<IJSONResponse>>>((response: Response) => fromPromise<IJSONResponse>(response.json()));
 
-  // const a = mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, IJSONResponse>((response: Response) => fromPromise<IJSONResponse>(response.json())),;
+  // const a = mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, IJSONResponse>((response: Response) => fromPromise<IJSONResponse>(response.json())),;
 
-  const subscribe = pipeSubscribeFunction(fromEventTarget<'click', MouseEvent>(window, 'click'), [
-    debounceTimeSubscribePipe<MouseEvent>(1000),
-    mergeMapSubscribePipe<MouseEvent, ISubscribeFunctionFromFetchNotifications>(() => fromFetch('https://jsonplaceholder.typicode.com/posts/1'), 1),
-    mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, IJSONResponse>((response: Response) => fromPromise<IJSONResponse>(response.json())),
+  const subscribe = pipeObservable(fromEventTarget<'click', MouseEvent>(window, 'click'), [
+    debounceTimeObservablePipe<MouseEvent>(1000),
+    mergeMapObservablePipe<MouseEvent, IObservableFromFetchNotifications>(() => fromFetch('https://jsonplaceholder.typicode.com/posts/1'), 1),
+    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, IJSONResponse>((response: Response) => fromPromise<IJSONResponse>(response.json())),
 
-    // mapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, ISubscribeFunction<ISubscribeFunctionFromPromiseNotifications<IJSONResponse>>>((response: Response) => fromPromise<IJSONResponse>(response.json())),
-    // mergeAllSubscribePipeWithNotifications<IJSONResponse>(),
+    // mapObservablePipeWithNotifications<IObservableFromFetchNotifications, IObservable<IObservableFromPromiseNotifications<IJSONResponse>>>((response: Response) => fromPromise<IJSONResponse>(response.json())),
+    // mergeAllObservablePipeWithNotifications<IJSONResponse>(),
 
-    // mergeAllSubscribePipeWithNotifications<IJSONResponse>(),
-    // mergeMapSubscribePipe<ISubscribeFunctionFromFetchNotifications, IDefaultNotificationsUnion<IJSONResponse>>((notification: ISubscribeFunctionFromFetchNotifications) => {
+    // mergeAllObservablePipeWithNotifications<IJSONResponse>(),
+    // mergeMapObservablePipe<IObservableFromFetchNotifications, IDefaultNotificationsUnion<IJSONResponse>>((notification: IObservableFromFetchNotifications) => {
     //   switch (notification.name) {
     //     case 'next':
     //       return fromPromise<IJSONResponse>(notification.value.json());
@@ -306,7 +306,7 @@ async function debugObservable12() {
     //       return of(notification);
     //   }
     // }),
-    // fulfilledSubscribePipe<Response, ISubscribeFunctionFromPromiseNotifications<IJSONResponse>>((response: Response) => fromPromise<IJSONResponse>(response.json()))
+    // fulfilledObservablePipe<Response, IObservableFromPromiseNotifications<IJSONResponse>>((response: Response) => fromPromise<IJSONResponse>(response.json()))
   ]);
 
   // subscribe((notification/*: IDefaultNotificationsUnion<IJSONResponse>*/) => {
@@ -329,10 +329,10 @@ async function debugEmitPipes1() {
   emit(1);
 }
 
-async function debugSubscribePipes1() {
-  const subscribePipe = pipeSubscribePipeFunctions([
-    distinctSubscribePipe<number>(),
-    mapSubscribePipe<number, string>(String),
+async function debugObservablePipes1() {
+  const subscribePipe = pipeObservablePipes([
+    distinctObservablePipe<number>(),
+    mapObservablePipe<number, string>(String),
   ]);
 
   const subscribe = subscribePipe(of(1, 2, 3, 3));
@@ -419,7 +419,7 @@ async function debugSourcePerf1() {
 }
 
 
-async function debugSubscribeFunctionProxy1() {
+async function debugObservableProxy1() {
   interface IArrayItem {
     value: number;
   }
@@ -444,7 +444,7 @@ async function debugSubscribeFunctionProxy1() {
 
   const $data$ = createMulticastReplayLastSource({ initialValue: data });
 
-  const proxy = createSubscribeFunctionProxy($data$.subscribe);
+  const proxy = createObservableProxy($data$.subscribe);
 
   // (proxy.a1 as number) = 5;
   // // console.log(data);
@@ -456,9 +456,9 @@ async function debugSubscribeFunctionProxy1() {
   //   console.log('c', value);
   // });
 
-  const unsubscriptions: IUnsubscribeFunction[] = [];
+  const unsubscriptions: IUnsubscribe[] = [];
 
-  proxy.array.$array((items: readonly ISubscribeFunctionProxy<any>[]) => {
+  proxy.array.$array((items: readonly IObservableProxy<any>[]) => {
     const itemsLength = items.length;
     const unsubscriptionsLength = unsubscriptions.length;
     if (unsubscriptionsLength < items.length) {
@@ -486,21 +486,21 @@ async function debugSubscribeFunctionProxy1() {
   (window as any).setData = $data$.emit;
 }
 
-async function debugSubscribeFunctionProxy2() {
+async function debugObservableProxy2() {
   const data: any = {
     array: [{ value: 1 }, { value: 2 }],
   };
 
   const dataSource = createMulticastReplayLastSource({ initialValue: data });
 
-  const proxy = createSubscribeFunctionProxy(dataSource.subscribe);
+  const proxy = createObservableProxy(dataSource.subscribe);
 
   /* THE IMPORTANT PART */
 
 // list of unsubscriptions for the received array
-  const unsubscriptions: IUnsubscribeFunction[] = [];
+  const unsubscriptions: IUnsubscribe[] = [];
 
-  proxy.array.$array((items: readonly ISubscribeFunctionProxy<any>[]) => {
+  proxy.array.$array((items: readonly IObservableProxy<any>[]) => {
 
     const itemsLength = items.length;
     const unsubscriptionsLength = unsubscriptions.length;
@@ -557,7 +557,7 @@ export async function debugObservableV5() {
   // await test();
 
   // await debugEmitPipes1();
-  // await debugSubscribePipes1();
+  // await debugObservablePipes1();
 
   // await debugObservable2();
   // await debugObservable3();
@@ -575,6 +575,6 @@ export async function debugObservableV5() {
   // await debugMulticastSource1();
   // await debugReplayLastSource1();
   // await debugSourcePerf1();
-  // await debugSubscribeFunctionProxy1();
-  await debugSubscribeFunctionProxy2();
+  // await debugObservableProxy1();
+  await debugObservableProxy2();
 }

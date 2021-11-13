@@ -1,8 +1,8 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDynamicStyleValue,
-  OnCreate, OnInit, querySelector, querySelectorAll, querySelectorOrThrow, setReactiveClass, subscribeOnNodeConnectedTo,
+  OnCreate, querySelectorAll, querySelectorOrThrow, setReactiveClass, subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
-import { fromAnimationFrame, fromEventTarget, IEmitFunction, ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import { andM$$, debounceFrame$$, fromEventTarget, IObservable, IObserver, map$$, single } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-color-input-overlay.component.scss?inline';
 // @ts-ignore
@@ -10,13 +10,8 @@ import html from './mat-color-input-overlay.component.html?raw';
 import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/css-position-and-size.type';
 import { MatSimpleOverlayComponent } from '../../../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
 import { MatOverlayManagerComponent } from '../../../../../overlay/overlay/manager/mat-overlay-manager.component';
-import { and$$, andM$$, debounceFrame$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 import { IPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size.type';
 import { getElementPositionAndSize } from '../../../../../../../misc/types/position-and-size/get-element-position-and-size';
-import { ISize } from '../../../../../../../misc/types/size/size.type';
-import { positionAndSizeToCSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
-import { POSITION_AND_SIZE_OUT_OF_WINDOW } from '../../../../../overlay/overlay/built-in/simple/helper/position-and-size-out-of-window.constant';
-import { getFittingBoxForContainer$Target$ContentElements } from '../../../../../overlay/overlay/built-in/simple/helper/get-fitting-box-for-container-target-content-elements';
 import { IReadonlyHSVAColor } from '../../../../../../../misc/css/color/colors/hsva/hsva-color.type';
 import { DEFAULT_MAT_COLOR_INPUT_COLOR } from '../misc/default-mat-color-input-color.constant';
 import { createHSVAColor } from '../../../../../../../misc/css/color/colors/hsva/create-hsva-color';
@@ -28,13 +23,14 @@ import { mathClamp } from '../../../../../../../misc/math/clamp';
 import { makeMatOverlayComponentBackdropClosable } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-backdrop-closable';
 import { makeMatOverlayComponentClosableWithEscape } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-closable-with-escape';
 import { IOverlayCloseOrigin } from '../../../../../overlay/overlay/component/mat-overlay.component';
-import { combineSubscribeFunctionsWithEmitFunction } from '../../../../../../../rx-js-light/helpers/combine-subscribe-functions-with-emit-function';
 import {
-  getEyeDropperConstructor, IColorSelectionResult, IEyeDropper, IEyeDropperConstructor, isEyeDropperAvailable
+  getEyeDropperConstructor, IColorSelectionResult, IEyeDropper, isEyeDropperAvailable
 } from '../misc/eye-dropper';
 import { colorStringToColor } from '../misc/color-string-to-color';
 import { colorToHSVAColor } from '../../../../../../../misc/css/color/to/color-to-hsva-color';
 import { isElementVisible } from '../../../../../../../misc/is-element-visible';
+import { getPositionAndSizeObservableForSimpleOverlay } from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-subscribe-function-for-simple-overlay';
+import { findDOMElement } from '../../../../../../../misc/find-dom-element';
 
 
 /** FUNCTION **/
@@ -61,41 +57,41 @@ function generateHueGradient(
 
 export interface IMatColorInputOverlayComponentOptions {
   readonly targetElement: HTMLElement;
-  readonly $close: IEmitFunction<void>;
-  readonly $hsvaColor: IEmitFunction<IReadonlyHSVAColor>;
-  readonly hsvaColor$: ISubscribeFunction<IReadonlyHSVAColor>;
-  readonly alphaDisabled$: ISubscribeFunction<boolean>;
+  readonly $close: IObserver<void>;
+  readonly $hsvaColor: IObserver<IReadonlyHSVAColor>;
+  readonly hsvaColor$: IObservable<IReadonlyHSVAColor>;
+  readonly alphaDisabled$: IObservable<boolean>;
 }
 
 
 interface IData {
   // SUBSCRIBE FUNCTIONS
   // saturation and value
-  readonly saturationAndValueSelectElementBackgroundColor$: ISubscribeFunction<IDynamicStyleValue>;
-  readonly saturationAndValueSelectCursorElementLeft$: ISubscribeFunction<IDynamicStyleValue>;
-  readonly saturationAndValueSelectCursorElementTop$: ISubscribeFunction<IDynamicStyleValue>;
+  readonly saturationAndValueSelectElementBackgroundColor$: IObservable<IDynamicStyleValue>;
+  readonly saturationAndValueSelectCursorElementLeft$: IObservable<IDynamicStyleValue>;
+  readonly saturationAndValueSelectCursorElementTop$: IObservable<IDynamicStyleValue>;
   // hue
-  readonly hueSelectCursorElementTop$: ISubscribeFunction<IDynamicStyleValue>;
+  readonly hueSelectCursorElementTop$: IObservable<IDynamicStyleValue>;
   // alpha
-  readonly alphaSelectElementBackgroundGradient$: ISubscribeFunction<IDynamicStyleValue>;
-  readonly alphaSelectCursorElementTop$: ISubscribeFunction<IDynamicStyleValue>;
+  readonly alphaSelectElementBackgroundGradient$: IObservable<IDynamicStyleValue>;
+  readonly alphaSelectCursorElementTop$: IObservable<IDynamicStyleValue>;
   //
   // EMIT FUNCTIONS
   // saturation and value
-  readonly $onPointerDownSaturationAndValueSelect: IEmitFunction<PointerEvent>;
-  readonly $onKeyDownSaturationAndValueSelectCursor: IEmitFunction<KeyboardEvent>;
+  readonly $onPointerDownSaturationAndValueSelect: IObserver<PointerEvent>;
+  readonly $onKeyDownSaturationAndValueSelectCursor: IObserver<KeyboardEvent>;
   // hue
-  readonly $onPointerDownHueSelect: IEmitFunction<PointerEvent>;
-  readonly $onKeyDownHueSelectCursor: IEmitFunction<KeyboardEvent>;
+  readonly $onPointerDownHueSelect: IObserver<PointerEvent>;
+  readonly $onKeyDownHueSelectCursor: IObserver<KeyboardEvent>;
   // alpha
-  readonly $onPointerDownAlphaSelect: IEmitFunction<PointerEvent>;
-  readonly $onKeyDownAlphaSelectCursor: IEmitFunction<KeyboardEvent>;
+  readonly $onPointerDownAlphaSelect: IObserver<PointerEvent>;
+  readonly $onKeyDownAlphaSelectCursor: IObserver<KeyboardEvent>;
   // color picker
-  readonly $onClickColorPicker: IEmitFunction<MouseEvent>;
-  readonly $onKeyDownColorPicker: IEmitFunction<KeyboardEvent>;
+  readonly $onClickColorPicker: IObserver<MouseEvent>;
+  readonly $onKeyDownColorPicker: IObserver<KeyboardEvent>;
   // others
-  readonly $onFocusFirst: IEmitFunction<FocusEvent>;
-  readonly $onFocusLast: IEmitFunction<FocusEvent>;
+  readonly $onFocusFirst: IObserver<FocusEvent>;
+  readonly $onFocusLast: IObserver<FocusEvent>;
 }
 
 @Component({
@@ -103,9 +99,9 @@ interface IData {
   template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent implements OnCreate<IData>, OnInit {
+export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent implements OnCreate<IData> {
   protected readonly data: IData;
-  protected readonly $close: IEmitFunction<void>;
+  protected readonly $close: IObserver<void>;
 
   constructor(
     manager: MatOverlayManagerComponent,
@@ -117,7 +113,7 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
       alphaDisabled$,
     }: IMatColorInputOverlayComponentOptions,
   ) {
-    const positionAndSize$: ISubscribeFunction<ICSSPositionAndSize> = getPositionAndSizeSubscribeFunctionForMatColorInputOverlay(
+    const positionAndSize$: IObservable<ICSSPositionAndSize> = getPositionAndSizeObservableForMatColorInputOverlay(
       () => this,
       targetElement,
     );
@@ -373,24 +369,24 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
 
     /** FOCUS **/
 
-    // const { emit: $onFocusFirst, subscribe: focusFirst$ } = combineSubscribeFunctionsWithEmitFunction([
-    //   alphaDisabled$,
-    //   toolsDisabled$,
-    // ] as [ISubscribeFunction<boolean>, ISubscribeFunction<boolean>]);
-    //
-    // const getLastElementFocusableSelector = ([alphaDisabled, toolsDisabled]: readonly [boolean, boolean, unknown]): string => {
-    //   return toolsDisabled
-    //     ? (alphaDisabled ? '.hue-select > .cursor' : '.alpha-select > .cursor')
-    //     : (alphaDisabled ? '.hue-select > .cursor' : '.alpha-select > .cursor');
-    // };
-    //
-    // subscribeOnNodeConnectedTo(
-    //   this,
-    //   map$$(focusFirst$, getLastElementFocusableSelector),
-    //   (selector: string) => {
-    //     querySelectorOrThrow<HTMLElement>(this, selector).focus();
-    //   },
-    // );
+      // const { emit: $onFocusFirst, subscribe: focusFirst$ } = combineObservablesWithObserver([
+      //   alphaDisabled$,
+      //   toolsDisabled$,
+      // ] as [IObservable<boolean>, IObservable<boolean>]);
+      //
+      // const getLastElementFocusableSelector = ([alphaDisabled, toolsDisabled]: readonly [boolean, boolean, unknown]): string => {
+      //   return toolsDisabled
+      //     ? (alphaDisabled ? '.hue-select > .cursor' : '.alpha-select > .cursor')
+      //     : (alphaDisabled ? '.hue-select > .cursor' : '.alpha-select > .cursor');
+      // };
+      //
+      // subscribeOnNodeConnectedTo(
+      //   this,
+      //   map$$(focusFirst$, getLastElementFocusableSelector),
+      //   (selector: string) => {
+      //     querySelectorOrThrow<HTMLElement>(this, selector).focus();
+      //   },
+      // );
 
     const $onFocusFirst = (): void => {
         const elements = querySelectorAll<HTMLElement>(this, `[tabindex="0"]`);
@@ -400,11 +396,24 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
             break;
           }
         }
-    };
+      };
 
     const $onFocusLast = (): void => {
       querySelectorOrThrow<HTMLElement>(this, '.saturation-and-value-select > .cursor').focus();
     };
+
+
+    const unsubscribeOfFindFirstCursor = subscribeOnNodeConnectedTo(
+      this,
+      findDOMElement('.cursor', this),
+      (cursorElement: HTMLElement | null): void => {
+        if (cursorElement !== null) {
+          unsubscribeOfFindFirstCursor();
+          cursorElement.focus();
+        }
+      },
+    );
+
 
     this.data = {
       saturationAndValueSelectElementBackgroundColor$,
@@ -434,11 +443,6 @@ export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent imp
   override close(origin?: IOverlayCloseOrigin): Promise<void> {
     this.$close();
     return super.close(origin);
-  }
-
-  override onInit(): void {
-    super.onInit();
-    querySelectorOrThrow<HTMLElement>(this, '.cursor').focus();
   }
 }
 
@@ -491,41 +495,20 @@ function getAlphaFromPointerEvent(event: PointerEvent, element: HTMLElement): nu
 
 /** FUNCTIONS **/
 
-const elementMargin: number = 5;
-const containerHorizontalMargin: number = 5;
-const containerVerticalMargin: number = 5;
 
-export function getPositionAndSizeSubscribeFunctionForMatColorInputOverlay(
+function getPositionAndSizeObservableForMatColorInputOverlay(
   getContainerElement: () => MatColorInputOverlayComponent,
   targetElement: HTMLElement,
-): ISubscribeFunction<ICSSPositionAndSize> {
-  return map$$<void, ICSSPositionAndSize>(fromAnimationFrame(), () => {
-    const containerElement: HTMLElement = getContainerElement();
-    const contentElement: HTMLElement | null = querySelector(containerElement, `:scope > .content`);
-
-    if (contentElement === null) {
-      return POSITION_AND_SIZE_OUT_OF_WINDOW;
-    } else {
-      const containerElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(containerElement);
-      const targetElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(targetElement);
-
-      const contentElementSize: ISize = {
+): IObservable<ICSSPositionAndSize> {
+  return getPositionAndSizeObservableForSimpleOverlay({
+    getContainerElement,
+    targetElement,
+    getContentElementSize: () => {
+      return {
         width: 250,
         height: 120,
       };
-
-      return positionAndSizeToCSSPositionAndSize(
-        getFittingBoxForContainer$Target$ContentElements({
-          containerElementPositionAndSize,
-          targetElementPositionAndSize,
-          contentElementSize,
-          // extra
-          elementMargin,
-          containerHorizontalMargin,
-          containerVerticalMargin,
-        }),
-      );
-    }
+    },
   });
 }
 

@@ -2,8 +2,7 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, ISubscribeFunction, of } from '@lifaon/rx-js-light';
-import { let$$ } from '@lifaon/rx-js-light-shortcuts';
+import { IMulticastReplayLastSource, IObservable, let$$, of } from '@lifaon/rx-js-light';
 import { createAction, createStore, getStoreState, immutableArrayReplace, mapState } from '@lifaon/rx-store';
 
 
@@ -102,7 +101,7 @@ function trackItemById(
 
 interface IData {
   readonly $inputValue$: IMulticastReplayLastSource<string>;
-  readonly items$: ISubscribeFunction<readonly IItem[]>;
+  readonly items$: IObservable<readonly IItem[]>;
   readonly onClickAppendItems: () => void;
   readonly onClickItem: (item: IItem) => void;
 }

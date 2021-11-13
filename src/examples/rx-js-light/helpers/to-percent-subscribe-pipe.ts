@@ -1,21 +1,21 @@
 import {
-  ISubscribeFunction, ISubscribePipeFunction, mapSubscribePipe, pipeSubscribeFunction
+  IObservable, IObservablePipe, mapObservablePipe, pipeObservable
 } from '@lifaon/rx-js-light';
 
 export function toPercent(value: number): string {
   return `${ value * 100 }%`;
 }
 
-export function toPercentSubscribePipe(): ISubscribePipeFunction<number, string> {
-  return mapSubscribePipe<number, string>(toPercent);
+export function toPercentObservablePipe(): IObservablePipe<number, string> {
+  return mapObservablePipe<number, string>(toPercent);
 }
 
-export const toPercent$$$ = toPercentSubscribePipe;
+export const toPercent$$$ = toPercentObservablePipe;
 
 export function toPercent$$(
-  subscribe: ISubscribeFunction<number>,
-): ISubscribeFunction<string> {
-  return pipeSubscribeFunction(subscribe, [
-    toPercentSubscribePipe(),
+  subscribe: IObservable<number>,
+): IObservable<string> {
+  return pipeObservable(subscribe, [
+    toPercentObservablePipe(),
   ]);
 }

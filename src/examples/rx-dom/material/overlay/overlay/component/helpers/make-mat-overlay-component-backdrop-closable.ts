@@ -1,7 +1,5 @@
-import { empty, fromEventTarget, IUnsubscribeFunction, merge } from '@lifaon/rx-js-light';
-import {
-  getDocument, removeStyleProperty, setReactiveProperty, setStyleProperty, subscribeOnNodeConnectedTo
-} from '@lifaon/rx-dom';
+import { fromEventTarget, IUnsubscribe, merge } from '@lifaon/rx-js-light';
+import { getDocument, removeStyleProperty, setStyleProperty, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
 import { MatOverlayComponent } from '../mat-overlay.component';
 import { cloneEvent } from '../../../../../../misc/clone-event';
 
@@ -14,8 +12,8 @@ export function makeMatOverlayComponentBackdropClosable(
   {
     dispatchEventOnClose = true,
   }: IMakeMatOverlayComponentBackdropClosableOptions = {},
-): IUnsubscribeFunction {
-  const subscribeToPointerEventsProperty = (): IUnsubscribeFunction => {
+): IUnsubscribe {
+  const subscribeToPointerEventsProperty = (): IUnsubscribe => {
     let running: boolean = true;
     // const originalValue: string = node.style.getPropertyValue('pointer-events');
     // const originalPriority: string = node.style.getPropertyPriority('pointer-events');
@@ -27,7 +25,7 @@ export function makeMatOverlayComponentBackdropClosable(
         // node.style.setProperty('pointer-events', originalValue, originalPriority);
       }
     };
-  }
+  };
 
 
   const unsubscribe = subscribeOnNodeConnectedTo(

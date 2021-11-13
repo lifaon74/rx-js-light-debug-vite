@@ -26,7 +26,7 @@ import {
 //
 //   select<GValue>(
 //     mapFunction: IMapFunction<GState, GValue>,
-//   ):  ISubscribeFunction<GValue> {
+//   ):  IObservable<GValue> {
 //     return mapState(this._store, mapFunction);
 //   }
 // }

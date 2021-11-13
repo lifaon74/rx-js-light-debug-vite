@@ -8,7 +8,7 @@ import { ISize } from '../../../../../../../misc/types/size/size.type';
 import { IPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size.type';
 import { fitBoxRelativeToTargetBoxWith$BottomLeft$TopLeftPreference } from './fit-box-relative-to-target-box';
 
-export interface IGetPositionAndSizeSubscribeFunctionForSimpleOverlayAOptions extends
+export interface IGetPositionAndSizeObservableForSimpleOverlayAOptions extends
   //
   IGetExternalBoxForContainerElementWithMarginOptions,
   IGetTargetBoxForTargetElementWithMarginOptions
@@ -21,7 +21,7 @@ export function getFittingBoxForContainer$Target$ContentElements(
   {
     contentElementSize,
     ...options
-  }: IGetPositionAndSizeSubscribeFunctionForSimpleOverlayAOptions,
+  }: IGetPositionAndSizeObservableForSimpleOverlayAOptions,
 ): IPositionAndSize {
   return fitBoxRelativeToTargetBoxWith$BottomLeft$TopLeftPreference(
     getExternalBoxForContainerElementWithMargin(options),

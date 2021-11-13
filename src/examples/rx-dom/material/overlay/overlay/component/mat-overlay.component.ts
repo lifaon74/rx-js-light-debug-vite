@@ -1,6 +1,4 @@
 import { MatOverlayManagerComponent } from '../manager/mat-overlay-manager.component';
-import { IEmitFunction, ISubscribeFunction } from '../../../../../../../../rx-js-light/dist';
-import { let$$, letU$$ } from '../../../../../../../../rx-js-light-shortcuts/dist';
 
 export type IOverlayCloseOrigin = 'backdrop' | 'escape';
 
@@ -9,8 +7,8 @@ export type IOverlayCloseOrigin = 'backdrop' | 'escape';
  */
 export abstract class MatOverlayComponent extends HTMLElement {
   public readonly manager: MatOverlayManagerComponent;
-  // public readonly closed$: ISubscribeFunction<boolean>;
-  // protected readonly $closed: IEmitFunction<boolean>;
+  // public readonly closed$: IObservable<boolean>;
+  // protected readonly $closed: IObserver<boolean>;
 
   protected constructor(
     manager: MatOverlayManagerComponent,

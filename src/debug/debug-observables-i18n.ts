@@ -1,15 +1,15 @@
 import {
-  createLocalesSource, createMulticastReplayLastSource, createTranslationsLoader, filterSubscribePipe, fromFetch,
-  fromPromise, IDefaultNotificationsUnion, IEmitFunction, ILocales, INextNotification, isNextNotification,
-  ISubscribeFunction, ISubscribeFunctionFromFetchNotifications, ISubscribeFunctionFromPromiseNotifications,
-  ITranslations, localesToStringArray, mapSubscribePipe, mergeMapSubscribePipeWithNotifications, pipeSubscribeFunction,
-  pluralRulesTranslationsSubscribeFunction
+  createLocalesSource, createMulticastReplayLastSource, createTranslationsLoader, filterObservablePipe, fromFetch,
+  fromPromise, IDefaultNotificationsUnion, IObserver, ILocales, INextNotification, isNextNotification,
+  IObservable, IObservableFromFetchNotifications, IObservableFromPromiseNotifications,
+  ITranslations, localesToStringArray, mapObservablePipe, mergeMapObservablePipeWithNotifications, pipeObservable,
+  pluralRulesTranslationsObservable
 } from '@lifaon/rx-js-light';
 import { translationsExample } from '../examples/rx-js-light/i18n/translations.example';
 
 /* I18N */
 
-function setLocaleOnWindow(emit: IEmitFunction<ILocales>): void {
+function setLocaleOnWindow(emit: IObserver<ILocales>): void {
   (window as any).setLocale = emit;
 }
 
@@ -61,21 +61,21 @@ async function debugTranslations() {
 
   const translations$ = createTranslationsLoader($locales$.subscribe, (locales: ILocales) => {
     // return of(getTranslationsMap(locales));
-    return pipeSubscribeFunction(fromFetch(getTranslationsUrl(locales)), [
-      // fulfilledSubscribePipe<Response, ISubscribeFunctionFromPromiseNotifications<ITranslationsJSON>>((response: Response): ISubscribeFunction<ISubscribeFunctionFromPromiseNotifications<ITranslationsJSON>> => {
+    return pipeObservable(fromFetch(getTranslationsUrl(locales)), [
+      // fulfilledObservablePipe<Response, IObservableFromPromiseNotifications<ITranslationsJSON>>((response: Response): IObservable<IObservableFromPromiseNotifications<ITranslationsJSON>> => {
       //   return fromPromise<ITranslationsJSON>(response.json());
       // }),
-      mergeMapSubscribePipeWithNotifications<ISubscribeFunctionFromFetchNotifications, ITranslationsJSON>((response: Response): ISubscribeFunction<ISubscribeFunctionFromPromiseNotifications<ITranslationsJSON>> => {
+      mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, ITranslationsJSON>((response: Response): IObservable<IObservableFromPromiseNotifications<ITranslationsJSON>> => {
         return fromPromise<ITranslationsJSON>(response.json());
       }, 1),
-      filterSubscribePipe<IDefaultNotificationsUnion<ITranslationsJSON>, INextNotification<ITranslationsJSON>>(isNextNotification),
-      mapSubscribePipe<INextNotification<ITranslationsJSON>, ITranslations>((notification: INextNotification<ITranslationsJSON>): ITranslations => {
+      filterObservablePipe<IDefaultNotificationsUnion<ITranslationsJSON>, INextNotification<ITranslationsJSON>>(isNextNotification),
+      mapObservablePipe<INextNotification<ITranslationsJSON>, ITranslations>((notification: INextNotification<ITranslationsJSON>): ITranslations => {
         return new Map(notification.value);
       })
     ]);
   });
 
-  // const translated$ = translateSubscribeFunction(translations$, of('translate.button.title'));
+  // const translated$ = translateObservable(translations$, of('translate.button.title'));
   //
   // translated$((value: string) => {
   //   console.log(value);
@@ -86,17 +86,17 @@ async function debugTranslations() {
 
   const $count$ = createMulticastReplayLastSource<number>();
 
-  // const key$ = pipeSubscribeFunction($count$.subscribe, [
-  //   pluralRulesForTranslationsSubscribePipe($locales$.subscribe, `translate.count`),
+  // const key$ = pipeObservable($count$.subscribe, [
+  //   pluralRulesForTranslationsObservablePipe($locales$.subscribe, `translate.count`),
   // ]);
   //
-  // const countFormatted$ = pipeSubscribeFunction($count$.subscribe, [
-  //   numberFormatSubscribePipe($locales$.subscribe),
+  // const countFormatted$ = pipeObservable($count$.subscribe, [
+  //   numberFormatObservablePipe($locales$.subscribe),
   // ]);
   //
-  // const translatedCount$ = translateSubscribeFunction(translations$, key$, of({ count: countFormatted$ }));
+  // const translatedCount$ = translateObservable(translations$, key$, of({ count: countFormatted$ }));
 
-  const translatedCount$ = pluralRulesTranslationsSubscribeFunction($locales$.subscribe, translations$, `translate.count`, $count$.subscribe, `count`);
+  const translatedCount$ = pluralRulesTranslationsObservable($locales$.subscribe, translations$, `translate.count`, $count$.subscribe, `count`);
 
   translatedCount$((value: string) => {
     console.log(value);

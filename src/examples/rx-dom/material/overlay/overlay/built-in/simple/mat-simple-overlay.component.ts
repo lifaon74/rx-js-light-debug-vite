@@ -2,7 +2,7 @@
 import style from './mat-simple-overlay.component.scss?inline';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
 import { compileReactiveCSSAsComponentStyle, injectComponentStyle, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
-import { combineLatest, ISubscribeFunction } from '@lifaon/rx-js-light';
+import { combineLatest, IObservable } from '@lifaon/rx-js-light';
 import { MatOverlayWithAnimationComponent } from '../../component/with-animation/overlay-with-animation.component';
 import { findDOMElement } from '../../../../../../misc/find-dom-element';
 import { ICSSPositionAndSize } from '../../../../../../misc/types/position-and-size/css-position-and-size.type';
@@ -24,7 +24,7 @@ export interface IMatSimpleOverlayComponentOptions {
 export class MatSimpleOverlayComponent extends MatOverlayWithAnimationComponent {
   constructor(
     manager: MatOverlayManagerComponent,
-    positionAndSize$: ISubscribeFunction<ICSSPositionAndSize>,
+    positionAndSize$: IObservable<ICSSPositionAndSize>,
     {
     }: IMatSimpleOverlayComponentOptions = {},
   ) {

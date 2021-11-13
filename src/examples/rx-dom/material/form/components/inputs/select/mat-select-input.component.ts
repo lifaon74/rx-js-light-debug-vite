@@ -1,41 +1,69 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
-  querySelectorOrThrow,
-  setComponentSubscribeFunctionProperties,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
+  defineObservableProperty, OnCreate, querySelectorOrThrow,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-select-input.component.html?raw';
 // @ts-ignore
 import style from './mat-select-input.component.scss?inline';
-import {
-  $$filter, function$$, let$$, map$$, map$$$, mergeMapS$$$, pipe$$, shareR$$
-} from '@lifaon/rx-js-light-shortcuts';
 import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
-  combineLatest, IEmitFunction, ISubscribeFunction, readSubscribeFunctionValue, single
+  combineLatest, function$$, IObservable, IObserver, let$$, map$$, map$$$, mergeMapS$$$, pipe$$, shareR$$, single
 } from '@lifaon/rx-js-light';
 import {
   IMatSelectInputOption, IMatSelectInputOptionsList, IMatSelectInputReadonlySelectedOptions,
-  IMatSelectInputSelectedOptions,
 } from './types/mat-select-input-option.type';
 import { ON_FOCUSED_MODIFIER } from '../../../modifiers/on-focused.modifier';
-import { MatInputFieldComponent } from '../shared/input-field/mat-input-field.component';
 import { isSet } from '../../../../../../misc/is/is-set';
 import { createMatOverlayController } from '../../../../overlay/overlay/component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { MatSelectInputOverlayComponent } from './overlay/mat-select-overlay.component';
+import { toggleOptionSelect } from '../../../../helpers/options/toggle-option-select';
+import { isOptionSelected } from '../../../../helpers/options/is-option-selected';
+import { $$filter } from '../../../../../../../../../rx-js-light/dist/src/observer/pipes/built-in/filter/filter-observer.shortcut';
+import {
+  addMatInputReadonlyFunctionality, IMatInputReadonlyProperty
+} from '../shared/functionalities/readonly/add-mat-input-readonly-functionality';
+import {
+  addMatInputDisabledFunctionality, IMatInputDisabledProperty
+} from '../shared/functionalities/disabled/add-mat-input-disabled-functionality';
+import {
+  addMatInputPlaceholderFunctionality, IMatInputPlaceholderProperty
+} from '../shared/functionalities/placeholder/add-mat-input-placeholder-functionality';
+import {
+  addOptionsManagerMultipleFunctionality, addOptionsManagerOptionsFunctionality,
+  addOptionsManagerRawOptionsFunctionality, addOptionsManagerRawSelectedOptionsFunctionality,
+  addOptionsManagerSelectedOptionsFunctionality,
+  IOptionsManagerMultipleProperty,
+  IOptionsManagerOptionsProperty, IOptionsManagerProperties, IOptionsManagerRawOptionsProperty,
+  IOptionsManagerRawSelectedOptionsProperty, IOptionsManagerSelectedOptionsProperty
+} from '../../../../helpers/options/options-manager';
+import { toggleOptionSelectWithResolvers } from '../../../../helpers/options/toggle-option-select-with-resolvers';
+import { injectMatInputFieldStyle } from '../shared/input-field/mat-input-field.component';
 
+
+/** MANAGER **/
+
+interface IMatSelectInputComponentConstructor {
+  new<GValue>(): (
+    HTMLElement
+    & IMatInputReadonlyProperty
+    & IMatInputDisabledProperty
+    & IMatInputPlaceholderProperty
+    & IOptionsManagerProperties<IMatSelectInputOption<GValue>>
+  );
+}
 
 /** COMPONENT **/
 
 type IFieldContainerMode = 'value' | 'placeholder' | 'filter';
 
 interface IData {
-  readonly placeholder$: ISubscribeFunction<string>;
-  readonly selectValue$: ISubscribeFunction<string>;
+  readonly placeholder$: IObservable<string>;
+  readonly selectValue$: IObservable<string>;
 
-  readonly $onClickSelectValue: IEmitFunction<MouseEvent>;
-  readonly $onKeyDownSelectValue: IEmitFunction<KeyboardEvent>;
+  readonly $onClickSelectValue: IObserver<MouseEvent>;
+  readonly $onKeyDownSelectValue: IObserver<KeyboardEvent>;
 }
 
 @Component({
@@ -50,68 +78,28 @@ interface IData {
   }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class MatSelectInputComponent<GValue> extends MatInputFieldComponent<IMatSelectInputOptionsList<GValue>> implements OnCreate<IData> {
-
-  multiple$!: ISubscribeFunction<boolean>;
-  readonly $multiple!: IEmitFunction<boolean>;
-  multiple!: boolean;
-
-  options$!: ISubscribeFunction<IMatSelectInputOptionsList<GValue>>;
-  readonly $options!: IEmitFunction<IMatSelectInputOptionsList<GValue>>;
-  options!: IMatSelectInputOptionsList<GValue>;
-
-  readonly optionsSet$: ISubscribeFunction<IMatSelectInputReadonlySelectedOptions<GValue>>;
-  readonly selectedOptions$: ISubscribeFunction<IMatSelectInputReadonlySelectedOptions<GValue>>;
-
+// export class MatSelectInputComponent<GValue> extends optionsManagerFactory(MatInputFieldComponent)<IMatSelectInputOptionsList<GValue>> implements OnCreate<IData> {
+export class MatSelectInputComponent<GValue> extends (HTMLElement as IMatSelectInputComponentConstructor)<GValue> implements OnCreate<IData> {
   protected readonly _data: IData;
 
   constructor() {
-    super([]);
+    super();
 
-    /** VARIABLES **/
+    type GOption = IMatSelectInputOption<GValue>;
 
-    const value$ = this.value$;
-    const placeholder$ = this.placeholder$;
+    /** FUNCTIONALITIES **/
 
-    const $multiple$ = let$$<ISubscribeFunction<boolean>>(single(false));
-    setComponentSubscribeFunctionProperties(this, 'multiple', $multiple$);
-    const multiple$ = this.multiple$;
+    const readonly$ = addMatInputReadonlyFunctionality(this);
+    const disabled$ = addMatInputDisabledFunctionality(this);
+    const placeholder$ =  addMatInputPlaceholderFunctionality(this);
 
-    const $options$ = let$$<ISubscribeFunction<IMatSelectInputOptionsList<GValue>>>(single([]));
-    setComponentSubscribeFunctionProperties(this, 'options', $options$);
-    const options$ = this.options$;
+    const rawOptions$ = addOptionsManagerRawOptionsFunctionality<GOption>(this);
+    const rawSelectedOptions$ = addOptionsManagerRawSelectedOptionsFunctionality<GOption>(this);
+    const multiple$ = addOptionsManagerMultipleFunctionality(this);
+    const options$ = addOptionsManagerOptionsFunctionality<GOption>(this, rawOptions$);
+    const selectedOptions$ = addOptionsManagerSelectedOptionsFunctionality<GOption>(this, rawOptions$, options$, multiple$);
 
-    const optionsSet$ = shareR$$(map$$(options$, (options: IMatSelectInputOptionsList<GValue>): IMatSelectInputReadonlySelectedOptions<GValue> => {
-      return isSet<IMatSelectInputOption<GValue>>(options)
-        ? options
-        : new Set<IMatSelectInputOption<GValue>>(options);
-    }));
-    this.optionsSet$ = optionsSet$;
-
-    const selectedOptions$ = function$$(
-      [value$, optionsSet$, multiple$],
-      (
-        rawSelectedOptions: IMatSelectInputOptionsList<GValue>,
-        optionsSet: IMatSelectInputReadonlySelectedOptions<GValue>,
-        multiple: boolean,
-      ): IMatSelectInputReadonlySelectedOptions<GValue> => {
-        const selectedOptions = new Set<IMatSelectInputOption<GValue>>();
-        const iterator: Iterator<IMatSelectInputOption<GValue>> = rawSelectedOptions[Symbol.iterator]();
-        let result: IteratorResult<IMatSelectInputOption<GValue>>;
-        while (!(result = iterator.next()).done) {
-          const option: IMatSelectInputOption<GValue> = result.value;
-          if (optionsSet.has(option)) {
-            selectedOptions.add(option);
-            if (!multiple) {
-              break;
-            }
-          }
-        }
-        return selectedOptions;
-      },
-    );
-
-    this.selectedOptions$ = selectedOptions$;
+    injectMatInputFieldStyle(this);
 
     // OVERLAY
 
@@ -123,12 +111,15 @@ export class MatSelectInputComponent<GValue> extends MatInputFieldComponent<IMat
       return MatOverlayManagerComponent.getInstance()
         .open(MatSelectInputOverlayComponent, [{
           targetElement: this,
-          optionsSet$,
+          options$,
           $close,
+          selectedOptions$,
+          $rawSelectedOptions: this.$rawSelectedOptions,
+          multiple$,
         }]);
     });
 
-    const toggleMatColorInputOverlay = () => {
+    const toggleMatSelectInputOverlay = () => {
       if (!this.disabled && !this.readonly) {
         toggle([]);
       }
@@ -137,9 +128,9 @@ export class MatSelectInputComponent<GValue> extends MatInputFieldComponent<IMat
     /** SELECT VALUE **/
 
     const selectValue$ = pipe$$(selectedOptions$, [
-      mergeMapS$$$((options: IMatSelectInputReadonlySelectedOptions<GValue>): ISubscribeFunction<readonly string[]> => {
+      mergeMapS$$$((options: IMatSelectInputReadonlySelectedOptions<GValue>): IObservable<readonly string[]> => {
         return combineLatest(
-          Array.from(options, (option: IMatSelectInputOption<GValue>): ISubscribeFunction<string> => {
+          Array.from(options, (option: IMatSelectInputOption<GValue>): IObservable<string> => {
             return option.label$;
           }),
         );
@@ -148,8 +139,8 @@ export class MatSelectInputComponent<GValue> extends MatInputFieldComponent<IMat
     ]);
 
 
-    const $onClickSelectValue = toggleMatColorInputOverlay;
-    const $onKeyDownSelectValue = $$filter(toggleMatColorInputOverlay, (event: KeyboardEvent) => (event.key === 'Enter'));
+    const $onClickSelectValue = toggleMatSelectInputOverlay;
+    const $onKeyDownSelectValue = $$filter(toggleMatSelectInputOverlay, (event: KeyboardEvent) => (event.key === 'Enter'));
 
     this._data = {
       placeholder$,
@@ -165,70 +156,25 @@ export class MatSelectInputComponent<GValue> extends MatInputFieldComponent<IMat
 
   isOptionSelected(
     option: IMatSelectInputOption<GValue>,
-  ): ISubscribeFunction<boolean> {
-    return isMatSelectInputOptionSelected<GValue>(
-      this.selectedOptions$,
+  ): IObservable<boolean> {
+    return isOptionSelected<IMatSelectInputOption<GValue>>({
+      selectedOptions$: this.selectedOptions$,
       option,
-    );
+    });
   }
 
   toggleOptionSelect(
     option: IMatSelectInputOption<GValue>,
     select?: boolean,
   ): void {
-    toggleMatSelectInputOptionSelect(
-      this.selectedOptions$,
-      this.$value,
+    toggleOptionSelectWithResolvers<IMatSelectInputOption<GValue>>({
+      selectedOptions$: this.selectedOptions$,
+      $rawSelectedOptions: this.$rawSelectedOptions,
+      multiple$: this.multiple$,
       option,
       select,
-    );
+    });
   }
 }
 
 
-/** FUNCTION **/
-
-export function isMatSelectInputOptionSelected<GValue>(
-  selectedOptions$: ISubscribeFunction<IMatSelectInputReadonlySelectedOptions<GValue>>,
-  option: IMatSelectInputOption<GValue>,
-): ISubscribeFunction<boolean> {
-  return map$$(selectedOptions$, (options: IMatSelectInputReadonlySelectedOptions<GValue>): boolean => {
-    return options.has(option);
-  });
-}
-
-export function toggleMatSelectInputOptionSelect<GValue>(
-  selectedOptions$: ISubscribeFunction<IMatSelectInputReadonlySelectedOptions<GValue>>,
-  $value: IEmitFunction<IMatSelectInputOptionsList<GValue>>,
-  option: IMatSelectInputOption<GValue>,
-  select?: boolean,
-): void {
-  const selectedOptions: IMatSelectInputSelectedOptions<GValue> = readSubscribeFunctionValue(selectedOptions$, () => {
-    throw new Error(`Cannot read selectedOptions$`);
-  }) as IMatSelectInputSelectedOptions<GValue>;
-
-  let changed: boolean = false;
-
-  if (select === void 0) {
-    changed = true;
-    if (selectedOptions.has(option)) {
-      selectedOptions.delete(option);
-    } else {
-      selectedOptions.add(option);
-    }
-  } else if (select) {
-    if (!selectedOptions.has(option)) {
-      changed = true;
-      selectedOptions.add(option);
-    }
-  } else {
-    if (selectedOptions.has(option)) {
-      changed = true;
-      selectedOptions.delete(option);
-    }
-  }
-
-  if (changed) {
-    $value(selectedOptions);
-  }
-}

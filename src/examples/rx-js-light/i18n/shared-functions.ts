@@ -1,7 +1,5 @@
-import {
-  createLocalesSource, IEmitFunction, ILocales, ISource, ISubscribeFunction, localesToStringArray, mapSubscribePipe,
-  pipeSubscribeFunction
-} from '@lifaon/rx-js-light';
+import { IObservable, IObserver, ISource, map$$ } from '@lifaon/rx-js-light';
+import { createLocalesSource, ILocales, localesToStringArray } from '@lifaon/rx-i18n';
 
 declare namespace Intl {
   class DisplayNames {
@@ -32,7 +30,7 @@ export const DEFAULT_CURRENCIES = [
 /*------------*/
 
 export function setLocaleOnWindow(
-  emit: IEmitFunction<ILocales>,
+  emit: IObserver<ILocales>,
 ): void {
   (window as any).setLocale = emit;
 }
@@ -59,10 +57,9 @@ export function createLocaleSelectElement(
     localesSource.emit(selectElement.value);
   });
 
-  pipeSubscribeFunction(localesSource.subscribe, [
-    mapSubscribePipe(localesToStringArray)
-  ])
-  ((locales: string[]) => {
+  const locatesAsStringArray$ = map$$(localesSource.subscribe, localesToStringArray);
+
+  locatesAsStringArray$((locales: string[]) => {
     selectElement.value = locales[0];
   });
 
@@ -97,7 +94,7 @@ export function createCurrencySelectElement(
 }
 
 export function createFormatDisplayElement(
-  subscribe: ISubscribeFunction<string>
+  subscribe: IObservable<string>
 ): HTMLElement {
   const element = document.createElement('div');
   const textNode = new Text();
@@ -110,7 +107,7 @@ export function createFormatDisplayElement(
 }
 
 export function createLocaleFormatContext(
-  callback: (locales$: ISubscribeFunction<ILocales>) => ISubscribeFunction<string>,
+  callback: (locales$: IObservable<ILocales>) => IObservable<string>,
 ) {
   const $locales$ = createLocalesSource();
   document.body.appendChild(createLocaleSelectElement($locales$));

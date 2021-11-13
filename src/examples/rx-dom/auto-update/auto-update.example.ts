@@ -3,23 +3,23 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, DEFAULT_CASTING_CONSTANTS_TO_IMPORT
 } from '@lifaon/rx-dom';
 import {
-  createSubscribeFunctionProxy, idle, ISubscribeFunctionProxy, mapSubscribePipe, pipeSubscribeFunction,
-  shareSubscribePipe
+  createObservableProxy, idle, IObservableProxy, mapObservablePipe, pipeObservable,
+  shareObservablePipe
 } from '@lifaon/rx-js-light';
 
 /** GENERIC HELPERS **/
 
 function createComponentProxy<GComponent extends HTMLElement>(
   component: GComponent,
-): ISubscribeFunctionProxy<GComponent> {
-  return createSubscribeFunctionProxy<GComponent>(pipeSubscribeFunction(idle(), [
-    mapSubscribePipe<any, GComponent>(() => component),
-    shareSubscribePipe<GComponent>(),
+): IObservableProxy<GComponent> {
+  return createObservableProxy<GComponent>(pipeObservable(idle(), [
+    mapObservablePipe<any, GComponent>(() => component),
+    shareObservablePipe<GComponent>(),
   ]));
 }
 
 interface IComponentData<GComponent extends HTMLElement> {
-  readonly proxy: ISubscribeFunctionProxy<GComponent>;
+  readonly proxy: IObservableProxy<GComponent>;
   readonly self: GComponent;
 }
 

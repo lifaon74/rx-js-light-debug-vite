@@ -1,5 +1,6 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
+  compileReactiveHTMLAsGenericComponentTemplate, Component,
+  DEFAULT_CONSTANTS_TO_IMPORT,
   generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
 import { AppVirtualLinkComponent } from '../../components/virtual-link/virtual-link.component';
@@ -20,14 +21,16 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-not-found-page',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <div class="header">
-       404 not found
-    </div>
-    <a is="v-link" href="./home">
-      Home
-    </a>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <div class="header">
+         404 not found
+      </div>
+      <a is="v-link" href="./home">
+        Home
+      </a>
+    `,
+  }),
 })
 export class AppNotFoundPageComponent extends HTMLElement implements OnCreate<IData> {
 

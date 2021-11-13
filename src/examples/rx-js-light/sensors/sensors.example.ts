@@ -1,6 +1,4 @@
-import {
-  fromEventTarget, ISubscribeFunction, mapSubscribePipe, pipeSubscribeFunction, toTypedPureEventTarget
-} from '@lifaon/rx-js-light';
+import { fromEventTarget, IObservable, map$$, toTypedEventTarget } from '@lifaon/rx-js-light';
 
 interface IDeviceOrientation {
   readonly absolute: boolean;
@@ -9,17 +7,18 @@ interface IDeviceOrientation {
   readonly gamma: number | null;
 }
 
-function deviceOrientation(): ISubscribeFunction<IDeviceOrientation> {
-  return pipeSubscribeFunction(fromEventTarget<'deviceorientation', DeviceOrientationEvent>(toTypedPureEventTarget(window), 'deviceorientation'), [
-    mapSubscribePipe((event: DeviceOrientationEvent): IDeviceOrientation => {
+function deviceOrientation(): IObservable<IDeviceOrientation> {
+  return map$$(
+    fromEventTarget<'deviceorientation', DeviceOrientationEvent>(toTypedEventTarget(window), 'deviceorientation'),
+    (event: DeviceOrientationEvent): IDeviceOrientation => {
       return {
         absolute: event.absolute,
         alpha: event.alpha,
         beta: event.beta,
         gamma: event.gamma,
       };
-    })
-  ]);
+    }
+  );
 }
 
 

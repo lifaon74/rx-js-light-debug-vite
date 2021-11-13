@@ -1,10 +1,10 @@
-import { mapSubscribePipe, of, pipeSubscribePipeFunctions } from '@lifaon/rx-js-light';
+import { mapObservablePipe, of, pipeObservablePipes } from '@lifaon/rx-js-light';
 
 
 function pipeExample1() {
-  const subscribePipe = pipeSubscribePipeFunctions([
-    mapSubscribePipe<number, number>((value: number) => (value + 2)),
-    mapSubscribePipe<number, string>((value: number) => value.toString(10)),
+  const subscribePipe = pipeObservablePipes([
+    mapObservablePipe<number, number>((value: number) => (value + 2)),
+    mapObservablePipe<number, string>((value: number) => value.toString(10)),
   ]);
 
   const subscribe = subscribePipe(of(5));

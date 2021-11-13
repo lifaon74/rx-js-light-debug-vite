@@ -8,12 +8,11 @@ import html from './files-list.component.html?raw';
 // @ts-ignore
 import style from './files-list.component.scss';
 import {
-  fromPromise, ISubscribeFunction, ISubscribeFunctionFromPromiseNotifications, notificationObserver, of,
+  fromPromise, IObservable, IObservableFromPromiseNotifications, let$$, letU$$, map$$, notificationObserver, of,
   SubscriptionManager
 } from '@lifaon/rx-js-light';
-import { let$$, letU$$, map$$, not$$ } from '@lifaon/rx-js-light-shortcuts';
 import { mutateReadonlyReplayLastSourceArray } from '@lifaon/rx-js-light';
-import { createInfiniteScrollSubscribeFunction } from '../../../infinite-posts/helpers/infinite-scroll';
+import { createInfiniteScrollObservable } from '../../../infinite-posts/helpers/infinite-scroll';
 
 /** FUNCTIONS **/
 
@@ -79,18 +78,18 @@ export interface IFile {
 
 
 type ILoadMoreFilesResult = IteratorResult<readonly IFile[]>;
-type ILoadMoreFilesNotifications = ISubscribeFunctionFromPromiseNotifications<ILoadMoreFilesResult>;
+type ILoadMoreFilesNotifications = IObservableFromPromiseNotifications<ILoadMoreFilesResult>;
 
 type IFilesListState = 'awaiting' | 'loading' | 'done' | 'errored';
 
 /** COMPONENT **/
 
 interface IData {
-  readonly files$: ISubscribeFunction<readonly IFile[]>;
-  // readonly isLoading$: ISubscribeFunction<boolean>;
-  // readonly isErrored$: ISubscribeFunction<boolean>;
-  readonly state$: ISubscribeFunction<IFilesListState>;
-  readonly errorMessage$: ISubscribeFunction<string>;
+  readonly files$: IObservable<readonly IFile[]>;
+  // readonly isLoading$: IObservable<boolean>;
+  // readonly isErrored$: IObservable<boolean>;
+  readonly state$: IObservable<IFilesListState>;
+  readonly errorMessage$: IObservable<string>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -160,7 +159,7 @@ export class AppFilesListComponent extends HTMLElement implements OnCreate<IData
 
       const unsubscribeOfOnNodeConnectedTo = subscribeOnNodeConnectedTo(
         this,
-        createInfiniteScrollSubscribeFunction({ scrollElement: this, triggerDistance: 200 }),
+        createInfiniteScrollObservable({ scrollElement: this, triggerDistance: 200 }),
         () => {
           unsubscribeOfOnNodeConnectedTo();
           loadMoreFilesStep();

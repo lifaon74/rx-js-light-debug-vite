@@ -14,5 +14,10 @@
     top: 0;
     bottom: 0;
   }
+
+  &.mat-disabled {
+    border-color: $mat-input-field-border-color-disabled;
+    background-color: $mat-input-field-background-color-disabled;
+  }
 }
 

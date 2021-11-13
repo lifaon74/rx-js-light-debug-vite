@@ -8,10 +8,10 @@ import html from './mat-checkbox-input.component.html?raw';
 import style from './mat-checkbox-input.component.scss?inline';
 import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import { MatInputComponent } from '../shared/input/mat-input.component';
-import { combineLatest, createMulticastSource, IEmitFunction, ISubscribeFunction, single } from '@lifaon/rx-js-light';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
-import { isElementOrChildrenFocusedSubscribeFunction } from '../../../../helpers/focus-subscribe-function';
-import { tuple } from '../../../../../../misc/tuple';
+import {
+  combineLatest, createMulticastSource, IObserver, IObservable, single, map$$, tuple
+} from '@lifaon/rx-js-light';
+import { isElementOrChildrenFocusedObservable } from '../../../../helpers/focus-subscribe-function';
 
 /** TYPES **/
 
@@ -25,13 +25,13 @@ export type IMatCheckboxInputState =
 
 interface IData {
   // SUBSCRIBE FUNCTIONS
-  readonly id$: ISubscribeFunction<string>;
-  readonly disabled$: ISubscribeFunction<boolean>;
-  readonly readonly$: ISubscribeFunction<boolean>;
-  readonly inputChecked$: ISubscribeFunction<boolean>;
-  readonly inputIndeterminate$: ISubscribeFunction<boolean>;
+  readonly id$: IObservable<string>;
+  readonly disabled$: IObservable<boolean>;
+  readonly readonly$: IObservable<boolean>;
+  readonly inputChecked$: IObservable<boolean>;
+  readonly inputIndeterminate$: IObservable<boolean>;
   // EMIT FUNCTIONS
-  readonly $inputChange: IEmitFunction<Event>;
+  readonly $inputChange: IObserver<Event>;
 }
 
 /*-----*/
@@ -87,10 +87,10 @@ export class MatCheckboxInputComponent extends MatInputComponent<IMatCheckboxInp
 
     /** DIRECT DOM UPDATE **/
 
-    const classList$ = map$$(value$, (state: IMatCheckboxInputState) => new Set<IMatCheckboxInputState>([state]));
+    const classList$ = map$$(value$, (state: IMatCheckboxInputState) => new Set<string>([`mat-${state}`]));
     setReactiveClassList(classList$, this);
 
-    setReactiveClass(isElementOrChildrenFocusedSubscribeFunction(this), this, 'focused');
+    setReactiveClass(isElementOrChildrenFocusedObservable(this), this, 'mat-focused');
 
     // INFO prevent blur
     setReactiveEventListener((event: PointerEvent): void => {

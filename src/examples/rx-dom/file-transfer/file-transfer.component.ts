@@ -3,11 +3,11 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements,
   OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
-import { AppProgressRingComponent } from '../material/progress-ring/mat-progress-ring.component';
+import { AppProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
-  createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IEmitFunction, IProgress, ISubscribeFunction,
-  ISubscribeFunctionFromPromiseNotifications, ISubscribeFunctionFromXHRNotifications, IUnsubscribeFunction, noop,
-  notificationObserver
+  createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IObserver, IProgress, IObservable,
+  IObservableFromPromiseNotifications, IObservableFromXHRNotifications, IUnsubscribe, noop,
+  notificationObserver, map$$, let$$, letU$$
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../misc/no-cors';
 // @ts-ignore
@@ -15,7 +15,6 @@ import html from './file-transfer.component.html?raw';
 // @ts-ignore
 import style from './file-transfer.component.scss';
 import { downloadBlob, extractFileNameFromResponse } from './helpers';
-import { let$$, letU$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 
 
 export const APP_FILE_TRANSFER_CUSTOM_ELEMENTS = [
@@ -27,12 +26,12 @@ export const APP_FILE_TRANSFER_CUSTOM_ELEMENTS = [
 type IStatus = 'awaiting' | 'loading' | 'complete' | 'error';
 
 interface IData {
-  status$: ISubscribeFunction<IStatus>;
-  progress$: ISubscribeFunction<number>;
-  errorMessage$: ISubscribeFunction<string>;
+  status$: IObservable<IStatus>;
+  progress$: IObservable<number>;
+  errorMessage$: IObservable<string>;
 
-  onClickStartDownload: IEmitFunction<Event>;
-  onClickCancelDownload: IEmitFunction<Event>;
+  onClickStartDownload: IObserver<Event>;
+  onClickCancelDownload: IObserver<Event>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -50,7 +49,7 @@ const NO_PROGRESS = createProgress(0, Number.POSITIVE_INFINITY);
 })
 export class AppFileTransferComponent extends HTMLElement implements OnCreate<IData>, OnDisconnect {
   protected readonly data: IData;
-  protected unsubscribeStartDownload: IUnsubscribeFunction;
+  protected unsubscribeStartDownload: IUnsubscribe;
 
   constructor() {
     super();
@@ -85,11 +84,11 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
       $status$.emit('loading');
       $progress$.emit(NO_PROGRESS);
 
-      this.unsubscribeStartDownload = startDownload$(notificationObserver<ISubscribeFunctionFromXHRNotifications>({
+      this.unsubscribeStartDownload = startDownload$(notificationObserver<IObservableFromXHRNotifications>({
         next: (response: Response) => {
           if (response.ok) {
             const responseToBlob$ = fromPromise(response.blob());
-            this.unsubscribeStartDownload = responseToBlob$(notificationObserver<ISubscribeFunctionFromPromiseNotifications<Blob>>({
+            this.unsubscribeStartDownload = responseToBlob$(notificationObserver<IObservableFromPromiseNotifications<Blob>>({
               next: (blob: Blob) => {
                 downloadBlob(blob, extractFileNameFromResponse(response));
                 $status$.emit('complete');

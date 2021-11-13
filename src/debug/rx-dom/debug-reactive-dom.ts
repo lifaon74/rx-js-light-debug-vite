@@ -1,6 +1,6 @@
 import {
-  createUnicastReplayLastSource, debounceFrameSubscribePipe, interval, ISubscribeFunction, logStateSubscribePipe,
-  mapSubscribePipe, of, pipeSubscribeFunction, shareSubscribePipe,
+  createUnicastReplayLastSource, debounceFrameObservablePipe, interval, IObservable, logStateObservablePipe,
+  mapObservablePipe, of, pipeObservable, shareObservablePipe,
 } from '@lifaon/rx-js-light';
 import {
   attachNode, attachNodeRaw, attachShadow, createDocumentFragment, createElementNode,
@@ -12,14 +12,14 @@ import {
 /*---*/
 
 // async function debugObservableReactive1() {
-//   const source1 = pipeSubscribeFunction(idle(), [
+//   const source1 = pipeObservable(idle(), [
 //     mapOperator<IdleDeadline, string>(() => new Date().toString()),
 //     // mapOperator<void, string>(() => Date.now().toString()),
 //     distinctOperator<string>(),
 //     replayLastSharedOperator<string>(),
 //   ]);
 //
-//   const source2 = pipeSubscribeFunction(interval(1000), [
+//   const source2 = pipeObservable(interval(1000), [
 //     mapOperator<void, number>(() => Math.floor(Math.random() * 100)),
 //     currencyOperator(navigator.languages, { currency: 'EUR' }),
 //     replayLastSharedOperator<string>()
@@ -73,7 +73,7 @@ import {
 //
 //
 // async function debugObservableReactive4() {
-//   const source = pipeSubscribeFunction(idle(), [
+//   const source = pipeObservable(idle(), [
 //     mapOperator<IdleDeadline, string>(() => new Date().toString()),
 //     replayLastSharedOperator<string>(),
 //   ]);
@@ -85,7 +85,7 @@ import {
 //
 // async function debugObservableReactive5() {
 //   let value: boolean = false;
-//   const source = pipeSubscribeFunction(interval(1000), [
+//   const source = pipeObservable(interval(1000), [
 //     mapOperator<void, boolean>(() => (value = !value))
 //   ]);
 //
@@ -114,7 +114,7 @@ import {
 //
 // async function debugObservableReactive7() {
 //   let value: boolean = false;
-//   const source = pipeSubscribeFunction(interval(1000), [
+//   const source = pipeObservable(interval(1000), [
 //     mapOperator<void, boolean>(() => (value = !value))
 //   ]);
 //
@@ -267,17 +267,17 @@ async function debugOnNodeConnectedTo1() {
 
 async function debugReactiveIfNode1() {
   let value: boolean = false;
-  const subscribe = pipeSubscribeFunction(interval(1000), [
-    mapSubscribePipe<void, boolean>(() => (value = !value)),
+  const subscribe = pipeObservable(interval(1000), [
+    mapObservablePipe<void, boolean>(() => (value = !value)),
   ]);
 
   // const source = createUnicastReplayLastSource<boolean>(true);
   // const subscribe = source.subscribe;
 
-  const date = pipeSubscribeFunction(interval(1000), [
-    logStateSubscribePipe<any>('interval'),
-    mapSubscribePipe<any, string>(() => new Date().toString()),
-    shareSubscribePipe<string>(),
+  const date = pipeObservable(interval(1000), [
+    logStateObservablePipe<any>('interval'),
+    mapObservablePipe<any, string>(() => new Date().toString()),
+    shareObservablePipe<string>(),
   ]);
 
   const node = createReactiveIfNode(subscribe, () => {
@@ -302,7 +302,7 @@ async function debugReactiveForLoopNode1() {
 
   const node = createReactiveForLoopNode(source.subscribe, ({ item, index }) => {
     // console.log('create fragment');
-    const _index = pipeSubscribeFunction(index, [mapSubscribePipe<number, string>(String)]);
+    const _index = pipeObservable(index, [mapObservablePipe<number, string>(String)]);
     const fragment = createDocumentFragment();
     const container = createElementNode('div');
     // nodeAppendChild(container, createTextNode(`node: ${ item } - `));
@@ -387,13 +387,13 @@ async function debugReactiveForLoopNode1() {
 }
 
 async function debugReactiveForLoopNode2() {
-  const items = createUnicastReplayLastSource<ISubscribeFunction<string>[]>();
+  const items = createUnicastReplayLastSource<IObservable<string>[]>();
 
-  const date = pipeSubscribeFunction(interval(1000), [
-    logStateSubscribePipe<void>('interval'),
-    debounceFrameSubscribePipe<void>(),
-    mapSubscribePipe<void, string>(() => new Date().toString()),
-    shareSubscribePipe<string>(),
+  const date = pipeObservable(interval(1000), [
+    logStateObservablePipe<void>('interval'),
+    debounceFrameObservablePipe<void>(),
+    mapObservablePipe<void, string>(() => new Date().toString()),
+    shareObservablePipe<string>(),
   ]);
 
   const node = createReactiveForLoopNode(items.subscribe, ({ item }) => {
@@ -416,8 +416,8 @@ async function debugReactiveForLoopNode2() {
 
 async function debugReactiveSwitchNode1() {
   let value: number = 0;
-  const subscribe = pipeSubscribeFunction(interval(1000), [
-    mapSubscribePipe<void, number>(() => (value = (value + 1) % 3)),
+  const subscribe = pipeObservable(interval(1000), [
+    mapObservablePipe<void, number>(() => (value = (value + 1) % 3)),
   ]);
 
   const node = createReactiveSwitchNode(subscribe, new Map([

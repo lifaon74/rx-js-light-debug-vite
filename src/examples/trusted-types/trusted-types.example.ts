@@ -2,8 +2,8 @@ import DOMPurify from 'dompurify';
 import { ISanitizeHTMLConfig, ISanitizeHTMLFunction } from './sanitite-html-function.type';
 import { DEFAULT_SANITIZE_HTML_CONFIG } from './default-sanitize-html-config.constant';
 import { HTMLTrustedTypePolicy } from './trusted-types.type';
-import { createMulticastReplayLastSource, pipeSubscribeFunction } from '@lifaon/rx-js-light';
-import { sanitizeHTMLWithPolicySubscribePipe } from './pipes/sanitize-html-with-policy-subscribe-pipe';
+import { createMulticastReplayLastSource, pipeObservable } from '@lifaon/rx-js-light';
+import { sanitizeHTMLWithPolicyObservablePipe } from './pipes/sanitize-html-with-policy-subscribe-pipe';
 
 
 export function sanitizeHTML(
@@ -59,8 +59,8 @@ function trustedTypesExample2() {
 
   const $dirty$ = createMulticastReplayLastSource<string>();
 
-  const subscribe = pipeSubscribeFunction($dirty$.subscribe, [
-    sanitizeHTMLWithPolicySubscribePipe(sanitizer),
+  const subscribe = pipeObservable($dirty$.subscribe, [
+    sanitizeHTMLWithPolicyObservablePipe(sanitizer),
   ]);
 
   subscribe((safeHTML: TrustedHTML) => {

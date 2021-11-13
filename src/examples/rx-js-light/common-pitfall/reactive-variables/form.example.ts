@@ -1,10 +1,10 @@
 import {
-  conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, mapSubscribePipe,
-  pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
+  conditionalObservablePipe, createMulticastReplayLastSource, distinctObservablePipe, fromEventTarget, function$$,
+  let$$,
+  map$$, map$$$,
+  mapObservablePipe, pipe$$,
+  pipeObservable, reactiveFunction, share$$, share$$$, shareObservablePipe
 } from '@lifaon/rx-js-light';
-import {
-  distinctShared$$, function$$, let$$, map$$, map$$$, pipe$$, share$$, share$$$
-} from '@lifaon/rx-js-light-shortcuts';
 
 /** FORM EXAMPLE **/
 
@@ -85,22 +85,22 @@ function withObservable() {
   /** CREATE OUR REACTIVE VARIABLES **/
 
     // creates an observable which reflects the value of inputA
-  const inputAValue = pipeSubscribeFunction(fromEventTarget(inputA, 'input'), [ // creates an observable from an event
-      mapSubscribePipe<Event, string>(() => inputA.value), // maps the event to return the input value
-      shareSubscribePipe<string>( // shares the observable
+  const inputAValue = pipeObservable(fromEventTarget(inputA, 'input'), [ // creates an observable from an event
+      mapObservablePipe<Event, string>(() => inputA.value), // maps the event to return the input value
+      shareObservablePipe<string>( // shares the observable
         () => createMulticastReplayLastSource<string>({ initialValue: inputA.value }) // initial observable value
       ),
     ]);
 
   // creates an observable which reflects the value of inputB
-  const inputBValue = pipeSubscribeFunction(fromEventTarget(inputB, 'input'), [
-    mapSubscribePipe<Event, string>(() => inputB.value),
-    shareSubscribePipe<string>(() => createMulticastReplayLastSource<string>({ initialValue: inputB.value })),
+  const inputBValue = pipeObservable(fromEventTarget(inputB, 'input'), [
+    mapObservablePipe<Event, string>(() => inputB.value),
+    shareObservablePipe<string>(() => createMulticastReplayLastSource<string>({ initialValue: inputB.value })),
   ]);
 
   // creates a reactive function with listen to inputAValue and inputBValue,
   // and maps the result (returns true if the form is valid)
-  const isFormValid = pipeSubscribeFunction(
+  const isFormValid = pipeObservable(
     reactiveFunction([
       inputAValue,
       inputBValue,
@@ -111,26 +111,26 @@ function withObservable() {
       return (inputAValue.length < 10)
         && (inputBValue.length < 10);
     }), [
-      distinctSubscribePipe<boolean>(), // let's emit only distinct values, for better efficiency
-      shareSubscribePipe<boolean>(),
+      distinctObservablePipe<boolean>(), // let's emit only distinct values, for better efficiency
+      shareObservablePipe<boolean>(),
     ]);
 
   // creates a shared observable which emits an Event when the form is submitted
-  const formSubmit = pipeSubscribeFunction(fromEventTarget(form, 'submit'), [
-    shareSubscribePipe<Event>(),
+  const formSubmit = pipeObservable(fromEventTarget(form, 'submit'), [
+    shareObservablePipe<Event>(),
   ]);
 
   // subscribes to formSubmit to prevent form submit
   formSubmit((event: Event) => event.preventDefault());
 
   // creates an observable which triggers when the form is submitted and is valid
-  const formSubmitValid = pipeSubscribeFunction(formSubmit, [
-    conditionalSubscribePipe(isFormValid), // pipe which subscribes to formSubmit if isFormValid is true
+  const formSubmitValid = pipeObservable(formSubmit, [
+    conditionalObservablePipe(isFormValid), // pipe which subscribes to formSubmit if isFormValid is true
   ]);
 
   // creates an observable that outputs the value to display into 'stateText'
-  const stateTextValue = pipeSubscribeFunction(isFormValid, [
-    mapSubscribePipe((valid: boolean) => {
+  const stateTextValue = pipeObservable(isFormValid, [
+    mapObservablePipe((valid: boolean) => {
       return valid ? 'valid' : 'invalid';
     })
   ]);
@@ -213,7 +213,7 @@ function withObservableAndShortcuts() {
 
   // creates an observable which triggers when the form is submitted and is valid
   const formSubmitValid = pipe$$(formSubmit, [
-    conditionalSubscribePipe(isFormValid), // pipe which subscribes to formSubmit if isFormValid is true
+    conditionalObservablePipe(isFormValid), // pipe which subscribes to formSubmit if isFormValid is true
   ]);
 
   // creates an observable that outputs the value to display into 'stateText'

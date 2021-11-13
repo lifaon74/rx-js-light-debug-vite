@@ -2,14 +2,13 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, querySelectorOrThrow, subscribeOnNodeConnectedTo
 } from '@lifaon/rx-dom';
-import { fromEventTarget, IEmitFunction, ISubscribeFunction, merge, noop, of } from '@lifaon/rx-js-light';
+import {
+  fromEventTarget, IObserver, IObservable, merge, noop, of, map$$, function$$, letU$$, mergeMapS$$, single
+} from '@lifaon/rx-js-light';
 // @ts-ignore
 import html from './audio-player.component.html?raw';
 // @ts-ignore
 import style from './audio-player.component.scss';
-import {
-  single$$, distinctSharedR$$, function$$, letU$$, map$$, mergeMapS$$, ref$$
-} from '@lifaon/rx-js-light-shortcuts';
 import { toPercent, toPercent$$ } from '../../../../rx-js-light/helpers/to-percent-subscribe-pipe';
 import { formatDuration } from '../../../../rx-js-light/helpers/format-duration';
 // import { formatDuration } from '@lifaon/rx-js-light';
@@ -27,36 +26,36 @@ export interface IRXMediaPlayer {
   readonly play: () => Promise<void>;
   readonly pause: () => void;
 
-  readonly playState$: ISubscribeFunction<IRXMediaPlayState>;
+  readonly playState$: IObservable<IRXMediaPlayState>;
 
-  readonly currentTime$: ISubscribeFunction<number>;
-  readonly $currentTime: IEmitFunction<number>;
+  readonly currentTime$: IObservable<number>;
+  readonly $currentTime: IObserver<number>;
 
-  readonly duration$: ISubscribeFunction<number>;
+  readonly duration$: IObservable<number>;
 
-  readonly progress$: ISubscribeFunction<number>;
+  readonly progress$: IObservable<number>;
 
-  readonly volume$: ISubscribeFunction<number>;
-  readonly $volume: IEmitFunction<number>;
+  readonly volume$: IObservable<number>;
+  readonly $volume: IObserver<number>;
 }
 
 export class RXMediaPlayer<GElement extends HTMLMediaElement> implements IRXMediaPlayer {
   // @Input()
-  // src$: ISubscribeFunction<any>
+  // src$: IObservable<any>
 
   readonly element: GElement;
 
-  readonly playState$: ISubscribeFunction<IRXMediaPlayState>;
+  readonly playState$: IObservable<IRXMediaPlayState>;
 
-  readonly currentTime$: ISubscribeFunction<number>;
-  readonly $currentTime: IEmitFunction<number>;
+  readonly currentTime$: IObservable<number>;
+  readonly $currentTime: IObserver<number>;
 
-  readonly duration$: ISubscribeFunction<number>;
+  readonly duration$: IObservable<number>;
 
-  readonly progress$: ISubscribeFunction<number>;
+  readonly progress$: IObservable<number>;
 
-  readonly volume$: ISubscribeFunction<number>;
-  readonly $volume: IEmitFunction<number>;
+  readonly volume$: IObservable<number>;
+  readonly $volume: IObserver<number>;
 
   constructor(
     element: GElement,
@@ -146,35 +145,35 @@ export class RXMediaPlayer<GElement extends HTMLMediaElement> implements IRXMedi
 
 
 interface IDataChunk {
-  left: ISubscribeFunction<string>;
-  width: ISubscribeFunction<string>;
+  left: IObservable<string>;
+  width: IObservable<string>;
 }
 
 interface IData {
-  readonly loadedChunks$: ISubscribeFunction<readonly IDataChunk[]>;
+  readonly loadedChunks$: IObservable<readonly IDataChunk[]>;
 
-  readonly trackProgressWidth$: ISubscribeFunction<string>;
-  readonly onMouseUpProgressBar: IEmitFunction<MouseEvent>;
-  readonly onMouseMoveProgressBar: IEmitFunction<MouseEvent>;
-  readonly cursorTimeTooltipLeftPosition$: ISubscribeFunction<string>;
-  readonly cursorTimeTooltipText$: ISubscribeFunction<string>;
+  readonly trackProgressWidth$: IObservable<string>;
+  readonly onMouseUpProgressBar: IObserver<MouseEvent>;
+  readonly onMouseMoveProgressBar: IObserver<MouseEvent>;
+  readonly cursorTimeTooltipLeftPosition$: IObservable<string>;
+  readonly cursorTimeTooltipText$: IObservable<string>;
 
-  readonly previousTrackButtonTitle$: ISubscribeFunction<string>;
-  readonly previousTrackButtonDisabled$: ISubscribeFunction<boolean>;
+  readonly previousTrackButtonTitle$: IObservable<string>;
+  readonly previousTrackButtonDisabled$: IObservable<boolean>;
 
-  readonly pauseButtonTitle$: ISubscribeFunction<string>;
-  readonly pauseButtonVisible$: ISubscribeFunction<boolean>;
-  readonly onClickPauseButton: IEmitFunction<any>;
+  readonly pauseButtonTitle$: IObservable<string>;
+  readonly pauseButtonVisible$: IObservable<boolean>;
+  readonly onClickPauseButton: IObserver<any>;
 
-  readonly playButtonTitle$: ISubscribeFunction<string>;
-  readonly playButtonVisible$: ISubscribeFunction<boolean>;
-  readonly onClickPlayButton: IEmitFunction<any>;
+  readonly playButtonTitle$: IObservable<string>;
+  readonly playButtonVisible$: IObservable<boolean>;
+  readonly onClickPlayButton: IObserver<any>;
 
-  readonly loaderTitle$: ISubscribeFunction<string>;
-  readonly loaderVisible$: ISubscribeFunction<boolean>;
+  readonly loaderTitle$: IObservable<string>;
+  readonly loaderVisible$: IObservable<boolean>;
 
-  readonly nextTrackButtonTitle$: ISubscribeFunction<string>;
-  readonly nextTrackButtonDisabled$: ISubscribeFunction<boolean>;
+  readonly nextTrackButtonTitle$: IObservable<string>;
+  readonly nextTrackButtonDisabled$: IObservable<boolean>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -194,13 +193,13 @@ export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IDa
     super();
     // type TAudio = RXMediaPlayer<HTMLAudioElement>;
     type TAudio = IRXMediaPlayer;
-    const audio$ = single$$(new RXMediaPlayer(new Audio('/assets/audio/audio-sample-01.mp3')));
+    const audio$ = single(new RXMediaPlayer(new Audio('/assets/audio/audio-sample-01.mp3')));
 
     const duration$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return audio.duration$;
     });
 
-    const loadedChunks$ = single$$([{ left: of('0%'), width: of('75%') }]);
+    const loadedChunks$ = single([{ left: of('0%'), width: of('75%') }]);
 
     const trackProgressWidth$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return toPercent$$(audio.progress$);
@@ -248,31 +247,31 @@ export class AppAudioPlayerComponent extends HTMLElement implements OnCreate<IDa
     );
 
 
-    const previousTrackButtonTitle$ = single$$('Previous track');
-    const previousTrackButtonDisabled$ = single$$(false);
+    const previousTrackButtonTitle$ = single('Previous track');
+    const previousTrackButtonDisabled$ = single(false);
 
-    const pauseButtonTitle$ = single$$('Pause');
+    const pauseButtonTitle$ = single('Pause');
     const pauseButtonVisible$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return map$$(audio.playState$, (playState: IRXMediaPlayState) => (playState === 'playing'));
     });
 
 
-    const playButtonTitle$ = single$$('Play');
+    const playButtonTitle$ = single('Play');
     const playButtonVisible$ = mergeMapS$$(audio$, (audio: TAudio) => {
       return map$$(audio.playState$, (playState: IRXMediaPlayState) => (playState === 'paused'));
     });
 
 
-    const loaderTitle$ = single$$('Loading');
+    const loaderTitle$ = single('Loading');
     const loaderVisible$ = mergeMapS$$(audio$, (audio) => {
       return map$$(audio.playState$, (playState: IRXMediaPlayState) => (playState === 'loading'));
     });
 
-    const nextTrackButtonTitle$ = single$$('Next track');
-    const nextTrackButtonDisabled$ = single$$(true);
+    const nextTrackButtonTitle$ = single('Next track');
+    const nextTrackButtonDisabled$ = single(true);
 
-    let onClickPauseButton: IEmitFunction<void> = noop;
-    let onClickPlayButton: IEmitFunction<void> = noop;
+    let onClickPauseButton: IObserver<void> = noop;
+    let onClickPlayButton: IObserver<void> = noop;
 
     const getMouseCursorProgress = (
       event: MouseEvent,

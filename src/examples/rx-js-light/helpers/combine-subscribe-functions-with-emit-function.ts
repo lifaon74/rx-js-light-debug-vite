@@ -1,23 +1,23 @@
 import {
   combineLatest,
   createMulticastSource,
-  ICombineLatestSubscribeFunctionsValues, IEmitFunction, IGenericSubscribeFunction, ISource, ISubscribeFunction
+  ICombineLatestObservablesValues, IObserver, IGenericObservable, ISource, IObservable
 } from '@lifaon/rx-js-light';
 
 /** TODO EXPERIMENTAL **/
 
-export interface ICombineSubscribeFunctionsWithEmitFunctionResult<GSubscribeFunctions extends readonly IGenericSubscribeFunction[], GValue> {
-  emit: IEmitFunction<GValue>;
-  subscribe: ISubscribeFunction<ICombineLatestSubscribeFunctionsValues<[...GSubscribeFunctions, ISubscribeFunction<GValue>]>>;
+export interface ICombineObservablesWithObserverResult<GObservables extends readonly IGenericObservable[], GValue> {
+  emit: IObserver<GValue>;
+  subscribe: IObservable<ICombineLatestObservablesValues<[...GObservables, IObservable<GValue>]>>;
 }
 
-export function combineSubscribeFunctionsWithEmitFunction<GSubscribeFunctions extends readonly IGenericSubscribeFunction[], GValue>(
-  subscribeFunctions: GSubscribeFunctions,
+export function combineObservablesWithObserver<GObservables extends readonly IGenericObservable[], GValue>(
+  subscribeFunctions: GObservables,
   source: ISource<GValue> = createMulticastSource<GValue>(),
-): ICombineSubscribeFunctionsWithEmitFunctionResult<GSubscribeFunctions, GValue> {
+): ICombineObservablesWithObserverResult<GObservables, GValue> {
   return {
     emit: source.emit,
-    subscribe: combineLatest<[...GSubscribeFunctions, ISubscribeFunction<GValue>]>([
+    subscribe: combineLatest<[...GObservables, IObservable<GValue>]>([
       ...subscribeFunctions,
       source.subscribe,
     ]),

@@ -1,5 +1,5 @@
 import {
-  createMulticastReplayLastSource, IMulticastReplayLastSource, ISubscribeFunction, reactiveFunction
+  createMulticastReplayLastSource, IMulticastReplayLastSource, IObservable, reactiveFunction
 } from '@lifaon/rx-js-light';
 
 
@@ -81,7 +81,7 @@ function customElementWithObservable() {
     protected _$firstName$: IMulticastReplayLastSource<string>;
     protected _$lastName$: IMulticastReplayLastSource<string>;
 
-    protected _fullName$: ISubscribeFunction<string>;
+    protected _fullName$: IObservable<string>;
 
     constructor() {
       super();

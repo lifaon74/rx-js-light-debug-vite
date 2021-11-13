@@ -1,20 +1,19 @@
-import { fromResizeObserver, ISubscribeFunction, merge, single } from '@lifaon/rx-js-light';
+import { fromResizeObserver, IObservable, map$$, merge, single } from '@lifaon/rx-js-light';
 import { ISize } from '../../../../../../misc/types/size/size.type';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
 import { getElementSizeFromResizeObserverEntry } from './get-element-size-from-resize-observer-entry';
 import { getElementSize } from './get-element-size';
 
-export function createSubscribeFunctionOfElementSize(
+export function createObservableOfElementSize(
   element: Element,
-): ISubscribeFunction<ISize> {
+): IObservable<ISize> {
   return map$$<ResizeObserverEntry, ISize>(fromResizeObserver(element), getElementSizeFromResizeObserverEntry);
 }
 
-export function createSubscribeFunctionOfElementSizeInitialized(
+export function createObservableOfElementSizeInitialized(
   element: Element,
-): ISubscribeFunction<ISize> {
+): IObservable<ISize> {
   return merge([
-    createSubscribeFunctionOfElementSize(element),
+    createObservableOfElementSize(element),
     single(getElementSize(element)),
   ]);
 }

@@ -145,7 +145,7 @@ export function route(
     ): Element => {
       const routerOutletInjectedElement: Element | null = parentNode.firstElementChild;
 
-      // TODO provide 'params' as SubscribeFunction in the constructor
+      // TODO provide 'params' as Observable in the constructor
       if (routerOutletInjectedElement === null) {
         return nodeAppendChild(parentNode, new component());
       } else {

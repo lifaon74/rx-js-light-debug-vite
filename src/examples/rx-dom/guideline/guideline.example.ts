@@ -3,11 +3,11 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
-import { MatProgressBarComponent } from '../material/progress-bar/mat-progress-bar.component';
-import { AppProgressRingComponent } from '../material/progress-ring/mat-progress-ring.component';
+import { MatProgressBarComponent } from '../material/progress/progress-bar/mat-progress-bar.component';
+import { AppProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
-  conditionalSubscribePipe, createMulticastReplayLastSource, distinctSubscribePipe, fromEventTarget, interval,
-  ISubscribeFunction, mapSubscribePipe, of, pipeSubscribeFunction, reactiveFunction, shareSubscribePipe
+  conditionalObservablePipe, createMulticastReplayLastSource, distinctObservablePipe, fromEventTarget, interval,
+  IObservable, mapObservablePipe, of, pipeObservable, reactiveFunction, shareObservablePipe
 } from '@lifaon/rx-js-light';
 
 export const APP_GUIDELINE_CUSTOM_ELEMENTS = [
@@ -19,7 +19,7 @@ export const APP_GUIDELINE_CUSTOM_ELEMENTS = [
 /** COMPONENT **/
 
 interface IData {
-  progress: ISubscribeFunction<number>;
+  progress: IObservable<number>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -63,8 +63,8 @@ class AppGuideLineComponent extends HTMLElement implements OnCreate<IData> {
     super();
     let _progress: number = 0;
 
-    const progress = pipeSubscribeFunction(interval(100), [
-      mapSubscribePipe(() => (_progress = (_progress + Math.random() * 0.01) % 1))
+    const progress = pipeObservable(interval(100), [
+      mapObservablePipe(() => (_progress = (_progress + Math.random() * 0.01) % 1))
     ]);
 
     this.data = {

@@ -1,8 +1,9 @@
 import { Path } from '../../path/path.class';
-import { getDocumentBody, HTMLElementConstructor, nodeAppendChild, nodeRemove } from '@lifaon/rx-dom';
+import {
+  getDocumentBody, HTMLElementConstructor, nodeAppendChild, nodeRemove, removeNodeChildren
+} from '@lifaon/rx-dom';
 import { convertRoutePathToRegExp } from '../../path/convert/convert-route-path-to-reg-exp';
 import { locateRouterOutletElement, ROUTER_OUTLET_TAG_NAME } from '../router-outlet/rx-router-outlet';
-import { nodeRemoveChildren } from '../../../../../../../rx-dom/dist/src/light-dom/node/move/devired/batch/node-remove-children';
 import {
   createNotAValidPathForThisRouteError, isNotAValidPathForThisRouteError
 } from '../errors/not-a-valid-path-for-this-route-error/not-a-valid-path-for-this-route-error';
@@ -10,7 +11,7 @@ import { createRedirectToError } from '../errors/redirect-to-error/redirect-to-e
 import { IPathLike, toPath } from '../../path/to-path';
 import {
   createMulticastReplayLastSource,
-  IMulticastReplayLastSource, IReadonlyMulticastReplayLastSource, ISubscribeFunction, sourceToReadonlySource
+  IMulticastReplayLastSource, IReadonlyMulticastReplayLastSource, IObservable, sourceToReadonlySource
 } from '../../../../../../../rx-js-light/dist';
 
 export type IRouterOutletElement = Element;
@@ -54,7 +55,7 @@ export interface IRouteResolveDestroyParentComponentFunction {
 export function createDefaultInjectParentComponent(
   routerOutletElement: IRouterOutletElement = getDocumentBody(),
 ): IRouteResolveInjectParentComponentFunction {
-  nodeRemoveChildren(routerOutletElement);
+  removeNodeChildren(routerOutletElement);
   return (): Promise<IRouteResolveInjectParentComponentFunctionReturn> => {
     return Promise.resolve({
       routerOutletElement,

@@ -1,6 +1,6 @@
-import { let$$, map$$ } from '@lifaon/rx-js-light-shortcuts';
 import {
-  createMulticastReplayLastSource, IMapFunction, IMulticastReplayLastSource, ISubscribeFunction, mapSubscribePipe
+  createMulticastReplayLastSource, IMapFunction, IMulticastReplayLastSource, IObservable, let$$, map$$,
+  mapObservablePipe
 } from '@lifaon/rx-js-light';
 
 
@@ -116,8 +116,8 @@ function storeExample11() {
   function mapState<GState, GValue>(
     store: IStore<GState>,
     mapFunction: IMapFunction<GState, GValue>,
-  ): ISubscribeFunction<GValue> {
-    return mapSubscribePipe(mapFunction)(store.subscribe);
+  ): IObservable<GValue> {
+    return mapObservablePipe(mapFunction)(store.subscribe);
   }
 
   /*--------------------------------------*/

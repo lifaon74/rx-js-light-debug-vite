@@ -53,8 +53,8 @@ export function matSelectInputExample() {
     };
   });
 
-  input.options = options;
+  input.rawOptions = options;
 
-  input.multiple = true;
-  input.value = [options[0], options[1]];
+  // input.multiple = true;
+  input.rawSelectedOptions = [options[0], options[1]];
 }

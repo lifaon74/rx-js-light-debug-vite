@@ -1,34 +1,34 @@
 class NumberInputValidity1 {
   @Input((instance: NumberInputValidity1) => instance._value)
-  value$!: ISubscribeFunction<INumberInputValue>;
+  value$!: IObservable<INumberInputValue>;
 
   @Input((instance: NumberInputValidity1) => instance._required)
-  required$!: ISubscribeFunction<boolean>;
+  required$!: IObservable<boolean>;
 
   @Input((instance: NumberInputValidity1) => instance._min)
-  min$!: ISubscribeFunction<number>;
+  min$!: IObservable<number>;
 
   @Input((instance: NumberInputValidity1) => instance._max)
-  max$!: ISubscribeFunction<number>;
+  max$!: IObservable<number>;
 
   @Input((instance: NumberInputValidity1) => instance._step)
-  step$!: ISubscribeFunction<number>;
+  step$!: IObservable<number>;
 
-  readonly pristine$: ISubscribeFunction<boolean>;
+  readonly pristine$: IObservable<boolean>;
 
   // validity state
-  readonly badInput$: ISubscribeFunction<boolean>;
-  readonly rangeUnderflow$: ISubscribeFunction<boolean>;
-  readonly rangeOverflow$: ISubscribeFunction<boolean>;
-  readonly stepMismatch$: ISubscribeFunction<boolean>;
-  readonly valid$: ISubscribeFunction<boolean>;
-  readonly valueMissing$: ISubscribeFunction<boolean>;
+  readonly badInput$: IObservable<boolean>;
+  readonly rangeUnderflow$: IObservable<boolean>;
+  readonly rangeOverflow$: IObservable<boolean>;
+  readonly stepMismatch$: IObservable<boolean>;
+  readonly valid$: IObservable<boolean>;
+  readonly valueMissing$: IObservable<boolean>;
 
-  protected readonly _value: IMulticastReplayLastSource<ISubscribeFunction<INumberInputValue>>;
-  protected readonly _required: IMulticastReplayLastSource<ISubscribeFunction<boolean>>;
-  protected readonly _min: IMulticastReplayLastSource<ISubscribeFunction<number>>;
-  protected readonly _max: IMulticastReplayLastSource<ISubscribeFunction<number>>;
-  protected readonly _step: IMulticastReplayLastSource<ISubscribeFunction<number>>;
+  protected readonly _value: IMulticastReplayLastSource<IObservable<INumberInputValue>>;
+  protected readonly _required: IMulticastReplayLastSource<IObservable<boolean>>;
+  protected readonly _min: IMulticastReplayLastSource<IObservable<number>>;
+  protected readonly _max: IMulticastReplayLastSource<IObservable<number>>;
+  protected readonly _step: IMulticastReplayLastSource<IObservable<number>>;
 
 
   constructor() {
@@ -155,7 +155,7 @@ function formControlDebug1() {
   };
 
   const checkValidity = (propertyName: keyof ValidityState) => {
-    const validity$: ISubscribeFunction<boolean> = inputControl[`${ propertyName }$`];
+    const validity$: IObservable<boolean> = inputControl[`${ propertyName }$`];
     const validityDebounced$ = debounce$$(validity$, 50);
     validityDebounced$((value: boolean) => {
       // console.log(propertyName, value);

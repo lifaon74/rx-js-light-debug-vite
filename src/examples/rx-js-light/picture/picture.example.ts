@@ -1,9 +1,8 @@
 import {
-  fromPromise, IMapFilterDiscard, ISubscribeFunction, ISubscribeFunctionFromPromiseNotifications,
-  ISubscribePipeFunction,
-  MAP_FILTER_DISCARD, single
+  fromPromise, IMapFilterDiscard, IObservable, IObservableFromPromiseNotifications,
+  IObservablePipe,
+  MAP_FILTER_DISCARD, mapFilter$$, mergeMapS$$$, single
 } from '@lifaon/rx-js-light';
-import { map$$, mapFilter$$, mergeMapS$$$ } from '@lifaon/rx-js-light-shortcuts';
 import { multiMediaSourcesPipe } from './source/multi-media-sources-pipe';
 import { mediaSourcePipe } from './source/media-source-pipe';
 import { maxSizeElement } from './conditions/size/element/max-size-element';
@@ -24,21 +23,21 @@ function isWindow(
 
 
 function sourceLoadAndCache(
-  subscribe: ISubscribeFunction<IOptionalSource>,
-): ISubscribeFunction<IOptionalSource> {
+  subscribe: IObservable<IOptionalSource>,
+): IObservable<IOptionalSource> {
   return sourceLoadAndCachePipe()(subscribe);
 }
 
-const SOURCE_LOAD_AND_CACHE_PIPE_CACHE = new Map<string, ISubscribeFunction<IOptionalSource>>();
+const SOURCE_LOAD_AND_CACHE_PIPE_CACHE = new Map<string, IObservable<IOptionalSource>>();
 
-function sourceLoadAndCachePipe(): ISubscribePipeFunction<IOptionalSource, IOptionalSource> {
-  return mergeMapS$$$<IOptionalSource, IOptionalSource>((src: IOptionalSource): ISubscribeFunction<IOptionalSource> => {
+function sourceLoadAndCachePipe(): IObservablePipe<IOptionalSource, IOptionalSource> {
+  return mergeMapS$$$<IOptionalSource, IOptionalSource>((src: IOptionalSource): IObservable<IOptionalSource> => {
     if (src === void 0) {
       return single(void 0);
     } else {
-      let cached: ISubscribeFunction<IOptionalSource> | undefined = SOURCE_LOAD_AND_CACHE_PIPE_CACHE.get(src);
+      let cached: IObservable<IOptionalSource> | undefined = SOURCE_LOAD_AND_CACHE_PIPE_CACHE.get(src);
       if (cached === void 0) {
-        cached = mapFilter$$(fromPromise(sourceToDataURL(src)), (notification: ISubscribeFunctionFromPromiseNotifications<string>): IOptionalSource | IMapFilterDiscard => {
+        cached = mapFilter$$(fromPromise(sourceToDataURL(src)), (notification: IObservableFromPromiseNotifications<string>): IOptionalSource | IMapFilterDiscard => {
           switch (notification.name) {
             case 'error':
               return void 0;
@@ -48,9 +47,9 @@ function sourceLoadAndCachePipe(): ISubscribePipeFunction<IOptionalSource, IOpti
               return MAP_FILTER_DISCARD;
           }
         });
-        SOURCE_LOAD_AND_CACHE_PIPE_CACHE.set(src, cached);
+        SOURCE_LOAD_AND_CACHE_PIPE_CACHE.set(src, cached as IObservable<IOptionalSource>);
       }
-      return cached as ISubscribeFunction<IOptionalSource>;
+      return cached as IObservable<IOptionalSource>;
     }
   });
 }
@@ -64,7 +63,7 @@ function sourceLoadAndCachePipe(): ISubscribePipeFunction<IOptionalSource, IOpti
 
 function samplePicture$$(
   element: Element,
-): ISubscribeFunction<IOptionalSource> {
+): IObservable<IOptionalSource> {
   const root: string = '/assets/images/dynamic';
 
   const source100$ = mediaSourcePipe(`${ root }/sample-100.jpg`, [maxSizeElement(element, { width: 100, height: 67 })]);

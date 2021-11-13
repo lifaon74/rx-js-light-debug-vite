@@ -1,11 +1,15 @@
 import {
-  combineLatest, createMulticastReplayLastSource, currencyFormatSubscribePipe, dateTimeShortcutFormatSubscribePipe,
-  extractReactiveStringParts, ICurrencyFormatOptions, ILocales, ILocaleToTranslationKeyToTranslationValueMap,
-  ISubscribeFunction, ITranslationKeyToTranslationValueMap, listFormatSubscribePipe, localesToStringArray,
-  mapSubscribePipe, mergeMapSubscribePipe, numberFormatSubscribePipe, single, pipeSubscribeFunction,
-  pluralRulesResultToTranslationKeySubscribePipe, pluralRulesSubscribePipe, reactiveFunction, translateSubscribeFunction
+  combineLatest, createMulticastReplayLastSource, IObservable, let$$, map$$, mergeMapObservablePipe, mergeMapS$$$,
+  pipe$$,
+  pipeObservable, single
 } from '@lifaon/rx-js-light';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
+import {
+  currencyFormatObservablePipe, dateTimeShortcutFormatObservablePipe, ICurrencyFormatOptions, ILocales,
+  ILocaleToTranslationKeyToTranslationValueMap, ITranslationKeyToTranslationValueMap, listFormatObservablePipe,
+  localesToStringArray, numberFormatObservablePipe, pluralRulesObservablePipe,
+  pluralRulesResultToTranslationKeyObservablePipe, translateObservable
+} from '@lifaon/rx-i18n';
 
 // declare namespace Intl {
 //   const Locale: any;
@@ -59,11 +63,11 @@ export function translationsExample() {
 
   interface IReactiveProduct {
     name: string;
-    price: ISubscribeFunction<number>;
-    quantity: ISubscribeFunction<number>;
+    price: IObservable<number>;
+    quantity: IObservable<number>;
   }
 
-  function generateProductSource(): ISubscribeFunction<IReactiveProduct[]> {
+  function generateProductSource(): IObservable<IReactiveProduct[]> {
     return createMulticastReplayLastSource({
       initialValue: [
         {
@@ -80,7 +84,7 @@ export function translationsExample() {
     }).subscribe;
   }
 
-  function generateProductSourceFromProxy(): ISubscribeFunction<IReactiveProduct[]> {
+  function generateProductSourceFromProxy(): IObservable<IReactiveProduct[]> {
     interface IProduct {
       name: string;
       price: number;
@@ -116,8 +120,7 @@ export function translationsExample() {
 
     const productCache = new WeakMap<IProduct, IReactiveProduct>();
 
-    return pipeSubscribeFunction($products$.subscribe, [
-      mapSubscribePipe((products: IProduct[]): IReactiveProduct[] => {
+    return map$$($products$.subscribe, ((products: IProduct[]): IReactiveProduct[] => {
         return products.map((product: IProduct): IReactiveProduct => {
           if (!productCache.has(product)) {
             productCache.set(product, {
@@ -129,61 +132,56 @@ export function translationsExample() {
           return productCache.get(product) as IReactiveProduct;
         });
       }),
-    ]);
+    );
   }
 
   const products$ = generateProductSource();
   // const products$ = generateProductSourceFromProxy();
 
 
-  createLocaleFormatContext((locales$: ISubscribeFunction<ILocales>) => {
-    const translations$ = pipeSubscribeFunction(locales$, [
-      mapSubscribePipe(getTranslationsMap),
-    ]);
+  createLocaleFormatContext((locales$: IObservable<ILocales>) => {
+    const translations$ = map$$(locales$, getTranslationsMap);
 
-    const $currency$ = createMulticastReplayLastSource<string>({ initialValue: 'EUR' });
+    const $currency$ = let$$<string>('EUR');
     document.body.appendChild(createCurrencySelectElement($currency$));
 
-    const $date$ = createMulticastReplayLastSource<number>({ initialValue: Date.now() });
+    const $date$ = let$$<number>(Date.now());
 
-    const numberFormatter$$ = numberFormatSubscribePipe(locales$);
+    const numberFormatter$$ = numberFormatObservablePipe(locales$);
 
-    const currencyFormatter$$ = currencyFormatSubscribePipe(locales$, pipeSubscribeFunction($currency$.subscribe, [
-      mapSubscribePipe((currency: string): ICurrencyFormatOptions => ({ currency })),
-    ]));
+    const currencyFormatter$$ = currencyFormatObservablePipe(
+      locales$,
+      map$$($currency$.subscribe, (currency: string): ICurrencyFormatOptions => ({ currency })),
+    );
 
-    const listFormatter$$ = listFormatSubscribePipe(locales$);
+    const listFormatter$$ = listFormatObservablePipe(locales$);
 
-    const dateFormatter$$ = dateTimeShortcutFormatSubscribePipe(locales$, single('mediumDate'));
+    const dateFormatter$$ = dateTimeShortcutFormatObservablePipe(locales$, single('mediumDate'));
 
-    const pluralRules$$ = pluralRulesSubscribePipe(locales$);
+    const pluralRules$$ = pluralRulesObservablePipe(locales$);
 
-    const translated$ = translateSubscribeFunction(
+    const translated$ = translateObservable(
       translations$,
       single('translate.product.list'),
       single({
-        list: pipeSubscribeFunction(products$, [
-          mergeMapSubscribePipe<IReactiveProduct[], readonly string[]>((products: IReactiveProduct[]): ISubscribeFunction<readonly string[]> => {
+        list: pipe$$(products$, [
+          mergeMapS$$$<IReactiveProduct[], readonly string[]>((products: IReactiveProduct[]): IObservable<readonly string[]> => {
             return combineLatest(
-              products.map((product: IReactiveProduct): ISubscribeFunction<string> => {
+              products.map((product: IReactiveProduct): IObservable<string> => {
 
-                const quantity$ = pipeSubscribeFunction(product.quantity, [
-                  numberFormatter$$,
-                ]);
+                const quantity$ = numberFormatter$$(product.quantity);
 
-                const product$ = translateSubscribeFunction(
+                const product$ = translateObservable(
                   translations$,
-                  pipeSubscribeFunction(product.quantity, [
+                  pipe$$(product.quantity, [
                     pluralRules$$,
-                    pluralRulesResultToTranslationKeySubscribePipe(`translate.${ product.name }`),
+                    pluralRulesResultToTranslationKeyObservablePipe(`translate.${ product.name }`),
                   ]),
                 );
 
-                const price$ = pipeSubscribeFunction(product.price, [
-                  currencyFormatter$$,
-                ]);
+                const price$ = currencyFormatter$$(product.price);
 
-                return translateSubscribeFunction(
+                return translateObservable(
                   translations$,
                   single('translate.product.price'),
                   single({
@@ -194,12 +192,10 @@ export function translationsExample() {
                 );
               }),
             );
-          }, 1),
+          }),
           listFormatter$$,
         ]),
-        date: pipeSubscribeFunction($date$.subscribe, [
-          dateFormatter$$,
-        ]),
+        date: dateFormatter$$($date$.subscribe),
       }),
     );
 
@@ -207,7 +203,6 @@ export function translationsExample() {
   });
 
 }
-
 
 
 // export function translationsExample() {
@@ -332,9 +327,9 @@ export function translationsExample() {
 //
 //   const $dataSource$ = createMulticastReplayLastSource({ initialValue: data });
 //
-//   // const proxy = createSubscribeFunctionProxy(dataSource.subscribe);
+//   // const proxy = createObservableProxy(dataSource.subscribe);
 //
-//   createLocaleFormatContext((locales$: ISubscribeFunction<ILocales>) => {
+//   createLocaleFormatContext((locales$: IObservable<ILocales>) => {
 //
 //     const $currency$ = createMulticastReplayLastSource<string>({ initialValue: 'EUR' });
 //     document.body.appendChild(createCurrencySelectElement($currency$));

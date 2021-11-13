@@ -1,5 +1,5 @@
 import {
-  createEventListener, createMulticastSource, createNotification, freeze, INotification, ISubscribeFunction
+  createEventListener, createMulticastSource, createNotification, freeze, INotification, IObservable
 } from '@lifaon/rx-js-light';
 import { patchObjectMethod } from '@lifaon/rx-dom';
 import { getLocation } from './get-location';
@@ -41,7 +41,7 @@ export type INavigationEvent =
 export type INavigationNotification = INotification<INavigationEvent, INavigationState>;
 
 export interface INavigation {
-  readonly onChange: ISubscribeFunction<INavigationNotification>;
+  readonly onChange: IObservable<INavigationNotification>;
   readonly getState: (index?: number) => (INavigationState | null);
   readonly navigate: (url: URL | string, replaceState?: boolean) => void;
   readonly back: () => void;

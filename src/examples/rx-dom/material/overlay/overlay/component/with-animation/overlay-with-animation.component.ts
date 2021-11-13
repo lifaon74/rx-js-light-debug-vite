@@ -1,8 +1,8 @@
 import { MatOverlayComponent, IOverlayCloseOrigin } from '../mat-overlay.component';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
-import { OnInit } from '@lifaon/rx-dom';
 import { createAnimationFrame, createTimeout } from '@lifaon/rx-js-light';
 import { getElementTransitionDuration } from '../../../../../../misc/css/quantities/time/__old/get-element-transition-duration';
+import { findDOMElement } from '../../../../../../misc/find-dom-element';
 
 
 /** FUNCTIONS **/
@@ -51,21 +51,15 @@ function closeMatOverlayWithAnimationComponent(
 
 /** COMPONENT **/
 
-export class MatOverlayWithAnimationComponent extends MatOverlayComponent implements OnInit {
-  private _openPromise: Promise<void> | undefined;
+export class MatOverlayWithAnimationComponent extends MatOverlayComponent {
+  private readonly _openPromise: Promise<void>;
   private _closePromise: Promise<void> | undefined;
-
 
   constructor(
     manager: MatOverlayManagerComponent,
   ) {
     super(manager);
-  }
-
-  onInit(): void {
-    if (this._closePromise === void 0) {
-      this._openPromise = openMatOverlayWithAnimationComponent(this);
-    }
+    this._openPromise = openMatOverlayWithAnimationComponent(this);
   }
 
   override close(origin?: IOverlayCloseOrigin): Promise<void> {

@@ -1,4 +1,4 @@
-import { interval, ISubscribeFunction } from '@lifaon/rx-js-light';
+import { interval, IObservable } from '@lifaon/rx-js-light';
 import { map$$ } from '@lifaon/rx-js-light-shortcuts';
 import {
   createDocumentFragment, createElement, createReactiveTextNode, createTextNode, getDocumentBody, isDOMNode,
@@ -9,7 +9,7 @@ import classes from './debug-tsx.module.scss'
 export type IComponentLike =
   | Node
   | string
-  | ISubscribeFunction<string>
+  | IObservable<string>
 // | readonly IComponentLike[]
   ;
 
@@ -123,14 +123,14 @@ async function debugTSX1() {
   const list$ = map$$(interval(500), () => [0, 1, 2, 3]);
 
   function rxDOMFor<GItem>(
-    subscribe: ISubscribeFunction<Iterable<GItem>>,
+    subscribe: IObservable<Iterable<GItem>>,
     template: (item: GItem) => Node,
   ): Node {
     return template(null as any);
   }
 
   function rxDOMIf(
-    subscribe: ISubscribeFunction<boolean>,
+    subscribe: IObservable<boolean>,
     templateTrue: () => Node,
   ): Node {
     return templateTrue();

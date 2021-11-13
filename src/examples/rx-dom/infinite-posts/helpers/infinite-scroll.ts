@@ -1,7 +1,7 @@
 import {
-  filterSubscribePipe, fromEventTarget, IEmitFunction, interval, ISubscribeFunction, mapSubscribePipe, merge,
-  periodTimeSubscribePipe,
-  pipeSubscribeFunction
+  filterObservablePipe, fromEventTarget, IObserver, interval, IObservable, mapObservablePipe, merge,
+  periodTimeObservablePipe,
+  pipeObservable
 } from '@lifaon/rx-js-light';
 
 export interface IInfiniteScrollOptions {
@@ -10,23 +10,23 @@ export interface IInfiniteScrollOptions {
   refreshRate?: number; // default: 100ms
 }
 
-export function createInfiniteScrollSubscribeFunction(
+export function createInfiniteScrollObservable(
   options: IInfiniteScrollOptions,
-): ISubscribeFunction<void> {
+): IObservable<void> {
   const scrollElement: HTMLElement = options.scrollElement;
   const triggerDistance: number = (options.triggerDistance === void 0) ? 0 : options.triggerDistance;
   const refreshRate: number = (options.refreshRate === void 0) ? 50 : options.refreshRate;
 
-  return pipeSubscribeFunction(
+  return pipeObservable(
     merge([
-      pipeSubscribeFunction(fromEventTarget(scrollElement, 'scroll', { passive: true }), [
-        mapSubscribePipe<Event, void>(() => void 0),
+      pipeObservable(fromEventTarget(scrollElement, 'scroll', { passive: true }), [
+        mapObservablePipe<Event, void>(() => void 0),
       ]),
       interval(refreshRate),
     ]),
     [
-      periodTimeSubscribePipe<void>(refreshRate),
-      filterSubscribePipe<void>((): boolean => {
+      periodTimeObservablePipe<void>(refreshRate),
+      filterObservablePipe<void>((): boolean => {
         const bottomDistance: number = scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.offsetHeight;
         return (bottomDistance <= triggerDistance);
       }),

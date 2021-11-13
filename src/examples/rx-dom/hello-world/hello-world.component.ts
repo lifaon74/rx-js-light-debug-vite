@@ -1,17 +1,14 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate
 } from '@lifaon/rx-dom';
-import {
-  createMulticastReplayLastSource, IMulticastReplayLastSource, ISubscribeFunction, mapSubscribePipe,
-  pipeSubscribeFunction
-} from '@lifaon/rx-js-light';
+import { createMulticastReplayLastSource, IMulticastReplayLastSource, IObservable, map$$ } from '@lifaon/rx-js-light';
 
 /** COMPONENT **/
 
 interface IData {
   readonly $input$: IMulticastReplayLastSource<string>;
-  readonly remaining$: ISubscribeFunction<number>;
-  readonly valid$: ISubscribeFunction<boolean>;
+  readonly remaining$: IObservable<number>;
+  readonly valid$: IObservable<boolean>;
 }
 
 @Component({
@@ -20,9 +17,8 @@ interface IData {
     html: `
       <div class="input-container">
         <input
-          #input
           [value]="$.$input$.subscribe"
-          (input)="() => $.$input$.emit(getNodeReference('input').value)"
+          (input)="() => $.$input$.emit(node.value)"
         >
       </div>
       <div
@@ -50,14 +46,8 @@ export class AppHelloWorldComponent extends HTMLElement implements OnCreate<IDat
     super();
     const $input$ = createMulticastReplayLastSource<string>({ initialValue: '' });
 
-    const remaining$ = pipeSubscribeFunction($input$.subscribe, [
-      mapSubscribePipe((value: string) => value.length)
-    ]);
-
-    const valid$ = pipeSubscribeFunction(remaining$, [
-      mapSubscribePipe((value: number) => (value <= 10)),
-    ]);
-
+    const remaining$ = map$$($input$.subscribe, (value: string): number => value.length);
+    const valid$ = map$$(remaining$, (value: number): boolean => (value <= 10));
 
     this.data = {
       $input$,

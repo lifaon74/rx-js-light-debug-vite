@@ -1,10 +1,9 @@
-import { combineLatest, ISubscribeFunction } from '@lifaon/rx-js-light';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { combineLatest, IObservable, map$$ } from '@lifaon/rx-js-light';
 import { IOptionalSource } from '../picture.example';
 
 export function multiMediaSourcesPipe(
-  sources: readonly ISubscribeFunction<IOptionalSource>[],
-): ISubscribeFunction<IOptionalSource> {
+  sources: readonly IObservable<IOptionalSource>[],
+): IObservable<IOptionalSource> {
   return map$$<readonly IOptionalSource[], IOptionalSource>(combineLatest(sources), (sources: readonly IOptionalSource[]): IOptionalSource => {
     for (let i = 0, l = sources.length; i < l; i++) {
       if (sources[i] !== void 0) {

@@ -1,5 +1,5 @@
 import {
-  fromEventTarget, interval, IUnsubscribeFunction, mapSubscribePipe, pipeSubscribeFunction
+  fromEventTarget, interval, IUnsubscribe, mapObservablePipe, pipeObservable
 } from '@lifaon/rx-js-light';
 
 
@@ -28,11 +28,11 @@ export function dynamicDateExample() {
     text.data = date;
   };
 
-  let unsubscribeToDate: IUnsubscribeFunction | undefined;
+  let unsubscribeToDate: IUnsubscribe | undefined;
 
   // create date subscribe function
-  const subscribeToDate = pipeSubscribeFunction(interval(1000), [
-    mapSubscribePipe<void, string>(() => new Date().toISOString())
+  const subscribeToDate = pipeObservable(interval(1000), [
+    mapObservablePipe<void, string>(() => new Date().toISOString())
   ]);
 
   // create click subscribe function

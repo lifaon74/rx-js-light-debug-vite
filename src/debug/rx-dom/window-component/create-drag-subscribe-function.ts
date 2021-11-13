@@ -1,5 +1,5 @@
 import {
-  createNotification, fromEventTarget, IEmitFunction, INotification, ISubscribeFunction, IUnsubscribeFunction,
+  createNotification, fromEventTarget, IObserver, INotification, IObservable, IUnsubscribe,
   TInferNotificationGName, freeze,
 } from '@lifaon/rx-js-light';
 
@@ -13,7 +13,7 @@ export interface IDragObject {
   readonly delta: IPoint2D;
 }
 
-export type IDragSubscribeFunctionNotifications =
+export type IDragObservableNotifications =
   INotification<'drag-start', IDragObject>
   | INotification<'drag-move', IDragObject>
   | INotification<'drag-end', IDragObject>
@@ -22,17 +22,17 @@ export type IDragSubscribeFunctionNotifications =
 /*---------------*/
 
 
-export function createDragSubscribeFunction(
+export function createDragObservable(
   target: Element,
-): ISubscribeFunction<IDragSubscribeFunctionNotifications> {
-  return (emit: IEmitFunction<IDragSubscribeFunctionNotifications>): IUnsubscribeFunction => {
+): IObservable<IDragObservableNotifications> {
+  return (emit: IObserver<IDragObservableNotifications>): IUnsubscribe => {
     let origin: IPoint2D;
-    let unsubscribeOfMouseDown: IUnsubscribeFunction;
-    let unsubscribeOfMouseMove: IUnsubscribeFunction;
-    let unsubscribeOfMouseUp: IUnsubscribeFunction;
+    let unsubscribeOfMouseDown: IUnsubscribe;
+    let unsubscribeOfMouseMove: IUnsubscribe;
+    let unsubscribeOfMouseUp: IUnsubscribe;
 
     const dispatch = (
-      name: TInferNotificationGName<IDragSubscribeFunctionNotifications>,
+      name: TInferNotificationGName<IDragObservableNotifications>,
       event: MouseEvent,
     ) => {
       emit(createNotification(name, freeze({
@@ -94,8 +94,8 @@ function createPoint2D(
 }
 
 // function dispatchDragEventFromStartPositionAndMouseEvent(
-//   emit: IEmitFunction<IDragSubscribeFunctionNotifications>,
-//   name: TInferNotificationGName<IDragSubscribeFunctionNotifications>,
+//   emit: IObserver<IDragObservableNotifications>,
+//   name: TInferNotificationGName<IDragObservableNotifications>,
 //   startPosition: IPoint2D,
 //   event: MouseEvent,
 // ): void {
@@ -131,8 +131,8 @@ function createPoint2D(
 // }
 //
 // function dispatchDragEventFromStartPositionAndMouseEvent(
-//   emit: IEmitFunction<IDragSubscribeFunctionNotifications>,
-//   name: TInferNotificationGName<IDragSubscribeFunctionNotifications>,
+//   emit: IObserver<IDragObservableNotifications>,
+//   name: TInferNotificationGName<IDragObservableNotifications>,
 //   startPosition: IPoint2D,
 //   event: MouseEvent,
 // ): void {

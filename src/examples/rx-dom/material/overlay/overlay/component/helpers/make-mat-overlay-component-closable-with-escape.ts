@@ -1,10 +1,10 @@
-import { fromEventTarget, IUnsubscribeFunction } from '@lifaon/rx-js-light';
+import { fromEventTarget, IUnsubscribe } from '@lifaon/rx-js-light';
 import { subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
 import { MatOverlayComponent } from '../mat-overlay.component';
 
 export function makeMatOverlayComponentClosableWithEscape(
   node: MatOverlayComponent,
-): IUnsubscribeFunction {
+): IUnsubscribe {
   return subscribeOnNodeConnectedTo(
     node,
     fromEventTarget<'keydown', KeyboardEvent>(window, 'keydown'),

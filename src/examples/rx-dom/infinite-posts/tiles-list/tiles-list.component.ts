@@ -2,16 +2,18 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_FROM_CONSTANTS_TO_IMPORT, OnConnect, OnCreate, OnDisconnect
 } from '@lifaon/rx-dom';
-import { IDefaultNotificationsUnion, ISubscribeFunction, Subscription, SubscriptionManager, mutateReadonlyReplayLastSourceArray } from '@lifaon/rx-js-light';
+import {
+  IDefaultNotificationsUnion, IObservable, Subscription, SubscriptionManager, mutateReadonlyReplayLastSourceArray, let$$
+} from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './tiles-list.component.scss';
 // @ts-ignore
 import html from './tiles-list.component.html?raw';
-import { createInfiniteScrollSubscribeFunction } from '../helpers/infinite-scroll';
+import { createInfiniteScrollObservable } from '../helpers/infinite-scroll';
 import { fetchMonkeyUsersPosts, IMonkeyUserResponse } from '../services/fetch-monkey-user-posts';
-import { filter$$, let$$ } from '@lifaon/rx-js-light-shortcuts';
 import { fetchNineGagPosts } from '../services/fetch-nine-gag-posts';
 import { IResource } from '../services/resource.type';
+import { filter$$ } from '../../../../../../rx-js-light/dist/src/observable/pipes/built-in/without-notifications/observer-pipe-related/filter/filter-observable.shortcut';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 
@@ -37,11 +39,11 @@ function debugNineGag(): void {
 /*---------------------*/
 
 // interface ITileResource {
-//   $kind: ISubscribeFunction<IResourceKind>;
+//   $kind: IObservable<IResourceKind>;
 // }
 //
 // interface ITileImageResource extends ITileResource {
-//   url: ISubscribeFunction<string>;
+//   url: IObservable<string>;
 // }
 
 interface ITile {
@@ -51,8 +53,8 @@ interface ITile {
 
 
 interface IData {
-  readonly tiles$: ISubscribeFunction<readonly ITile[]>;
-  readonly loading$: ISubscribeFunction<boolean>;
+  readonly tiles$: IObservable<readonly ITile[]>;
+  readonly loading$: IObservable<boolean>;
 }
 
 const CONSTANTS_TO_IMPORT = {
@@ -84,7 +86,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
 
     this.subscriptions.set('infinite-scroll', new Subscription(
       filter$$(
-        createInfiniteScrollSubscribeFunction({ scrollElement: this }),
+        createInfiniteScrollObservable({ scrollElement: this }),
         () => !$loading$.getValue()
       ),
       () => {

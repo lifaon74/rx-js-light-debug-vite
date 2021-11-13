@@ -1,6 +1,6 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDynamicStyleValue,
-  OnCreate, querySelectorOrThrow, setComponentSubscribeFunctionProperties,
+  OnCreate, querySelectorOrThrow, defineObservableProperty,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-switch-input.component.html?raw';
@@ -16,7 +16,7 @@ export type IMatSwitchInputComponentState = 'off' | 'on' | 'indeterminate';
 /** COMPONENT **/
 
 interface IData {
-  // readonly previewColor$: ISubscribeFunction<IDynamicStyleValue>;
+  // readonly previewColor$: IObservable<IDynamicStyleValue>;
 }
 
 /*-----*/

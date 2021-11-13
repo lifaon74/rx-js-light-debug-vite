@@ -1,4 +1,4 @@
-import { ISubscribeFunction } from '@lifaon/rx-js-light';
+import { IObservable } from '@lifaon/rx-js-light';
 
 // interface ValidityState {
 //   readonly badInput: boolean;
@@ -20,5 +20,5 @@ export interface IInputValidityOptions {
 }
 
 export abstract class InputValidity {
-  abstract readonly valid$: ISubscribeFunction<boolean>;
+  abstract readonly valid$: IObservable<boolean>;
 }

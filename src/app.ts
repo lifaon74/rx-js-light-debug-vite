@@ -41,6 +41,7 @@ import { Component } from '@lifaon/rx-dom';
 import { aotExample } from './debug/rx-dom/aot-component/aot.example';
 import { debugTSX } from './debug/tsx/debug-tsx';
 import { materialExample } from './examples/rx-dom/material/material.example';
+import { rxjsLightNotificationsExample } from './examples/rx-js-light/notifications/rx-js-light-notifications.example';
 
 
 function run() {
@@ -48,6 +49,7 @@ function run() {
   // debugI18N();
   // debugReactiveDOM();
   // debugReactiveDOMCompiler();
+  // rxjsLightNotificationsExample();
   // formControlDebug();
   // stateMachineDebug();
   // webRTCDebug();

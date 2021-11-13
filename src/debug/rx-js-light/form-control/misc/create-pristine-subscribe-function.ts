@@ -1,14 +1,13 @@
-import { IEmitFunction, ISubscribeFunction } from '@lifaon/rx-js-light';
-import { map$$$, pipe$$, shareR$$$ } from '@lifaon/rx-js-light-shortcuts';
+import { IObserver, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
 
-export type ICreatePristineSubscribeFunctionReturn = [
-  subsribe: ISubscribeFunction<boolean>,
-  reset: IEmitFunction<void>,
+export type ICreatePristineObservableReturn = [
+  subsribe: IObservable<boolean>,
+  reset: IObserver<void>,
 ];
 
-export function createPristineSubscribeFunction(
-  value$: ISubscribeFunction<string>,
-): ICreatePristineSubscribeFunctionReturn {
+export function createPristineObservable(
+  value$: IObservable<string>,
+): ICreatePristineObservableReturn {
   let pristine: boolean = true;
   // INFO: is pristine until focused instead ?
   return [

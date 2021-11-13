@@ -1,19 +1,22 @@
-import { setComponentSubscribeFunctionProperties, setReactiveClass } from '@lifaon/rx-dom';
-import { let$$ } from '@lifaon/rx-js-light-shortcuts';
-import { IEmitFunction, ISubscribeFunction, single } from '@lifaon/rx-js-light';
+import { defineObservableProperty, setReactiveClass } from '@lifaon/rx-dom';
+import { IObservable, IObserver, let$$, single } from '@lifaon/rx-js-light';
+import { addMatInputReadonlyFunctionality } from '../functionalities/readonly/add-mat-input-readonly-functionality';
+import { addMatInputDisabledFunctionality } from '../functionalities/disabled/add-mat-input-disabled-functionality';
 
-
+/**
+ * @deprecated
+ */
 export abstract class MatInputComponent<GValue> extends HTMLElement {
-  value$!: ISubscribeFunction<GValue>;
-  readonly $value!: IEmitFunction<GValue>;
+  value$!: IObservable<GValue>;
+  readonly $value!: IObserver<GValue>;
   value!: GValue;
 
-  readonly$!: ISubscribeFunction<boolean>;
-  readonly $readonly!: IEmitFunction<boolean>;
+  readonly$!: IObservable<boolean>;
+  readonly $readonly!: IObserver<boolean>;
   readonly!: boolean;
 
-  disabled$!: ISubscribeFunction<boolean>;
-  readonly $disabled!: IEmitFunction<boolean>;
+  disabled$!: IObservable<boolean>;
+  readonly $disabled!: IObserver<boolean>;
   disabled!: boolean;
 
   protected _initialValue: GValue;
@@ -24,17 +27,11 @@ export abstract class MatInputComponent<GValue> extends HTMLElement {
     super();
     this._initialValue = initialValue;
 
-    const $value$ = let$$<ISubscribeFunction<GValue>>(single(initialValue));
-    setComponentSubscribeFunctionProperties(this, 'value', $value$);
+    addMatInputReadonlyFunctionality(this);
+    addMatInputDisabledFunctionality(this);
 
-    const $readonly$ = let$$<ISubscribeFunction<boolean>>(single(false));
-    setComponentSubscribeFunctionProperties(this, 'readonly', $readonly$);
-
-    const $disabled$ = let$$<ISubscribeFunction<boolean>>(single(false));
-    setComponentSubscribeFunctionProperties(this, 'disabled', $disabled$);
-
-    setReactiveClass(this.readonly$, this, 'readonly');
-    setReactiveClass(this.disabled$, this, 'disabled');
+    const $value$ = let$$<IObservable<GValue>>(single(initialValue));
+    defineObservableProperty(this, 'value', $value$);
   }
 
   reset(): void {
