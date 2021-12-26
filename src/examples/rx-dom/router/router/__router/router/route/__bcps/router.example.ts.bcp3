@@ -1,0 +1,100 @@
+import {
+  createDefaultInjectParentComponent, createRouteResolver, createRoutesResolver,
+  IRouteResolveInjectParentComponentFunction, IRouteResolveUndoFunction, navigateTo
+} from './router/route/route';
+import { isRedirectToError } from './router/errors/redirect-to-error/redirect-to-error';
+import { NAVIGATION } from './navigation/navigation';
+import { getLocation } from './navigation/get-location';
+import { normalizeRoutePath } from './router/route/functions/normalize-route-path';
+import { getBaseURI } from '../../../../../rx-dom/dist';
+
+
+async function routerExample1() {
+  // TODO finish
+  const routes = [
+    createRouteResolver({
+      path: '/home',
+      component: () => {
+        return import('./pages/home/home.page.component').then(_ => _.AppHomePageComponent);
+      },
+    }),
+    createRouteResolver({
+      path: '/product/:productId',
+      component: () => {
+        return import('./pages/product/product.page.component').then(_ => _.AppProductPageComponent);
+      },
+    }),
+    createRouteResolver({
+      path: '/list',
+      component: () => {
+        return import('./pages/list/list.page.component').then(_ => _.AppListPageComponent);
+      },
+      children: [
+        createRouteResolver({
+          path: '/',
+        }),
+        createRouteResolver({
+          path: '/sub',
+          component: () => {
+            return import('./pages/sub-list//sub-list.page.component').then(_ => _.AppSubListPageComponent);
+          },
+        }),
+      ],
+    }),
+    createRouteResolver({
+      path: '/forbidden',
+      canActivate: navigateTo('/home'),
+    }),
+    createRouteResolver({
+      path: '/**',
+      component: () => {
+        return import('./pages/404/not-found.page.component').then(_ => _.AppNotFoundPageComponent);
+      },
+    }),
+  ];
+
+  const resolver = createRoutesResolver(routes);
+
+  let previousUndoFunction: IRouteResolveUndoFunction;
+
+  const DEFAULT_INJECT_PARENT_COMPONENT: IRouteResolveInjectParentComponentFunction = createDefaultInjectParentComponent();
+
+  const update = async () => {
+    try {
+      previousUndoFunction = await resolver({
+        path: getCurrentPath(),
+        params: {},
+        injectParentComponent: DEFAULT_INJECT_PARENT_COMPONENT,
+        previousUndoFunction,
+      });
+    } catch (error: unknown) {
+      if (isRedirectToError(error)) {
+        NAVIGATION.navigate(error.url);
+      } else {
+        throw error;
+      }
+    }
+  };
+
+  const getCurrentPath = (): string => {
+    const currentPathName: string = getLocation().pathname;
+    const baseURIPathName: string = new URL(getBaseURI()).pathname;
+    // getLocation().pathname.replace(new URL(getBaseURI()).pathname, '')
+    return normalizeRoutePath(
+      currentPathName.startsWith(baseURIPathName)
+        ? currentPathName.slice(baseURIPathName.length)
+        : currentPathName
+    );
+  };
+
+  NAVIGATION.onChange(update);
+  update();
+}
+
+/*-----------------*/
+
+
+export async function routerExample() {
+  await routerExample1();
+}
+

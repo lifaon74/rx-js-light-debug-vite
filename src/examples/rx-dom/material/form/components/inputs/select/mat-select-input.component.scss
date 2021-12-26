@@ -2,6 +2,8 @@
 @import '../shared/input-field/style/mat-input-field.variables';
 @import '../shared/input-field/style/mat-input-field.mixins';
 
+$mat-select-input-transition-duration: var(--mat-select-input-transition-duration, 200ms);
+
 $mat-select-input-height: 40px;
 
 $mat-select-input-color: #333;
@@ -13,6 +15,8 @@ $mat-select-input-background-color: #fff;
 $mat-select-input-placeholder-color: #999;
 $mat-select-input-filter-input-color: #555;
 $mat-select-input-clear-icon-width: $mat-select-input-height;
+$mat-select-input-clear-icon-color: #666;
+$mat-select-input-clear-icon-color-hover: #000;
 
 :host {
   & > .select-value {
@@ -23,6 +27,36 @@ $mat-select-input-clear-icon-width: $mat-select-input-height;
     overflow: hidden;
     user-select: none;
     cursor: default;
+  }
+
+  & > .clear-icon {
+    @include square-icon-mixin(calc(#{$mat-input-field-height} * 0.5), $mat-input-field-height);
+    position: absolute;
+    right: 0;
+    color: $mat-select-input-clear-icon-color;
+    transition: color $mat-select-input-transition-duration;
+
+    &::before {
+      top: 45%; // TODO fix
+    }
+
+    &:hover {
+      color: $mat-select-input-clear-icon-color-hover;
+    }
+  }
+
+  &.mat-clearable {
+    & > .select-value {
+      padding-right: $mat-input-field-height;
+    }
+  }
+
+  &:not(:hover),
+  &:not(.mat-clearable),
+  &.mat-empty {
+    & > .clear-icon {
+      display: none;
+    }
   }
 
   //& > .field-container {

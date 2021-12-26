@@ -1,7 +1,6 @@
+import { IGeographicPosition } from '../shared/geographic-position';
 
-export interface IGetWeatherOptions {
-  latitude: number;
-  longitude: number;
+export interface IGetWeatherOptions extends IGeographicPosition{
   startDate?: number;
   endDate?: number;
 }

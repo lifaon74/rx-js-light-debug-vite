@@ -4,9 +4,9 @@ import { isElementOrChildrenFocusedObservableDebounced } from '../../helpers/foc
 
 export function onFocusedModifierFunction(
   element: HTMLElement,
-  focused$: IObserver<boolean>,
+  $focused: IObserver<boolean>,
 ): HTMLElement {
-  subscribeOnNodeConnectedTo(element, isElementOrChildrenFocusedObservableDebounced(element), focused$);
+  subscribeOnNodeConnectedTo(element, isElementOrChildrenFocusedObservableDebounced(element), $focused);
   return element;
 }
 

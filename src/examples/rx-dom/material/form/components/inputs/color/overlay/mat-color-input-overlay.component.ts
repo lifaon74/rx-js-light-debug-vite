@@ -20,9 +20,9 @@ import { hslaColorToHexString } from '../../../../../../../misc/css/color/colors
 import { IHSLAColor } from '../../../../../../../misc/css/color/colors/hsla/hsla-color.type';
 import { hsvaColorToHexString } from '../../../../../../../misc/css/color/colors/hsva/to/string/hsva-color-to-hex-string';
 import { mathClamp } from '../../../../../../../misc/math/clamp';
-import { makeMatOverlayComponentBackdropClosable } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-backdrop-closable';
-import { makeMatOverlayComponentClosableWithEscape } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-closable-with-escape';
-import { IOverlayCloseOrigin } from '../../../../../overlay/overlay/component/mat-overlay.component';
+import { makeMatOverlayComponentBackdropClosable } from '../../../../../overlay/overlay/__component/helpers/make-mat-overlay-component-backdrop-closable';
+import { makeMatOverlayComponentClosableWithEscape } from '../../../../../overlay/overlay/__component/helpers/make-mat-overlay-component-closable-with-escape';
+import { IOverlayCloseOrigin } from '../../../../../overlay/overlay/__component/mat-overlay.component';
 import {
   getEyeDropperConstructor, IColorSelectionResult, IEyeDropper, isEyeDropperAvailable
 } from '../misc/eye-dropper';

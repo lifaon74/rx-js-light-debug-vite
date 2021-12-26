@@ -1,7 +1,7 @@
-import { fetchJSON } from '../../../helpers/fetch-json';
 import { API_KEY } from '../../../config';
 import { IGetOpenWeatherMapOneCallWeatherJSONResponse } from './response.type';
 import { IGetOpenWeatherMapOneCallWeatherOptions } from './request.type';
+import { IObservable, fromFetchJSON, IFromFetchJSONObservableNotifications } from '@lifaon/rx-js-light';
 
 /**
  * DOC: https://openweathermap.org/api/one-call-api
@@ -18,8 +18,7 @@ export function getOpenWeatherMapOneCallWeather(
     // units = 'metric',
     lang,
   }: IGetOpenWeatherMapOneCallWeatherOptions,
-  signal?: AbortSignal,
-): Promise<IGetOpenWeatherMapOneCallWeatherJSONResponse> {
+): IObservable<IFromFetchJSONObservableNotifications<IGetOpenWeatherMapOneCallWeatherJSONResponse>> {
   const url: URL = new URL(`https://api.openweathermap.org/data/2.5/onecall`);
 
   url.searchParams.set('appid', API_KEY);
@@ -39,9 +38,8 @@ export function getOpenWeatherMapOneCallWeather(
     url.searchParams.set('lang', lang);
   }
 
-  return fetchJSON<IGetOpenWeatherMapOneCallWeatherJSONResponse>(
+  return fromFetchJSON<IGetOpenWeatherMapOneCallWeatherJSONResponse>(
     url.href,
-    { signal },
   );
 }
 

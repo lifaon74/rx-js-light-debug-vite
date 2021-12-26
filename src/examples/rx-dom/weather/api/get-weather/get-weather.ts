@@ -12,6 +12,7 @@ import {
 import { getOpenWeatherMapOneCallWeather } from './openweathermap/onecall/get-open-weather-map-one-call-weather';
 import { IWeatherStateId } from './weather-state-id/weather-state-id.type';
 import { SECONDS_PER_DAY, SECONDS_PER_HOUR } from '../../helpers/units/converters';
+import { fulfilled$$$, INotificationsObservable, pipe$$, singleN } from '../../../../../../../rx-js-light/dist';
 
 
 // function convertOpenWeatherMapDailyDateToDateRange(
@@ -167,7 +168,7 @@ function convertDaily(
 
 function convertHourly(
   data: IGetOpenWeatherMapOneCallWeatherJSONResponseHourlyState,
-  timezoneOffset: number,
+  // timezoneOffset: number,
 ): IHourlyWeather {
   return {
     date: convertOpenWeatherMapHourlyDateToTimestamp(data.dt),
@@ -199,8 +200,7 @@ export function getWeather(
     // startDate,
     // endDate,
   }: IGetWeatherOptions,
-  signal?: AbortSignal,
-): Promise<IGetWeatherResponse> {
+): INotificationsObservable<IGetWeatherResponse> {
   const now = new Date();
 
   const startDate = new Date(
@@ -215,12 +215,14 @@ export function getWeather(
     now.getDate() + 7,
   ).getTime();
 
-  return getOpenWeatherMapOneCallWeather({
+  const request$ = getOpenWeatherMapOneCallWeather({
     latitude,
     longitude,
-  }, signal)
-    .then((result: IGetOpenWeatherMapOneCallWeatherJSONResponse): IGetWeatherResponse => {
-      return {
+  });
+
+  return pipe$$(request$, [
+    fulfilled$$$((result: IGetOpenWeatherMapOneCallWeatherJSONResponse): INotificationsObservable<IGetWeatherResponse> => {
+      return singleN<IGetWeatherResponse>({
         latitude,
         longitude,
         startDate,
@@ -232,7 +234,11 @@ export function getWeather(
         daily: result.daily.map((daily: IGetOpenWeatherMapOneCallWeatherJSONResponseDailyState): IDailyWeather => {
           return convertDaily(daily);
         }),
-      };
-    });
+        hourly: result.hourly.map((hourly: IGetOpenWeatherMapOneCallWeatherJSONResponseHourlyState): IHourlyWeather => {
+          return convertHourly(hourly);
+        }),
+      });
+    })
+  ]);
 }
 

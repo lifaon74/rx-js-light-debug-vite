@@ -1,9 +1,10 @@
 import {
-  attachNodeChildrenToNewDocumentFragment, compileAndEvaluateReactiveHTMLAsComponentTemplate,
-  compileReactiveCSSAsComponentStyle, Component, createDocumentFragmentFilledWithNodes, DEFAULT_CONSTANTS_TO_IMPORT,
-  IHTMLTemplate, Input, OnCreate, querySelector, querySelectorAll
+  attachNodeChildrenToNewDocumentFragment, compileReactiveCSSAsComponentStyle,
+  compileReactiveHTMLAsGenericComponentTemplate, Component, createDocumentFragment,
+  createDocumentFragmentFilledWithNodes,
+  defineObservableProperty, IHTMLTemplate, OnCreate, querySelector, querySelectorAll
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, IObservable, letU$$, map$$$, mergeAll$$$, of, pipe$$ } from '@lifaon/rx-js-light';
+import { IObservable, IObserver, let$$, letU$$, map$$, single } from '@lifaon/rx-js-light';
 
 export function selectComponentContentElements(
   content: DocumentFragment,
@@ -11,6 +12,15 @@ export function selectComponentContentElements(
 ): DocumentFragment {
   return createDocumentFragmentFilledWithNodes(querySelectorAll(content, selector));
 }
+
+
+export function selectComponentContentElementsAsObservable(
+  content: DocumentFragment,
+  selector: string,
+): IObservable<DocumentFragment> {
+  return single(selectComponentContentElements(content, selector));
+}
+
 
 export function selectComponentContentNodes(
   content: DocumentFragment,
@@ -24,42 +34,44 @@ export function selectComponentContentNodes(
   }
 }
 
+export function selectComponentContentNodesAsObservable(
+  content: DocumentFragment,
+  selector: string,
+): IObservable<DocumentFragment> {
+  return single(selectComponentContentNodes(content, selector));
+}
+
 /** COMPONENT **/
 
 type IHeaderTemplate = IHTMLTemplate<any>;
 
 interface IData {
-  // header$: IObservable<IHeaderTemplate>;
-  header$: IObservable<DocumentFragment>;
+  readonly headerContent$: IObservable<DocumentFragment>;
+  readonly selectComponentContentElementsAsObservable: typeof selectComponentContentElementsAsObservable;
+  readonly selectComponentContentNodesAsObservable: typeof selectComponentContentNodesAsObservable;
 }
-
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  selectComponentContentElements,
-  selectComponentContentNodes,
-  of,
-};
-
 
 @Component({
   name: 'app-inject-content',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <div class="header">
-      <rx-inject-content
-        content="$.header$"
-      ></rx-inject-content>
-    </div>
-    <div class="body">
-      <rx-inject-content
-         content="of(selectComponentContentNodes($content, '[body]'))"
-      ></rx-inject-content>
-    </div>
-    <div class="footer">
-      <rx-inject-content
-        content="of(selectComponentContentElements($content, '[footer]'))"
-      ></rx-inject-content>
-    </div>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <div class="header">
+        <rx-inject-content
+          content="$.headerContent$"
+        ></rx-inject-content>
+      </div>
+      <div class="body">
+        <rx-inject-content
+           content="$.selectComponentContentNodesAsObservable($content, '[body]')"
+        ></rx-inject-content>
+      </div>
+      <div class="footer">
+        <rx-inject-content
+          content="$.selectComponentContentElementsAsObservable($content, '[footer]')"
+        ></rx-inject-content>
+      </div>
+    `,
+  }),
   styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
@@ -68,28 +80,25 @@ const CONSTANTS_TO_IMPORT = {
 })
 export class AppInjectContentComponent extends HTMLElement implements OnCreate<IData> {
 
-  @Input((instance: AppInjectContentComponent) => instance._$header$)
-  header$!: IObservable<IHeaderTemplate>;
+  headerTemplate$!: IObservable<IHeaderTemplate>;
+  readonly $headerTemplate!: IObserver<IHeaderTemplate>;
+  headerTemplate!: IHeaderTemplate;
 
   protected readonly _data: IData;
-  protected readonly _$header$: IMulticastReplayLastSource<IObservable<IHeaderTemplate>>;
 
   constructor() {
     super();
+
     const $header$ = letU$$<IObservable<IHeaderTemplate>>();
-    this._$header$ = $header$;
+    defineObservableProperty(this, 'headerTemplate', $header$);
+    const headerTemplate$ = this.headerTemplate$;
 
-    const header$ = pipe$$($header$.subscribe, [
-      mergeAll$$$<IHeaderTemplate>(1),
-      map$$$<IHeaderTemplate, DocumentFragment>((header: IHeaderTemplate) => header({})),
-    ]);
-
-    // header$((result) => {
-    //   console.log('header$', result);
-    // });
+    const headerContent$ = map$$(headerTemplate$, (header: IHeaderTemplate) => header({}));
 
     this._data = {
-      header$,
+      headerContent$,
+      selectComponentContentElementsAsObservable,
+      selectComponentContentNodesAsObservable,
     };
   }
 

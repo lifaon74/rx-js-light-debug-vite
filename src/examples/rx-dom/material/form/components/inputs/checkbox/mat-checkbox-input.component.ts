@@ -1,17 +1,37 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
+  defineObservableProperty, IHavingObservableProperty, OnCreate,
   setReactiveClass, setReactiveClassList, setReactiveEventListener, subscribeOnNodeConnectedTo, uuid,
 } from '@lifaon/rx-dom';
+;
+import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
+import {
+  combineLatest, createMulticastSource, IObserver, IObservable, single, map$$, tuple, let$$,
+} from '@lifaon/rx-js-light';
+import { isElementOrChildrenFocusedObservable } from '../../../../helpers/focus-subscribe-function';
+import {
+  addMatInputReadonlyFunctionality, IMatInputReadonlyProperty,
+} from '../shared/functionalities/readonly/add-mat-input-readonly-functionality';
+import {
+  addMatInputDisabledFunctionality, IMatInputDisabledProperty,
+} from '../shared/functionalities/disabled/add-mat-input-disabled-functionality';
+
 // @ts-ignore
 import html from './mat-checkbox-input.component.html?raw';
 // @ts-ignore
-import style from './mat-checkbox-input.component.scss?inline';
-import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
-import { MatInputComponent } from '../shared/input/mat-input.component';
-import {
-  combineLatest, createMulticastSource, IObserver, IObservable, single, map$$, tuple
-} from '@lifaon/rx-js-light';
-import { isElementOrChildrenFocusedObservable } from '../../../../helpers/focus-subscribe-function';
+import style from './mat-checkbox-input.component.scss?inline'
+
+
+/** CONSTRUCTOR **/
+
+interface IMatCheckboxInputComponentConstructor {
+  new(): (
+    HTMLElement
+    & IMatInputReadonlyProperty
+    & IMatInputDisabledProperty
+    & IHavingObservableProperty<'state', IMatCheckboxInputState>
+    );
+}
 
 /** TYPES **/
 
@@ -44,21 +64,29 @@ interface IData {
       INPUT_VALUE_MODIFIER,
     ],
   }),
-  styles: [compileReactiveCSSAsComponentStyle(style)],
+  styles: [
+    compileReactiveCSSAsComponentStyle(style),
+  ],
 })
-export class MatCheckboxInputComponent extends MatInputComponent<IMatCheckboxInputState> implements OnCreate<IData> {
+export class MatCheckboxInputComponent extends (HTMLElement as IMatCheckboxInputComponentConstructor) implements OnCreate<IData> {
 
   protected readonly _data: IData;
 
   constructor() {
-    super('off');
-    // super('indeterminate');
-    // super('on');
+    super();
+
+    /** FUNCTIONALITIES **/
+
+    addMatInputReadonlyFunctionality(this);
+    addMatInputDisabledFunctionality(this);
 
     /** VARIABLES **/
 
-    const $value = this.$value;
-    const value$ = this.value$;
+    const $state$ = let$$<IObservable<IMatCheckboxInputState>>(single('off'));
+    defineObservableProperty(this, 'state', $state$);
+
+    const $state = this.$state;
+    const state$ = this.state$;
 
     const disabled$ = this.disabled$;
     const readonly$ = this.readonly$;
@@ -67,8 +95,8 @@ export class MatCheckboxInputComponent extends MatInputComponent<IMatCheckboxInp
 
     /** INPUT **/
 
-    const inputChecked$ = map$$(value$, (state: IMatCheckboxInputState) => (state === 'on'));
-    const inputIndeterminate$ = map$$(value$, (state: IMatCheckboxInputState) => (state === 'indeterminate'));
+    const inputChecked$ = map$$(state$, (state: IMatCheckboxInputState) => (state === 'on'));
+    const inputIndeterminate$ = map$$(state$, (state: IMatCheckboxInputState) => (state === 'indeterminate'));
 
     const { emit: $inputChange, subscribe: _inputChange$ } = createMulticastSource<Event>();
 
@@ -79,7 +107,7 @@ export class MatCheckboxInputComponent extends MatInputComponent<IMatCheckboxInp
 
     subscribeOnNodeConnectedTo(this, inputChange$, ([readonly, event]) => {
       if (!readonly) {
-        $value(
+        $state(
           (event.target as HTMLInputElement).checked ? 'on' : 'off'
         );
       }
@@ -87,7 +115,7 @@ export class MatCheckboxInputComponent extends MatInputComponent<IMatCheckboxInp
 
     /** DIRECT DOM UPDATE **/
 
-    const classList$ = map$$(value$, (state: IMatCheckboxInputState) => new Set<string>([`mat-${state}`]));
+    const classList$ = map$$(state$, (state: IMatCheckboxInputState) => new Set<string>([`mat-${state}`]));
     setReactiveClassList(classList$, this);
 
     setReactiveClass(isElementOrChildrenFocusedObservable(this), this, 'mat-focused');

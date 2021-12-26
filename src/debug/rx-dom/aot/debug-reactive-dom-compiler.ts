@@ -1,6 +1,10 @@
-import { getDocumentBody, loadReactiveHTMLAsGenericComponentTemplate, nodeAppendChild } from '@lifaon/rx-dom';
+import {
+  compileReactiveCSSAsComponentStyle, getDocumentBody, loadAndCompileReactiveCSSAsComponentStyle, nodeAppendChild
+} from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './debug-reactive-dom-compiler.rxhtml?raw';
+// @ts-ignore
+import style from './debug-reactive-dom-compiler.scss?inline';
 
 // async function rxDOMCompilerTextExample() {
 //   const html = `abc`;
@@ -22,31 +26,52 @@ import html from './debug-reactive-dom-compiler.rxhtml?raw';
 // }
 
 
-async function debugReactiveDOMCompiler1() {
+// async function debugReactiveDOMCompiler1() {
+//
+//   const template = await loadReactiveHTMLAsGenericComponentTemplate({
+//     url: new URL('./debug-reactive-dom-compiler.rxhtml', import.meta.url),
+//     customElements: [
+//       HTMLElement,
+//       HTMLAnchorElement,
+//     ],
+//     modifiers: [
+//       {
+//         name: 'modifier',
+//         modify: _ => _,
+//       },
+//     ],
+//   });
+//
+//   // const template = compileReactiveHTMLAsGenericComponentTemplate({ html: 'abc' });
+//   // const template = compileReactiveHTMLAsGenericComponentTemplate({ html });
+//
+//   const result = template({
+//     data: {},
+//     content: null as any,
+//   });
+//
+//   nodeAppendChild(getDocumentBody(), result);
+// }
 
-  const template = await loadReactiveHTMLAsGenericComponentTemplate({
-    url: new URL('./debug-reactive-dom-compiler.rxhtml', import.meta.url),
-    customElements: [
-      HTMLElement,
-      HTMLAnchorElement,
-    ],
-    modifiers: [
-      {
-        name: 'modifier',
-        modify: _ => _,
-      },
-    ],
-  });
+async function debugReactiveDOMCompiler2() {
+
+  // const template = await loadAndCompileReactiveCSSAsComponentStyle(
+  //   new URL('./debug-reactive-dom-compiler.rxhtml', import.meta.url)
+  // );
+
+  // const template = await compileReactiveCSSAsComponentStyle(style);
+  const template = await compileReactiveCSSAsComponentStyle(`
+    :host {
+      display: block;
+    }
+  `);
 
   // const template = compileReactiveHTMLAsGenericComponentTemplate({ html: 'abc' });
   // const template = compileReactiveHTMLAsGenericComponentTemplate({ html });
 
-  const result = template({
-    data: {},
-    content: null as any,
-  });
+  const result = template.innerText;
 
-  nodeAppendChild(getDocumentBody(), result);
+  console.log(result);
 }
 
 // async function debugReactiveDOMCompiler1() {
@@ -319,6 +344,6 @@ async function debugReactiveDOMCompiler1() {
 
 export async function debugReactiveDOMCompiler() {
   // await rxDOMCompilerTextExample();
-  await debugReactiveDOMCompiler1();
   // await debugReactiveDOMCompiler1();
+  await debugReactiveDOMCompiler2();
 }

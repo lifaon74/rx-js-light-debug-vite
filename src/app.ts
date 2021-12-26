@@ -42,6 +42,11 @@ import { aotExample } from './debug/rx-dom/aot-component/aot.example';
 import { debugTSX } from './debug/tsx/debug-tsx';
 import { materialExample } from './examples/rx-dom/material/material.example';
 import { rxjsLightNotificationsExample } from './examples/rx-js-light/notifications/rx-js-light-notifications.example';
+import { animationsExample } from './examples/animations/animations.example';
+import { pathExample } from './examples/path/path.example';
+import { rxJSLightPerformancesExample2 } from './examples/rx-js-light/performances/performances-2.example';
+import { debugMovement } from './debug/movement/debug-movement';
+import { personalityExample } from './examples/rx-dom/personality/personality.example';
 
 
 function run() {
@@ -53,8 +58,11 @@ function run() {
   // formControlDebug();
   // stateMachineDebug();
   // webRTCDebug();
+  // pathExample();
+  // debugMovement();
 
   // rxJSLightPerformancesExample();
+  // rxJSLightPerformancesExample2();
 
   // console.log('started');
   // dynamicDateExample();
@@ -67,6 +75,7 @@ function run() {
   // helloWorldExample();
   // forLoopExample();
   // routerExample();
+
   // guidelineExample();
   // composeExample();
   // pipeExample();
@@ -84,9 +93,11 @@ function run() {
   // storeExample();
   // weatherExample();
   // pictureExample();
+  animationsExample();
   // aotExample();
   // debugTSX();
-  materialExample();
+  // materialExample();
+  // personalityExample();
 }
 
 run();

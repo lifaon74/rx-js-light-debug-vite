@@ -1,4 +1,5 @@
 import { IObservable } from '@lifaon/rx-js-light';
+import { IReadonlyOptionsSet } from '../../../../../helpers/options/types/readonly-options-set.type';
 
 export interface IMatSelectInputOption<GValue> {
   readonly label$: IObservable<string>;
@@ -9,7 +10,8 @@ export interface IMatSelectInputOption<GValue> {
 // export type IMatSelectInputOptionsList<GValue> = readonly IMatSelectInputOption<GValue>[];
 export type IMatSelectInputOptionsList<GValue> = Iterable<IMatSelectInputOption<GValue>>;
 // export type IMatSelectInputSelectedOptions<GValue> = Set<IMatSelectInputOption<GValue>>;
-export type IMatSelectInputReadonlySelectedOptions<GValue> = ReadonlySet<IMatSelectInputOption<GValue>>;
+export type IMatSelectInputReadonlyOptions<GValue> = IReadonlyOptionsSet<IMatSelectInputOption<GValue>>;
+export type IMatSelectInputReadonlySelectedOptions<GValue> = IReadonlyOptionsSet<IMatSelectInputOption<GValue>>;
 
 
 // export interface INormalizedMatSelectInputOption<GValue> {

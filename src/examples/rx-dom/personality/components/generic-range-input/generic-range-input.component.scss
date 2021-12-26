@@ -1,0 +1,37 @@
+
+$generic-range-input-option-size: var(--generic-range-input-option-size, 30px);
+$generic-range-input-option-background-color: var(--generic-range-input-option-background-color, #aaa);
+$generic-range-input-option-background-color-selected: var(--generic-range-input-option-background-color-selected, #0066ff);
+
+:host {
+  display: block;
+  width: 100%;
+  font-size: 0;
+
+  & > .option {
+    display: inline-block;
+    vertical-align: top;
+    //width: $generic-range-input-option-size;
+    //height: $generic-range-input-option-size;
+    //border-radius: 50%;
+    //background-color: $generic-range-input-option-background-color;
+    //margin: 5px;
+    //
+    //&.selected {
+    //  background-color: $generic-range-input-option-background-color-selected;
+    //}
+  }
+
+  //border: 1px solid $mat-progress-bar-border-color;
+  //border-radius: 4px;
+  //overflow: hidden;
+  //text-align: center;
+  //font-size: 14px;
+  //color: $mat-progress-bar-text-color;
+  //
+  //& > .progress {
+  //  height: 100%;
+  //  background-color: $mat-progress-bar-color;
+  //  //transition: width 500ms;
+  //}
+}

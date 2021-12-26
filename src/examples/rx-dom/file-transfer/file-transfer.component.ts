@@ -6,7 +6,7 @@ import {
 import { AppProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
   createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IObserver, IProgress, IObservable,
-  IObservableFromPromiseNotifications, IObservableFromXHRNotifications, IUnsubscribe, noop,
+  IFromPromiseObservableNotifications, IObservableFromXHRNotifications, IUnsubscribe, noop,
   notificationObserver, map$$, let$$, letU$$
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../misc/no-cors';
@@ -88,7 +88,7 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
         next: (response: Response) => {
           if (response.ok) {
             const responseToBlob$ = fromPromise(response.blob());
-            this.unsubscribeStartDownload = responseToBlob$(notificationObserver<IObservableFromPromiseNotifications<Blob>>({
+            this.unsubscribeStartDownload = responseToBlob$(notificationObserver<IFromPromiseObservableNotifications<Blob>>({
               next: (blob: Blob) => {
                 downloadBlob(blob, extractFileNameFromResponse(response));
                 $status$.emit('complete');

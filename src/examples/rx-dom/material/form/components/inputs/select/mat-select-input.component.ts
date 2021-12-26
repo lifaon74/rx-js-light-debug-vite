@@ -1,6 +1,7 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
-  defineObservableProperty, OnCreate, querySelectorOrThrow,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IReactiveContent,
+  OnCreate,
+  querySelectorOrThrow, toReactiveContent,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-select-input.component.html?raw';
@@ -8,50 +9,51 @@ import html from './mat-select-input.component.html?raw';
 import style from './mat-select-input.component.scss?inline';
 import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
-  combineLatest, function$$, IObservable, IObserver, let$$, map$$, map$$$, mergeMapS$$$, pipe$$, shareR$$, single
+  combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$, single,
 } from '@lifaon/rx-js-light';
-import {
-  IMatSelectInputOption, IMatSelectInputOptionsList, IMatSelectInputReadonlySelectedOptions,
-} from './types/mat-select-input-option.type';
+import { IMatSelectInputOption, IMatSelectInputReadonlySelectedOptions } from './types/mat-select-input-option.type';
 import { ON_FOCUSED_MODIFIER } from '../../../modifiers/on-focused.modifier';
-import { isSet } from '../../../../../../misc/is/is-set';
-import { createMatOverlayController } from '../../../../overlay/overlay/component/helpers/create-open-close-tuple';
+import { createMatOverlayController } from '../../../../overlay/overlay/__component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { MatSelectInputOverlayComponent } from './overlay/mat-select-overlay.component';
-import { toggleOptionSelect } from '../../../../helpers/options/toggle-option-select';
 import { isOptionSelected } from '../../../../helpers/options/is-option-selected';
-import { $$filter } from '../../../../../../../../../rx-js-light/dist/src/observer/pipes/built-in/filter/filter-observer.shortcut';
 import {
-  addMatInputReadonlyFunctionality, IMatInputReadonlyProperty
+  $$filter,
+} from '../../../../../../../../../rx-js-light/dist/src/observer/pipes/built-in/filter/filter-observer.shortcut';
+import {
+  addMatInputReadonlyFunctionality, IMatInputReadonlyProperty,
 } from '../shared/functionalities/readonly/add-mat-input-readonly-functionality';
 import {
-  addMatInputDisabledFunctionality, IMatInputDisabledProperty
+  addMatInputDisabledFunctionality, IMatInputDisabledProperty,
 } from '../shared/functionalities/disabled/add-mat-input-disabled-functionality';
 import {
-  addMatInputPlaceholderFunctionality, IMatInputPlaceholderProperty
+  addMatInputPlaceholderFunctionality, IMatInputPlaceholderProperty,
 } from '../shared/functionalities/placeholder/add-mat-input-placeholder-functionality';
 import {
   addOptionsManagerMultipleFunctionality, addOptionsManagerOptionsFunctionality,
   addOptionsManagerRawOptionsFunctionality, addOptionsManagerRawSelectedOptionsFunctionality,
-  addOptionsManagerSelectedOptionsFunctionality,
-  IOptionsManagerMultipleProperty,
-  IOptionsManagerOptionsProperty, IOptionsManagerProperties, IOptionsManagerRawOptionsProperty,
-  IOptionsManagerRawSelectedOptionsProperty, IOptionsManagerSelectedOptionsProperty
+  addOptionsManagerSelectedOptionsFunctionality, IOptionsManagerProperties,
 } from '../../../../helpers/options/options-manager';
 import { toggleOptionSelectWithResolvers } from '../../../../helpers/options/toggle-option-select-with-resolvers';
 import { injectMatInputFieldStyle } from '../shared/input-field/mat-input-field.component';
+import { isEnterOrSpace } from '../../../../helpers/is-enter-or-space';
+import {
+  addMatInputClearableFunctionality, IMatInputClearableProperty,
+} from '../shared/functionalities/clearable/add-mat-input-clearable-functionality';
+import { addMatInputEmptyClass } from '../shared/functionalities/empty/add-mat-input-readonly-functionality';
+import { MAT_CLEAR_ICON_TITLE } from '../../../../constants/mat-clear-icon-title.constant';
 
-
-/** MANAGER **/
+/** CONSTRUCTOR **/
 
 interface IMatSelectInputComponentConstructor {
   new<GValue>(): (
     HTMLElement
     & IMatInputReadonlyProperty
     & IMatInputDisabledProperty
+    & IMatInputClearableProperty
     & IMatInputPlaceholderProperty
     & IOptionsManagerProperties<IMatSelectInputOption<GValue>>
-  );
+    );
 }
 
 /** COMPONENT **/
@@ -61,20 +63,18 @@ type IFieldContainerMode = 'value' | 'placeholder' | 'filter';
 interface IData {
   readonly placeholder$: IObservable<string>;
   readonly selectValue$: IObservable<string>;
+  readonly clearIconTitle$: IObservable<string>;
 
   readonly $onClickSelectValue: IObserver<MouseEvent>;
   readonly $onKeyDownSelectValue: IObserver<KeyboardEvent>;
+  readonly $onClickClearIcon: IObserver<MouseEvent>;
 }
 
 @Component({
   name: 'mat-select-input',
   template: compileReactiveHTMLAsGenericComponentTemplate({
     html,
-    modifiers: [
-      INPUT_VALUE_MODIFIER,
-      // NODE_REFERENCE_MODIFIER,
-      ON_FOCUSED_MODIFIER,
-    ],
+    modifiers: [],
   }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
@@ -91,15 +91,25 @@ export class MatSelectInputComponent<GValue> extends (HTMLElement as IMatSelectI
 
     const readonly$ = addMatInputReadonlyFunctionality(this);
     const disabled$ = addMatInputDisabledFunctionality(this);
-    const placeholder$ =  addMatInputPlaceholderFunctionality(this);
+    const clearable$ = addMatInputClearableFunctionality(this);
+    const placeholder$ = addMatInputPlaceholderFunctionality(this);
 
     const rawOptions$ = addOptionsManagerRawOptionsFunctionality<GOption>(this);
     const rawSelectedOptions$ = addOptionsManagerRawSelectedOptionsFunctionality<GOption>(this);
     const multiple$ = addOptionsManagerMultipleFunctionality(this);
-    const options$ = addOptionsManagerOptionsFunctionality<GOption>(this, rawOptions$);
-    const selectedOptions$ = addOptionsManagerSelectedOptionsFunctionality<GOption>(this, rawOptions$, options$, multiple$);
+    const options$ = addOptionsManagerOptionsFunctionality<GOption>(this, { rawOptions$ });
+    const selectedOptions$ = addOptionsManagerSelectedOptionsFunctionality<GOption>(this, {
+      rawSelectedOptions$,
+      options$,
+      multiple$,
+    });
 
     injectMatInputFieldStyle(this);
+
+    addMatInputEmptyClass(
+      this,
+      map$$(selectedOptions$, (selectedOptions: IMatSelectInputReadonlySelectedOptions<GValue>) => (selectedOptions.size === 0)),
+    );
 
     // OVERLAY
 
@@ -109,7 +119,7 @@ export class MatSelectInputComponent<GValue> extends (HTMLElement as IMatSelectI
 
     const { toggle } = createMatOverlayController<[]>((): MatSelectInputOverlayComponent<GValue> => {
       return MatOverlayManagerComponent.getInstance()
-        .open(MatSelectInputOverlayComponent, [{
+        .open_legacy(MatSelectInputOverlayComponent, [{
           targetElement: this,
           options$,
           $close,
@@ -140,13 +150,26 @@ export class MatSelectInputComponent<GValue> extends (HTMLElement as IMatSelectI
 
 
     const $onClickSelectValue = toggleMatSelectInputOverlay;
-    const $onKeyDownSelectValue = $$filter(toggleMatSelectInputOverlay, (event: KeyboardEvent) => (event.key === 'Enter'));
+    const $onKeyDownSelectValue = $$filter(
+      toggleMatSelectInputOverlay,
+      isEnterOrSpace,
+    );
+
+    /** CLEAR ICON **/
+
+    const clearIconTitle$ = MAT_CLEAR_ICON_TITLE;
+
+    const $onClickClearIcon = (): void => {
+      this.$rawSelectedOptions([]);
+    };
 
     this._data = {
       placeholder$,
       selectValue$,
+      clearIconTitle$,
       $onClickSelectValue,
       $onKeyDownSelectValue,
+      $onClickClearIcon,
     };
   }
 

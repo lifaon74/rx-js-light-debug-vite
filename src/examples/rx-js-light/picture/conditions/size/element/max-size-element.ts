@@ -1,6 +1,6 @@
 import { IPartialSize, ISize } from '../../../../../misc/types/size/size.type';
-import { distinct$$$, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
-import { createObservableOfElementSizeInitialized } from './helpers/create-subscribe-function-of-element-size';
+import { distinct$$$, functionD$$, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { createElementSizeObservableInitialized } from './helpers/create-element-size-observable';
 import { _isLowerThanOrEqualSize } from '../helpers/is-lower-than-or-equal-size';
 
 export function maxSizeElement(
@@ -10,7 +10,11 @@ export function maxSizeElement(
     height = Number.POSITIVE_INFINITY,
   }: IPartialSize,
 ): IObservable<boolean> {
-  return pipe$$(createObservableOfElementSizeInitialized(element), [
+  // return functionD$$(
+  //   [createElementSizeObservableInitialized(element)],
+  //   _isLowerThanOrEqualSize({ width, height }),
+  // );
+  return pipe$$(createElementSizeObservableInitialized(element), [
     map$$$<ISize, boolean>(_isLowerThanOrEqualSize({ width, height })),
     distinct$$$<boolean>(),
   ]);

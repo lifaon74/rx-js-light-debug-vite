@@ -47,3 +47,6 @@
 .icon-mat-calendar:before {
   content: "\67";
 }
+.icon-mat-times:before {
+  content: "\69";
+}

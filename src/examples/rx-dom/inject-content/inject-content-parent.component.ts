@@ -1,57 +1,50 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 import { AppInjectContentComponent } from './inject-content.component';
-import { interval, IObservable, map$$$, of, pipe$$, single } from '@lifaon/rx-js-light';
+import { debounceFrame$$$, interval, IObservable, map$$$, pipe$$, single } from '@lifaon/rx-js-light';
 import { shuffleArray } from '../../misc/shuffle-array';
-
-export const APP_INJECT_CONTENT_PARENT_CUSTOM_ELEMENTS = [
-  AppInjectContentComponent,
-];
 
 
 /** COMPONENT **/
 
 interface IItem {
-  name$: IObservable<string>;
+  readonly name$: IObservable<string>;
 }
 
 interface IData {
-  items$: IObservable<readonly IItem[]>;
+  readonly items$: IObservable<readonly IItem[]>;
+  readonly single: typeof single;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  createElement: generateCreateElementFunctionWithCustomElements(APP_INJECT_CONTENT_PARENT_CUSTOM_ELEMENTS),
-  of,
-};
 
 @Component({
   name: 'app-inject-content-parent',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-
-    <rx-template #header>
-      header
-    </rx-template>
-    
-    <app-inject-content
-      [header$]="of(of(getTemplateReference('header')))"
-    >
-      <div body>
-        <div
-          class="item"
-          *for="let item of $.items$"
-        >
-         {{ item.name$ }}
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <rx-template name="header">
+        header
+      </rx-template>
+      <app-inject-content
+        [headerTemplate]="single(template_header)"
+      >
+        <div body>
+          <div
+            class="item"
+            *for="let item of $.items$"
+          >
+           {{ item.name$ }}
+          </div>
         </div>
-      </div>
-      <div footer>
-        footer
-      </div>
-    </app-inject-content>
-    
-  `, CONSTANTS_TO_IMPORT),
+        <div footer>
+          footer
+        </div>
+      </app-inject-content>
+    `,
+    customElements: [
+      AppInjectContentComponent,
+    ],
+  }),
   styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
@@ -59,7 +52,7 @@ const CONSTANTS_TO_IMPORT = {
   `)],
 })
 export class AppInjectContentParentComponent extends HTMLElement implements OnCreate<IData> {
-  protected readonly data: IData;
+  protected readonly _data: IData;
 
   constructor() {
     super();
@@ -70,16 +63,18 @@ export class AppInjectContentParentComponent extends HTMLElement implements OnCr
     });
 
     const items$ = pipe$$(interval(2000), [
+      debounceFrame$$$(),
       map$$$(() => shuffleArray(items)),
     ]);
 
-    this.data = {
+    this._data = {
       items$,
+      single,
     };
   }
 
   public onCreate(): IData {
-    return this.data;
+    return this._data;
   }
 }
 

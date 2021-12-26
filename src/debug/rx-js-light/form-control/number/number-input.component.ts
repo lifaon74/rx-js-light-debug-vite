@@ -107,7 +107,7 @@ export class AppNumberInputComponent extends havingMultipleObservableProperties<
 
     const value$ = pipe$$($value$.subscribe, [
       map$$$<string, INumberInputValue>((value: string): INumberInputValue => ((value === '') ? null : Number(value))),
-      shareR$$$<INumberInputValue>(),
+      shareRL$$$<INumberInputValue>(),
     ]);
     this.numberValue$ = value$;
 

@@ -1,22 +1,15 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, createDocumentFragment,
-  getDocument, IReactiveContent, nodeAppendChild, OnCreate, querySelectorOrThrow, subscribeOnNodeConnectedTo
+  bootstrap, compileReactiveCSSAsComponentStyle, Component, getDocument, IReactiveContent, nodeAppendChild, nodeRemove,
+  querySelectorOrThrow,
 } from '@lifaon/rx-dom';
-import {
-  IMulticastReplayLastSource, IObservable, let$$, map$$, mutateReadonlyReplayLastSourceArray, single
-} from '@lifaon/rx-js-light';
-import { MatOverlayComponent } from '../component/mat-overlay.component';
-
+import { IObservable } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-overlay-manager.component.scss?inline';
-// @ts-ignore
-import html from './mat-overlay-manager.component.html?raw';
-import { IMatOverlayComponentConstructor } from '../component/mat-overlay-component-constructor.type';
 
 /** INTERFACES **/
 
 interface IOverlay {
-  readonly component: MatOverlayComponent;
+  readonly component: HTMLElement;
   readonly content$: IReactiveContent;
 }
 
@@ -28,87 +21,77 @@ interface IData {
 
 @Component({
   name: 'mat-overlay-manager',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class MatOverlayManagerComponent extends HTMLElement implements OnCreate<IData> {
+export class MatOverlayManagerComponent extends HTMLElement {
+
+  static init(): void {
+    queueMicrotask(() => {
+      this.bootstrap();
+    });
+  }
+
+  static bootstrap(): MatOverlayManagerComponent {
+    try {
+      return this.getInstance();
+    } catch (error) {
+      const manager = new this();
+      bootstrap(manager);
+      return manager;
+    }
+  }
 
   static getInstance(): MatOverlayManagerComponent {
     return querySelectorOrThrow(getDocument(), 'mat-overlay-manager');
   }
 
-  protected readonly _data: IData;
-  protected readonly _$overlays$: IMulticastReplayLastSource<readonly IOverlay[]>;
+  static open<GElement extends HTMLElement>(
+    element: GElement,
+  ): GElement {
+    return this.getInstance().open<GElement>(element);
+  }
+
+  static close(
+    element: HTMLElement,
+  ): void {
+    return this.getInstance().close(element);
+  }
+
+  static has(
+    element: HTMLElement,
+  ): boolean {
+    return this.getInstance().has(element);
+  }
+
 
   constructor() {
     super();
-    this._$overlays$ = let$$<readonly IOverlay[]>([]);
-    const overlays$ = this._$overlays$.subscribe;
-
-    this._data = {
-      overlays$,
-    };
-
-    subscribeOnNodeConnectedTo(
-      this,
-      map$$<readonly IOverlay[], boolean>(overlays$, (overlays: readonly IOverlay[]) => (overlays.length > 0)),
-      (isVisible: boolean) => {
-        this.classList.toggle('visible', isVisible);
-      },
-    );
   }
 
-  open<GOverlayComponent extends MatOverlayComponent, GArguments extends any[]>(
-    componentConstructor: IMatOverlayComponentConstructor<GOverlayComponent, GArguments>,
-    args: GArguments,
-  ): GOverlayComponent {
-    const component: GOverlayComponent = new componentConstructor(this, ...args);
-
-    const fragment: DocumentFragment = createDocumentFragment();
-    nodeAppendChild(fragment, component);
-
-    const overlay: IOverlay = {
-      component,
-      content$: single(fragment),
-    };
-
-    mutateReadonlyReplayLastSourceArray(this._$overlays$, (overlays: IOverlay[]): void => {
-      overlays.push(overlay);
-    });
-
-    return component;
-  }
-
-  close(
-    component: MatOverlayComponent,
-  ): void {
-    const index: number = this._$overlays$.getValue().findIndex((overlay: IOverlay): boolean => {
-      return overlay.component === component;
-    });
-
-    if (index === -1) {
-      throw new Error(
-        (component.manager === this)
-          ? `Overlay already closed`
-          : `Not a overlay of this manager`
-      );
+  open<GElement extends HTMLElement>(
+    element: GElement,
+  ): GElement {
+    if (element.parentNode === null) {
+      return nodeAppendChild(this, element);
     } else {
-      mutateReadonlyReplayLastSourceArray(this._$overlays$, (overlays: IOverlay[]): void => {
-        overlays.splice(index, 1);
-      });
+      throw new Error(`The overlay must be detached from any parents`);
     }
   }
 
-  isClosed(
-    component: MatOverlayComponent,
-  ): boolean {
-    return !this._$overlays$.getValue().some((overlay: IOverlay): boolean => {
-      return overlay.component === component;
-    });
+  close(
+    element: HTMLElement,
+  ): void {
+    if (this.has(element)) {
+      nodeRemove(element);
+    } else {
+      throw new Error(`Not an overlay of this manager`);
+    }
   }
 
-  onCreate(): IData {
-    return this._data;
+  has(
+    element: HTMLElement,
+  ): boolean {
+    return (element.parentNode === this);
   }
 }
 

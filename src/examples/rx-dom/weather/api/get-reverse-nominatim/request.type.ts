@@ -1,4 +1,4 @@
-export interface IGetReverseNominatimOptions {
-  latitude: number;
-  longitude: number;
+import { IGeographicPosition } from '../shared/geographic-position';
+
+export interface IGetReverseNominatimOptions extends IGeographicPosition {
 }

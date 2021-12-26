@@ -1,10 +1,10 @@
 import {
-  distinctObservablePipe, interval, IObservable, mapObservablePipe, pipeObservable
+  distinctObservablePipe, idle, interval, IObservable, mapObservablePipe, pipeObservable,
 } from '@lifaon/rx-js-light';
 import { getDocument, querySelector, querySelectorAll } from '@lifaon/rx-dom';
 
 export interface IFindDOMElementOptions {
-  interval?: number;
+  timeout?: number;
   // parentElement?: ParentNode;
 }
 
@@ -12,11 +12,11 @@ export function findDOMElement<Element extends HTMLElement>(
   selector: string,
   parentElement: ParentNode = getDocument(),
   {
-    interval: _interval = 50,
+    timeout = 50,
   }: IFindDOMElementOptions = {},
 ): IObservable<Element | null> {
-  return pipeObservable(interval(_interval), [
-    mapObservablePipe<void, Element | null>((): Element | null => {
+  return pipeObservable(idle({ timeout }), [
+    mapObservablePipe<any, Element | null>((): Element | null => {
       return querySelector<Element>(parentElement, selector);
     }),
     distinctObservablePipe<Element | null>(),
@@ -27,11 +27,11 @@ export function findDOMElements<Elements extends ArrayLike<HTMLElement>>(
   selector: string,
   parentElement: ParentNode = getDocument(),
   {
-    interval: _interval = 50,
+    timeout = 50,
   }: IFindDOMElementOptions = {},
 ): IObservable<Elements> {
-  return pipeObservable(interval(_interval), [
-    mapObservablePipe<void, Elements>((): Elements => {
+  return pipeObservable(idle({ timeout }), [
+    mapObservablePipe<any, Elements>((): Elements => {
       return querySelectorAll<Element>(parentElement, selector) as unknown as Elements;
     }),
   ]);

@@ -4,9 +4,16 @@
   position: fixed;
   inset: 0;
   pointer-events: none;
+
+  & > * {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 }
 
-:host(:not(.visible)) {
+:host(:empty) {
   display: none;
 }
 

@@ -12,36 +12,9 @@ export function matSelectInputExample() {
   const input = new MatSelectInputComponent();
   bootstrap(input);
 
-  // const CONSTANTS_TO_IMPORT = {
-  //   ...DEFAULT_CONSTANTS_TO_IMPORT,
-  //   createElement: generateCreateElementFunctionWithCustomElements([
-  //     MatSelectInputComponent,
-  //   ]),
-  // };
-  //
-  //
-  // const options$ = single<IMatSelectOption<number>[]>(Array.from({ length: 10 }, (v: any, index: number): IMatSelectOption<number> => {
-  //   return {
-  //     label$: single(`options-${ index }`),
-  //     value: index,
-  //   };
-  // }));
-  //
-  // const template = compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-  //   <mat-select
-  //     [options]="$.options$"
-  //   ></mat-select>
-  // `, CONSTANTS_TO_IMPORT);
-  //
-  // injectComponentTemplate(template, getDocumentBody(), {
-  //   options$,
-  // }, createDocumentFragment());
-
-
   /* INIT OVERLAY */
 
-  const manager = new MatOverlayManagerComponent();
-  bootstrap(manager);
+  MatOverlayManagerComponent.init();
 
 
   /* PROPERTIES */
@@ -55,6 +28,6 @@ export function matSelectInputExample() {
 
   input.rawOptions = options;
 
-  // input.multiple = true;
+  input.multiple = true;
   input.rawSelectedOptions = [options[0], options[1]];
 }

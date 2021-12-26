@@ -13,6 +13,10 @@
       <excludeFolder url="file://$MODULE_DIR$/src/examples/misc/css/color/colors/rgba/__old" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/material/form/components/inputs/shared/input-field/__old" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/material/__experimental" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/router/route/__bcps" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/navigation/__old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/router/__router" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/material/form/components/inputs/select/__old" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,9 +1,10 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
-  onNodeConnectedToWithImmediateCached,
-  querySelectorOrThrow, subscribeOnNodeConnectedTo,
+  subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
-import { IObserver, IObservable, IUnsubscribe, timeout, map$$, $$distinct, let$$ } from '@lifaon/rx-js-light';
+import {
+  $$distinct, combineLatest, IObservable, IObserver, IUnsubscribe, let$$, map$$, timeout,
+} from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-select-overlay.component.scss';
 // @ts-ignore
@@ -12,23 +13,43 @@ import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-an
 import { MatSimpleOverlayComponent } from '../../../../../overlay/overlay/built-in/simple/mat-simple-overlay.component';
 import { MatOverlayManagerComponent } from '../../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import {
-  IMatSelectInputOption, IMatSelectInputOptionsList, IMatSelectInputReadonlySelectedOptions
+  IMatSelectInputOption, IMatSelectInputOptionsList, IMatSelectInputReadonlyOptions,
+  IMatSelectInputReadonlySelectedOptions,
 } from '../types/mat-select-input-option.type';
-import { makeMatOverlayComponentBackdropClosable } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-backdrop-closable';
-import { makeMatOverlayComponentClosableWithEscape } from '../../../../../overlay/overlay/component/helpers/make-mat-overlay-component-closable-with-escape';
-import { IOverlayCloseOrigin } from '../../../../../overlay/overlay/component/mat-overlay.component';
-import { getElementExpectedSize } from '../../../../../overlay/overlay/built-in/simple/helper/get-element-expected-size';
 import {
-  getPositionAndSizeObservableForSimpleOverlay, IContentElementSizeOptions
+  makeMatOverlayComponentBackdropClosable,
+} from '../../../../../overlay/overlay/__component/helpers/make-mat-overlay-component-backdrop-closable';
+import {
+  makeMatOverlayComponentClosableWithEscape,
+} from '../../../../../overlay/overlay/__component/helpers/make-mat-overlay-component-closable-with-escape';
+import {
+  IOverlayCloseOrigin, MatOverlayComponent,
+} from '../../../../../overlay/overlay/__component/mat-overlay.component';
+import {
+  getElementExpectedSize,
+} from '../../../../../overlay/overlay/built-in/simple/helper/get-element-expected-size';
+import {
+  getPositionAndSizeObservableForSimpleOverlay, getPositionAndSizeObservableForOverlayNearTargetElement,
+  IContentElementSizeOptions,
 } from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-subscribe-function-for-simple-overlay';
 import { isOptionSelected } from '../../../../../helpers/options/is-option-selected';
-import { toggleOptionSelect } from '../../../../../helpers/options/toggle-option-select';
 import { readMultipleObservableValue } from '../../../../../helpers/options/read-multiple-observable-value';
 import { readOptionsObservableValue } from '../../../../../helpers/options/read-options-observable-value';
-import { readSelectedOptionsObservableValue } from '../../../../../helpers/options/read-selected-options-observable-value';
+import {
+  readSelectedOptionsObservableValue,
+} from '../../../../../helpers/options/read-selected-options-observable-value';
 import { findDOMElement } from '../../../../../../../misc/find-dom-element';
 import { eventPreventDefault } from '../../../../../../../misc/event-prevent-default';
 import { toggleOptionSelectWithResolvers } from '../../../../../helpers/options/toggle-option-select-with-resolvers';
+import { isEnterOrSpace } from '../../../../../helpers/is-enter-or-space';
+import {
+  toggleMultipleOptionsSelectWithResolvers,
+} from '../../../../../helpers/options/toggle-multiple-options-select-with-resolvers';
+import {
+  MatPositionedOverlayContentComponent
+} from '../../../../../overlay/overlay/built-in/positioned-overlay-content/mat-positioned-overlay-content.component';
+import { applyCSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/apply-css-position-and-size';
+import { isElementOrChildrenFocusedObservableDebounced } from '../../../../../helpers/focus-subscribe-function';
 
 
 /** TYPE **/
@@ -38,13 +59,13 @@ type IActiveOption<GValue> = IMatSelectInputOption<GValue> | null;
 /** COMPONENT **/
 
 export interface IMatSelectOverlayComponentOnClickOption<GValue> {
-  (option: IMatSelectInputOption<GValue>): void;
+  (option: IMatSelectInputOption<GValue>, event?: MouseEvent): void;
 }
 
 export interface IMatSelectOverlayComponentOptions<GValue> {
   readonly targetElement: HTMLElement;
   readonly $close: IObserver<void>;
-  readonly options$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
+  readonly options$: IObservable<IMatSelectInputReadonlyOptions<GValue>>;
   readonly selectedOptions$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
   readonly $rawSelectedOptions: IObserver<IMatSelectInputOptionsList<GValue>>;
   readonly multiple$: IObservable<boolean>;
@@ -55,17 +76,22 @@ interface IData<GValue> {
   readonly $onFocusOut: IObserver<Event>;
   readonly $onKeyDownOptionsList: IObserver<KeyboardEvent>;
   readonly options$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>;
-  readonly $onClickOption: IMatSelectOverlayComponentOnClickOption<GValue>;
+  readonly onClickOption: IMatSelectOverlayComponentOnClickOption<GValue>;
   readonly isOptionSelected: (option: IMatSelectInputOption<GValue>) => IObservable<boolean>;
   readonly isOptionActive: (option: IMatSelectInputOption<GValue>) => IObservable<boolean>;
 }
 
 @Component({
   name: 'mat-select-input-overlay',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html,
+    customElements: [
+      MatPositionedOverlayContentComponent,
+    ],
+  }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComponent implements OnCreate<IData<GValue>> {
+export class MatSelectInputOverlayComponent<GValue> extends MatOverlayComponent implements OnCreate<IData<GValue>> {
   protected readonly data: IData<GValue>;
   protected readonly $close: IObserver<void>;
 
@@ -87,11 +113,35 @@ export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComp
     );
 
 
-    super(manager, positionAndSize$);
+    super(manager);
+    // super(manager, positionAndSize$);
 
-    makeMatOverlayComponentBackdropClosable(this);
-    makeMatOverlayComponentClosableWithEscape(this);
+    // makeMatOverlayComponentBackdropClosable(this);
+    // makeMatOverlayComponentClosableWithEscape(this);
 
+    // subscribeOnNodeConnectedTo(
+    //   this,
+    //   positionAndSize$,
+    //   (positionAndSize: ICSSPositionAndSize) => {
+    //     applyCSSPositionAndSize(this, positionAndSize);
+    //   },
+    // );
+    //
+    // subscribeOnNodeConnectedTo(
+    //   this,
+    //   isElementOrChildrenFocusedObservableDebounced(this),
+    //   (focused: boolean) => {
+    //     if (!focused) {
+    //       this.close();
+    //       // TODO continue HERE => migrating SimpleOverlay to something more "common"
+    //     }
+    //   },
+    // );
+    //
+    // queueMicrotask(() => {
+    //   this.tabIndex = 0;
+    //   this.focus();
+    // })
 
     /** VARIABLES **/
 
@@ -161,35 +211,83 @@ export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComp
           options$,
           $activeOption,
         );
-      } else if (event.key === 'Enter') {
+      } else if (isEnterOrSpace(event)) {
         eventPreventDefault(event);
         const activeOption: IMatSelectInputOption<GValue> | null = getActiveOptionValue();
         if (activeOption !== null) {
-          $onClickOption(activeOption);
+          onClickOption(activeOption);
         }
       }
     };
 
-    const $onClickOption = (option: IMatSelectInputOption<GValue>): void => {
-      toggleOptionSelectWithResolvers({
-        selectedOptions$,
-        $rawSelectedOptions: $rawSelectedOptions,
-        option,
-        multiple$,
-      });
-
+    const onClickOption = (option: IMatSelectInputOption<GValue>, event?: MouseEvent): void => {
       const multiple: boolean = readMultipleObservableValue(multiple$);
 
-      if (!multiple) {
+      if (
+        multiple
+        && (event !== void 0)
+        && event.shiftKey
+      ) {
+        const optionsSet: IMatSelectInputReadonlyOptions<GValue> = readOptionsObservableValue(options$);
+        const activeOption: IActiveOption<GValue> = getFirstActiveOption<GValue>(optionsSet, selectedOptions$);
+
+        if (activeOption !== null) {
+          const options: IMatSelectInputOption<GValue>[] = getOptionsBetween<GValue>(
+            activeOption,
+            option,
+            optionsSet,
+          );
+
+          if (options.length > 1) {
+            toggleMultipleOptionsSelectWithResolvers<IMatSelectInputOption<GValue>>({
+              selectedOptions$,
+              $rawSelectedOptions: $rawSelectedOptions,
+              options,
+              multiple$,
+              select: true,
+            });
+          } else {
+            toggleOptionSelectWithResolvers<IMatSelectInputOption<GValue>>({
+              selectedOptions$,
+              $rawSelectedOptions: $rawSelectedOptions,
+              option,
+              multiple$,
+            });
+          }
+        }
+      } else {
+        toggleOptionSelectWithResolvers<IMatSelectInputOption<GValue>>({
+          selectedOptions$,
+          $rawSelectedOptions: $rawSelectedOptions,
+          option,
+          multiple$,
+        });
+      }
+
+      if (multiple) {
+        $activeOption(option);
+      } else {
         this.close();
       }
     };
+
+
+    // const unsubscribeOfFindOptionsContainer = subscribeOnNodeConnectedTo(
+    //   this,
+    //   findDOMElement('.content > .options', this),
+    //   (element: HTMLElement | null): void => {
+    //     if (element !== null) {
+    //       unsubscribeOfFindOptionsContainer();
+    //       element.focus();
+    //     }
+    //   },
+    // );
 
     this.data = {
       $onFocusOut,
       $onKeyDownOptionsList,
       options$,
-      $onClickOption,
+      onClickOption,
       isOptionSelected: _isOptionSelected,
       isOptionActive,
     };
@@ -199,15 +297,9 @@ export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComp
     return this.data;
   }
 
-  override close(origin?: IOverlayCloseOrigin): Promise<void> {
-    this.$close();
-    return super.close(origin);
-  }
-
-  // TODO
-  // override onInit(): void {
-  //   super.onInit();
-  //   querySelectorOrThrow<HTMLElement>(this, '.options').focus();
+  // override close(origin?: IOverlayCloseOrigin): Promise<void> {
+  //   this.$close();
+  //   return super.close(origin);
   // }
 }
 
@@ -215,11 +307,11 @@ export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComp
 /** FUNCTIONS **/
 
 function getPositionAndSizeObservableForMatSelectInputOverlay<GValue>(
-  getContainerElement: () => MatSelectInputOverlayComponent<GValue>,
+  getContentElement: () => MatSelectInputOverlayComponent<GValue>,
   targetElement: HTMLElement,
 ): IObservable<ICSSPositionAndSize> {
-  return getPositionAndSizeObservableForSimpleOverlay({
-    getContainerElement,
+  return getPositionAndSizeObservableForOverlayNearTargetElement({
+    getContentElement: getContentElement,
     targetElement,
     getContentElementSize: (
       {
@@ -233,6 +325,35 @@ function getPositionAndSizeObservableForMatSelectInputOverlay<GValue>(
       );
     },
   });
+}
+
+/** FUNCTIONS **/
+
+function getOptionsBetween<GValue>(
+  optionA: IMatSelectInputOption<GValue>,
+  optionB: IMatSelectInputOption<GValue>,
+  optionsSet: IMatSelectInputReadonlyOptions<GValue>,
+): IMatSelectInputOption<GValue>[] {
+  const options: IMatSelectInputOption<GValue>[] = [];
+  let between: boolean = false;
+
+  const iterator: Iterator<IMatSelectInputOption<GValue>> = optionsSet.values();
+  let result: IteratorResult<IMatSelectInputOption<GValue>>;
+  while (!(result = iterator.next()).done) {
+    const option: IMatSelectInputOption<GValue> = result.value;
+    if (
+      (option === optionA)
+      || (option === optionB)
+    ) {
+      between = !between;
+    }
+
+    if (between) {
+      options.push(option);
+    }
+  }
+
+  return options;
 }
 
 /** FUNCTIONS **/
@@ -296,13 +417,12 @@ function getOptionIndex<GValue>(
   return -1;
 }
 
-function focusFirstActiveOption<GValue>(
+function getFirstActiveOption<GValue>(
   optionsSet: IMatSelectInputReadonlySelectedOptions<GValue>,
   selectedOptions$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
-  $activeOption: IObserver<IActiveOption<GValue>>,
-): void {
+): IActiveOption<GValue> | null {
   const selectedOptions: IMatSelectInputReadonlySelectedOptions<GValue> = readSelectedOptionsObservableValue(selectedOptions$);
-  let activeOption: IActiveOption<GValue> = null;
+  let activeOption: IActiveOption<GValue> | null = null;
 
   const iterator: Iterator<IMatSelectInputOption<GValue>> = optionsSet.values();
   let result: IteratorResult<IMatSelectInputOption<GValue>>;
@@ -314,7 +434,15 @@ function focusFirstActiveOption<GValue>(
     }
   }
 
-  $activeOption(activeOption);
+  return activeOption;
+}
+
+function focusFirstActiveOption<GValue>(
+  optionsSet: IMatSelectInputReadonlySelectedOptions<GValue>,
+  selectedOptions$: IObservable<IMatSelectInputReadonlySelectedOptions<GValue>>,
+  $activeOption: IObserver<IActiveOption<GValue>>,
+): void {
+  $activeOption(getFirstActiveOption<GValue>(optionsSet, selectedOptions$));
 }
 
 function focusNextActiveOption<GValue>(

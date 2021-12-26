@@ -1,0 +1,9 @@
+<div
+  class="option"
+  *for="let option of $.options$; index as index$"
+  [class.selected]="$.isOptionSelected$$(index$)"
+  (click)="() => $.onClickOption(index$)"
+  $tooltip="[$.toReactiveContent(option.label$)]"
+>
+  <mat-checkbox-input></mat-checkbox-input>
+</div>

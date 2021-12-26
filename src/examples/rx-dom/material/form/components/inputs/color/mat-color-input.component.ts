@@ -9,10 +9,10 @@ import style from './mat-color-input.component.scss?inline';
 import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
   $$distinct, $$map, $$mapFilter, combineLatest, function$$, IMapFilterDiscard, IObservable, IObserver, ISource, let$$,
-  map$$, MAP_FILTER_DISCARD, mapFilter$$, or$$, shareR$$, single
+  map$$, MAP_FILTER_DISCARD, mapFilter$$, or$$, shareRL$$, single
 } from '@lifaon/rx-js-light';
 import { MatColorInputOverlayComponent } from './overlay/mat-color-input-overlay.component';
-import { createMatOverlayController } from '../../../../overlay/overlay/component/helpers/create-open-close-tuple';
+import { createMatOverlayController } from '../../../../overlay/overlay/__component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { IHSVAColor } from '../../../../../../misc/css/color/colors/hsva/hsva-color.type';
 import { colorToHSVAColor } from '../../../../../../misc/css/color/to/color-to-hsva-color';
@@ -100,7 +100,7 @@ export class MatColorInputComponent extends MatInputFieldComponent<string> imple
     // COLOR
     const color$ = map$$(value$, colorStringToColor);
 
-    const hsvaColor$ = shareR$$(map$$(color$, colorToHSVAColor));
+    const hsvaColor$ = shareRL$$(map$$(color$, colorToHSVAColor));
     const $hsvaColor = $$map($$distinct($value), (color: IHSVAColor): string => {
       if ($selectedColorFormat$.getValue() === USER_COLOR_FORMAT) {
         $selectedColorFormat('hex');
@@ -129,7 +129,7 @@ export class MatColorInputComponent extends MatInputFieldComponent<string> imple
 
     const { toggle } = createMatOverlayController<[]>((): MatColorInputOverlayComponent => {
       return MatOverlayManagerComponent.getInstance()
-        .open(MatColorInputOverlayComponent, [{
+        .open_legacy(MatColorInputOverlayComponent, [{
           targetElement: this,
           $close,
           hsvaColor$,

@@ -67,7 +67,7 @@ export interface IHourlyWeather {
   pressure: number; // atmospheric pressure => Pa (kg / (m * s^2))
   rain: number; // quantity of rain per second => m/s
   snow: number; // quantity of snow per second => m/s
-  temperature: number;
+  temperature: number; // kelvin
   ultravioletIndex: number;
   visibility: number; // average visibility => metre
   wind: IWindState;
@@ -84,4 +84,5 @@ export interface IGetWeatherResponse {
   endDate: number;
   // dateRange: IDateRange;
   daily: IDailyWeather[];
+  hourly: IHourlyWeather[];
 }

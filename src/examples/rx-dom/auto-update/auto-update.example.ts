@@ -47,13 +47,11 @@ const CONSTANTS_TO_IMPORT = {
   template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
     <div>
       <input
-        #input-a
         type="number"
         [value]="$.proxy.inputA.$"
-        (input)="() => $.self.inputA = getNodeReference('input-a').value"
+        (input)="() => $.self.inputA = node.value"
       >
       <input
-        #input-b
         type="number"
         [value]="$.proxy.inputB.$"
         (input)="() => $.self.inputB = getNodeReference('input-b').value"

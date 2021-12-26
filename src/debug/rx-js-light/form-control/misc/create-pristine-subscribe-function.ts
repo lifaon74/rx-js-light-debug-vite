@@ -18,7 +18,7 @@ export function createPristineObservable(
         }
         return pristine;
       }),
-      shareR$$$<boolean>(),
+      shareRL$$$<boolean>(),
     ]),
     () => {
       pristine = true;

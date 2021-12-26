@@ -1,0 +1,130 @@
+
+
+/*
+(1) a = a
+(2) v = a * t + vi
+(3) d = 1/2 * a * t² + vi * t + di
+
+(3) -> (4): compute t
+delta = vi² - (2 * a * (di - d))
+(4) t = (-vi +- sqrt(delta)) / a
+
+(3) -> (5): compute a
+(5) a = (d - vi * t - di) / (1/2 * t²)
+
+
+--
+
+a² * x + b* x + c = 0
+d = b² - 4 * a * c
+y = (-b +- sqrt(d)) / 2a
+
+--
+
+un mouvement (M) est composé d'une vitesse initiale, d'une acceleration et d'une distance par axe
+chaque axe est contraint par une acceleration, une vitesse max et un "jerk" entre deux mouvements
+
+calculer pour M1 sa vitesse finale maximale atteignable par axe
+pour ce faire:
+- calculer pour chaque axe le temps qu'il faut: (4) => t[i],
+ en utilisant les contraintes max de l'axe (a = a_max, vi = ancien vi, d = distance a faire, et v_max)
+- prendre le max parmi tous ces temps => m1_t_max = max(...t[i])
+- calculer vf par axe: (2) => vf[i] = min(a_max[i] * t[i] + vi[i], v_max[i])
+
+calculer pour M2 sa vitesse initiale max par axe:
+- le calcule est similaire au precedent mais en inverse
+
+comparer vf_m1[i] avec vi_m2[i]: // TODO prendre en compte les valeurs negatives
+- vf_m1[i] <= vi_m2[i], alors ce mouvement est realisable sans problème pour cet axe
+- (vf_m1[i] + jerk_m1) <= (vi_m2[i] - jerk_m2), alors ce mouvement est realisable avec jerk
+- sinon: il faut réduire vi_m2[i]
+=> vi_m2[i] = valeur la plus proche de zero pour (vf_m1[i] + jerk_m1, vi_m2[i] - jerk_m2)
+
+
+ */
+
+function compteTimeToPerformMovement(
+  a: number, // [0, Infinity[
+  vi: number, // [0, Infinity[
+  d: number, // [0, Infinity[
+): number {
+  return (Math.sqrt((vi * vi) + (2 * a * d)) - vi) / a;
+  // const delta: number = (vi ** 2) - (2 * a * d);
+  // if (delta < 0) {
+  //   throw new Error(`Cannot solve`);
+  // } else {
+  //   const t1: number = (-vi + Math.sqrt(delta)) / a;
+  //   const t2: number = (-vi - Math.sqrt(delta)) / a;
+  //   const t: number = Math.max(t1, t2);
+  // }
+}
+
+function compteAccelerationToPerformMovement(
+  t: number, // [0, Infinity[
+  vi: number, // [0, Infinity[
+  d: number, // [0, Infinity[
+): number {
+  return (d - vi * t) / (0.5 * t * t);
+}
+
+
+export interface IConstraint {
+  maxVelocity: number;
+  maxAcceleration: number;
+  maxJerk: number;
+}
+//
+// export type IInitialVelocities = ArrayLike<number>;
+// export type IMovement = ArrayLike<number>;
+
+type ISingleAxisMovement = [
+  distance: number,
+  initialVelocity: number,
+  maxVelocity: number,
+  maxAcceleration: number,
+  maxJerk: number,
+];
+
+type IMultiAxisMovement = ArrayLike<ISingleAxisMovement>;
+
+function computeOptimalTransitionVelocity(
+  movementA: IMultiAxisMovement,
+  movementB: IMultiAxisMovement,
+): number {
+
+}
+
+
+
+export function debugMovement() {
+  const axeAConstraint: IConstraint = {
+    maxVelocity: 10,
+    maxAcceleration: 1,
+    maxJerk: 0.1,
+  };
+
+  const axeBConstraint: IConstraint = {
+    maxVelocity: 10,
+    maxAcceleration: 1,
+    maxJerk: 0.1,
+  };
+
+  const constraints = [
+    axeAConstraint,
+    axeBConstraint,
+  ];
+
+  const initialVelocities = [0, 0];
+
+  const movementA = [10, 0];
+  const movementB = [0, 10];
+
+  computeOptimalTransitionVelocity(
+    constraints,
+    initialVelocities,
+    movementA,
+    movementB,
+  );
+
+}
+

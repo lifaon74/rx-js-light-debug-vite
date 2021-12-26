@@ -3,7 +3,7 @@ import { ISanitizeHTMLConfig, ISanitizeHTMLFunction } from './sanitite-html-func
 import { DEFAULT_SANITIZE_HTML_CONFIG } from './default-sanitize-html-config.constant';
 import { HTMLTrustedTypePolicy } from './trusted-types.type';
 import { createMulticastReplayLastSource, pipeObservable } from '@lifaon/rx-js-light';
-import { sanitizeHTMLWithPolicyObservablePipe } from './pipes/sanitize-html-with-policy-subscribe-pipe';
+import { sanitizeHTMLWithPolicyObservablePipe } from './pipes/sanitize-html-with-policy-observable-pipe';
 
 
 export function sanitizeHTML(

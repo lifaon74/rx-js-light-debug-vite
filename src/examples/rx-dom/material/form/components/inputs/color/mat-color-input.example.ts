@@ -13,15 +13,14 @@ export function matColorInputExample() {
 
   /* INIT OVERLAY */
 
-  const manager = new MatOverlayManagerComponent();
-  bootstrap(manager);
+  MatOverlayManagerComponent.init();
 }
 
 
 
 
 
-// colorInput.value$ = shareR$$(map$$(interval(1000), () => {
+// colorInput.value$ = shareRL$$(map$$(interval(1000), () => {
 //   const rand = () => Math.floor(Math.random() * 255);
 //   return `rgb(${ rand() }, ${ rand() }, ${ rand() })`;
 // }));

@@ -15,7 +15,7 @@
 }
 
 * {
-  @include scrollbar-mixin();
+  //@include scrollbar-mixin();
 }
 
 html,
@@ -39,6 +39,3 @@ body {
   overflow: auto;
 }
 
-rx-router-outlet {
-  display: block;
-}

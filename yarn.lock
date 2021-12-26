@@ -2,12 +2,17 @@
 # yarn lockfile v1
 
 
-"@lifaon/rx-dom-aot-plugin@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom-aot-plugin/-/rx-dom-aot-plugin-1.0.0.tgz#bddc41cfba1db10cb3ddfe9aa8c5407694531cc0"
-  integrity sha512-JTFJeHdNHNg2N9QyhwZBez+ERYPGOFPMwpYRNPi5yg9e2c3piCsRv+Tt10O1VL68S20SL4nuRY16vs3tGt+n3A==
+"@lifaon/path@2.0.0":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@lifaon/path/-/path-1.1.2.tgz#abf953566066d9d8b4d4ba5e847408211f2b200e"
+  integrity sha512-uFECM33D3yExTzgesfNhJcgQODEkrKvhqE8uKYY/jizeN1gRNSDQwPQnY2avysE2IacpYe39mA1/Hr5aEergww==
+
+"@lifaon/rx-dom-aot-plugin@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom-aot-plugin/-/rx-dom-aot-plugin-2.0.0.tgz#9a2d284c221f130d21862d1231b893db4a0836ca"
+  integrity sha512-vt7d/JFWx5bhB3EjtY7JUJYFeQUZRvhsRze0YrczPuOYFkCr1rSs5QRwZoNUgsCU/aR71URDEXPsF8BEEl5OLg==
   dependencies:
-    "@lifaon/rx-dom" "1.2.0"
+    "@lifaon/rx-dom" "2.0.0"
     "@types/estree" "^0.0.50"
     acorn "^8.5.0"
     acorn-walk "^8.2.0"
@@ -16,51 +21,41 @@
     jsdom "^18.0.0"
     source-map "^0.7.3"
 
-"@lifaon/rx-dom@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom/-/rx-dom-1.2.0.tgz#6ac97faba450837fed1511fe78549c9a0c0b3cdb"
-  integrity sha512-T14V+yWG15lknu29Ef/ipaBRzVvRFbdVzlpWxAKRKEPAFjkqg9gq07+86Tbi36zAKZhS86n2e2inHIT8DpVfSA==
-  dependencies:
-    "@lifaon/rx-js-light" "1.2.0"
-
 "@lifaon/rx-dom@2.0.0":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom/-/rx-dom-1.2.2.tgz#275d7ead8b76c79d822e1ac9979b7ce4af5b29cf"
-  integrity sha512-eUo/vbdJ9Cz2Ma0EtEwlio3Gxj0yS5f8GGje9aE9zu7ZGq0yDtgDB+OgJ3hRheJx98uV2MnXRUxUUsYdnlRsxA==
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-dom/-/rx-dom-2.0.0.tgz#742b193f7f551ee060b4454fe446df7127bad3a8"
+  integrity sha512-3gu9bt8QNqa/nXwOP4coMupe07GDlW28OUVZpSEx8kVz//9myBcdyrXgDkSXJoRt+Rh80/H6HhicjRe1eWPrXg==
   dependencies:
-    "@lifaon/rx-js-light" "1.2.1"
+    "@lifaon/rx-js-light" "2.0.0"
 
-"@lifaon/rx-js-light@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.1.2.tgz#87be03c1901794a601d8a1c761abeaee1f7cedaa"
-  integrity sha512-mq+y7/kcLp1u9NwKk3Acuw71HF5aVXCDdt3OTZXcYONY9EOCXl15K3PjjBHU27meL1mKacCEEnqH4zrFb/tFGg==
-
-"@lifaon/rx-js-light@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.2.0.tgz#4d0f06110e5c17b617aba1a2205e2b9952aedd92"
-  integrity sha512-7WSE9fGAnN1eaF2r87PbQ4iI7KD7psDm7/SLeCAC2ByCn75XGcXdBFcyK5ZVc/ypmwn5bDqzLYN/i6O8eZSDuA==
-
-"@lifaon/rx-js-light@1.2.1", "@lifaon/rx-js-light@2.0.0":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-1.2.1.tgz#46cadf09acb6ce7553ba2446ff93ca4417c2fde1"
-  integrity sha512-FOqYmd/R5ScOBlEPS3blI3q9KGBn9duEIHj0Ns2+kCVBhGap4lv61MWSwNbeYVGjOsFxhJoRgqVmX+sMBo8j0Q==
-
-"@lifaon/rx-store@1.0.0":
+"@lifaon/rx-i18n@2.1.0":
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lifaon/rx-store/-/rx-store-1.0.0.tgz#b1a498f8b1ead79d7dcf75be593dd7a2bdade0e7"
-  integrity sha512-Zf+5bqGNLCzuBB0kwaa9JUw94YGS6Q+6yBZIir39/xOPWsY9aJK+SJZf6AzaTMaNLwRQusLl2E6lHI0g14QlHw==
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-i18n/-/rx-i18n-1.0.0.tgz#dc4f3832d2df8f3172fc4572df500dba4992fbb0"
+  integrity sha512-31njef/IsubWz73q6o99C0X0eMcQbml8vVhPw0MUTxIX2jNBj1OoRr5xhaXK9OwavJ+aX4AcylNxXbWK9Guu2w==
   dependencies:
-    "@lifaon/rx-js-light" "1.1.2"
+    "@lifaon/rx-js-light" "^2.0.0"
+
+"@lifaon/rx-js-light@2.0.0", "@lifaon/rx-js-light@2.1.0", "@lifaon/rx-js-light@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-js-light/-/rx-js-light-2.0.0.tgz#5611fa4193f22399a5c8175fed9f4bff3e338da1"
+  integrity sha512-LL7+BHNLPDx6n4SceDEdWkcZ7JMqcdrNqMYEWVqkmKtMotmzunN7B7IDHTXlsWcK0w66z7ZzCT8ESMlzq3a0pA==
+
+"@lifaon/rx-store@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@lifaon/rx-store/-/rx-store-1.1.0.tgz#ab79fdb02709d46c981993330f7fd9509f2d80c7"
+  integrity sha512-htfHgOoObtjsjXcm0uW4wbKLA1yaNPgfeQYoeYTBWyXKGhPV2rC4VzzsYbiEV9hbAHGczEav9ysgqsHHQKBSVw==
+  dependencies:
+    "@lifaon/rx-js-light" "2.0.0"
 
 "@tootallnate/once@2":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@types/dompurify@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.2.3.tgz#6e89677a07902ac1b6821c345f34bd85da239b08"
-  integrity sha512-CLtc2mZK8+axmrz1JqtpklO/Kvn38arGc8o1l3UVopZaXXuer9ONdZwJ/9f226GrhRLtUmLr9WrvZsRSNpS8og==
+"@types/dompurify@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.3.1.tgz#2934adcd31c4e6b02676f9c22f9756e5091c04dd"
+  integrity sha512-YJth9qa0V/E6/XPH1Jq4BC8uCMmO8V1fKWn8PCvuZcAhMn7q0ez9LW6naQT04UZzjFfAPhyRMZmI2a2rbMlEFA==
   dependencies:
     "@types/trusted-types" "*"
 
@@ -490,6 +485,11 @@ iconv-lite@0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
+immutable@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0.tgz#b86f78de6adef3608395efb269a91462797e2c23"
+  integrity sha512-zIE9hX70qew5qTUjSS7wi1iwj/l7+m54KWU247nhM3v806UdGj1yDndXj+IOYxxtW9zyLI+xqFNZjTuDaLUqFw==
+
 is-binary-path@~2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/is-binary-path/-/is-binary-path-2.1.0.tgz#ea1f7f3b80f064236e83470f86c09c254fb45b09"
@@ -713,12 +713,13 @@ rxjs@^7.4.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sass@^1.43.4:
-  version "1.43.4"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.43.4.tgz#68c7d6a1b004bef49af0d9caf750e9b252105d1f"
-  integrity sha512-/ptG7KE9lxpGSYiXn7Ar+lKOv37xfWsZRtFYal2QHNigyVQDx685VFT/h7ejVr+R8w7H4tmUgtulsKl5YpveOg==
+sass@^1.44.0:
+  version "1.44.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.44.0.tgz#619aa0a2275c097f9af5e6b8fe8a95e3056430fb"
+  integrity sha512-0hLREbHFXGQqls/K8X+koeP+ogFRPF4ZqetVB19b7Cst9Er8cOR0rc6RU7MaI4W1JmUShd1BPgPoeqmmgMMYFw==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
+    immutable "^4.0.0"
 
 saxes@^5.0.1:
   version "5.0.1"
@@ -787,10 +788,10 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-typescript@^4.4.4:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
-  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
+typescript@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
+  integrity sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==
 
 uglify-js@^3.5.1:
   version "3.14.3"

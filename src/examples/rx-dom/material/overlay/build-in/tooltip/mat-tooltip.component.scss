@@ -1,14 +1,10 @@
+@import '../../overlay/built-in/styles/mat-overlay-content.style';
 
 :host {
+  @extend %mat-overlay-content;
   display: block;
-
-  & > .content {
-    max-width: 200px;
-    padding: 7px 10px;
-    overflow: auto;
-
-    font-size: 14px;
-    color: #444;
-  }
+  max-width: 200px;
+  inset: auto;
+  overflow: scroll;
 }
 

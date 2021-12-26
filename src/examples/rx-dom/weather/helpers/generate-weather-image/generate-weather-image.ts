@@ -5,23 +5,23 @@ import { fromEventTarget, mergeUnsubscribeFunctions } from '@lifaon/rx-js-light'
 import { MM_PER_DAY_TO_METER_PER_SECOND } from '../units/converters';
 
 // @ts-ignore
-import sunURL from './assets/sun.svg';
+import sunURL from './assets/original/sun.svg';
 // @ts-ignore
-import cloudURL from './assets/cloud.svg';
+import cloudURL from './assets/original/cloud.svg';
 // @ts-ignore
-import waterDropURL from './assets/water-drop.svg';
+import waterDropURL from './assets/original/water-drop.svg';
 // @ts-ignore
-import snowflakeURL from './assets/snowflake.svg';
+import snowflakeURL from './assets/original/snowflake.svg';
 // @ts-ignore
-import thunderboltURL from './assets/thunderbolt.svg';
+import thunderboltURL from './assets/original/thunderbolt.svg';
 // @ts-ignore
-import windURL from './assets/wind.svg';
+import windURL from './assets/original/wind.svg';
 // @ts-ignore
-import mistURL from './assets/mist.svg';
+import mistURL from './assets/original/mist.svg';
 // @ts-ignore
-import tornadoURL from './assets/tornado2.svg';
+import tornadoURL from './assets/original/tornado2.svg';
 import { IWeatherStateId } from '../../api/get-weather/weather-state-id/weather-state-id.type';
-import { createAndAwaitImage, createCanvasRenderingContext2D } from '../../../../misc/image/image-helpers';
+import { createAndAwaitImage, createCanvasRenderingContext2D } from '../../../../misc/media/image/image-helpers';
 
 /*---------------*/
 

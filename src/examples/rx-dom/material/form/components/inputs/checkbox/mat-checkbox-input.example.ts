@@ -6,4 +6,6 @@ import { bootstrap } from '@lifaon/rx-dom';
 export function matCheckboxInputExample() {
   const input = new MatCheckboxInputComponent();
   bootstrap(input);
+
+  // input.disabled = true;
 }

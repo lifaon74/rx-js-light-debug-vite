@@ -1,4 +1,4 @@
-import { function$$, IObservable, IObserver, map$$, shareR$$ } from '@lifaon/rx-js-light';
+import { function$$, IObservable, IObserver, map$$, shareRL$$ } from '@lifaon/rx-js-light';
 import { defineSimpleObservableProperty, IHavingObservableProperty } from '@lifaon/rx-dom';
 import { isSet } from '../../../../misc/is/is-set';
 import { isOptionSelected } from './is-option-selected';
@@ -9,6 +9,9 @@ import { toggleOptionSelectWithResolvers } from './toggle-option-select-with-res
 
 /*--------------------------------*/
 
+/**
+ * The raw list of options (contains potentially some dupes)
+ */
 export type IOptionsManagerRawOptionsProperty<GOption> = IHavingObservableProperty<'rawOptions', IOptionsList<GOption>>;
 
 export function addOptionsManagerRawOptionsProperty<GOption>(
@@ -72,11 +75,18 @@ export interface IOptionsManagerOptionsProperty<GOption> {
   readonly options$: IObservable<IReadonlyOptionsSet<GOption>>;
 }
 
+export interface IAddOptionsManagerOptionsPropertyOptions<GOption> {
+  rawOptions$: IObservable<IOptionsList<GOption>>;
+}
+
+
 export function addOptionsManagerOptionsProperty<GOption>(
   target: any,
-  rawOptions$: IObservable<IOptionsList<GOption>>,
+  {
+    rawOptions$,
+  }:  IAddOptionsManagerOptionsPropertyOptions<GOption>,
 ): IObservable<IReadonlyOptionsSet<GOption>> {
-  const options$ = shareR$$(map$$(rawOptions$, (options: IOptionsList<GOption>): IReadonlyOptionsSet<GOption> => {
+  const options$ = shareRL$$(map$$(rawOptions$, (options: IOptionsList<GOption>): IReadonlyOptionsSet<GOption> => {
     return isSet<GOption>(options)
       ? options
       : new Set<GOption>(options);
@@ -88,9 +98,9 @@ export function addOptionsManagerOptionsProperty<GOption>(
 
 export function addOptionsManagerOptionsFunctionality<GOption>(
   target: any,
-  rawOptions$: IObservable<IOptionsList<GOption>>,
+  options: IAddOptionsManagerOptionsPropertyOptions<GOption>,
 ): IObservable<IReadonlyOptionsSet<GOption>> {
-  return addOptionsManagerOptionsProperty<GOption>(target, rawOptions$);
+  return addOptionsManagerOptionsProperty<GOption>(target, options);
 }
 
 
@@ -103,13 +113,21 @@ export interface IOptionsManagerSelectedOptionsProperty<GOption> {
   readonly selectedOptions$: IObservable<IReadonlyOptionsSet<GOption>>;
 }
 
+export interface IAddOptionsManagerSelectedOptionsFunctionalityOptions<GOption> {
+  rawSelectedOptions$: IObservable<IOptionsList<GOption>>;
+  options$: IObservable<IReadonlyOptionsSet<GOption>>;
+  multiple$: IObservable<boolean>;
+}
+
 export function addOptionsManagerSelectedOptionsFunctionality<GOption>(
   target: any,
-  rawSelectedOptions$: IObservable<IOptionsList<GOption>>,
-  options$: IObservable<IReadonlyOptionsSet<GOption>>,
-  multiple$: IObservable<boolean>,
+  {
+    rawSelectedOptions$,
+    options$,
+    multiple$,
+  }: IAddOptionsManagerSelectedOptionsFunctionalityOptions<GOption>,
 ): IObservable<IReadonlyOptionsSet<GOption>> {
-  const selectedOptions$ = shareR$$(function$$(
+  const selectedOptions$ = shareRL$$(function$$(
     [rawSelectedOptions$, options$, multiple$],
     (
       rawSelectedOptions: IOptionsList<GOption>,
@@ -149,6 +167,64 @@ export interface IOptionsManagerProperties<GOption> extends //
   //
 {
 }
+
+/*--------------------------------*/
+
+export class OptionsManager<GOption> implements IOptionsManagerProperties<GOption> {
+  rawOptions$!: IObservable<IOptionsList<GOption>>;
+  readonly $rawOptions!: IObserver<IOptionsList<GOption>>;
+  rawOptions!: IOptionsList<GOption>;
+
+  rawSelectedOptions$!: IObservable<IOptionsList<GOption>>;
+  readonly $rawSelectedOptions!: IObserver<IOptionsList<GOption>>;
+  rawSelectedOptions!: IOptionsList<GOption>;
+
+  multiple$!: IObservable<boolean>;
+  readonly $multiple!: IObserver<boolean>;
+  multiple!: boolean;
+
+  readonly options$!: IObservable<IReadonlyOptionsSet<GOption>>;
+  readonly selectedOptions$!: IObservable<IReadonlyOptionsSet<GOption>>;
+
+  constructor(
+    rawOptions?: IOptionsList<GOption> | IObservable<IOptionsList<GOption>>,
+  ) {
+    const rawOptions$ = addOptionsManagerRawOptionsFunctionality<GOption>(this);
+    const rawSelectedOptions$ = addOptionsManagerRawSelectedOptionsFunctionality<GOption>(this);
+    const multiple$ = addOptionsManagerMultipleFunctionality(this);
+    const options$ = addOptionsManagerOptionsFunctionality<GOption>(this, { rawOptions$ });
+    const selectedOptions$ = addOptionsManagerSelectedOptionsFunctionality<GOption>(this, { rawSelectedOptions$, options$, multiple$ });
+
+    if (typeof rawOptions === 'function') {
+      this.rawOptions$ = rawOptions as IObservable<IOptionsList<GOption>>;
+    } else {
+      this.rawOptions = rawOptions as IOptionsList<GOption>;
+    }
+  }
+
+  isOptionSelected(
+    option: GOption,
+  ): IObservable<boolean> {
+    return isOptionSelected<GOption>({
+      selectedOptions$: this.selectedOptions$,
+      option,
+    });
+  }
+
+  toggleOptionSelect(
+    option: GOption,
+    select?: boolean,
+  ): void {
+    toggleOptionSelectWithResolvers({
+      selectedOptions$: this.selectedOptions$,
+      $rawSelectedOptions: this.$rawSelectedOptions,
+      multiple$: this.multiple$,
+      option,
+      select,
+    });
+  }
+}
+
 
 /*--------------------------------*/
 
@@ -219,14 +295,14 @@ export interface IOptionsManagerProperties<GOption> extends //
 //       const rawSelectedOptions$ = defineSimpleObservableProperty<IOptionsList<GOption>>(this, 'rawSelectedOptions', []);
 //       const multiple$ = defineSimpleObservableProperty<boolean>(this, 'multiple', false);
 //
-//       const options$ = shareR$$(map$$(rawOptions$, (options: IOptionsList<GOption>): IReadonlyOptionsSet<GOption> => {
+//       const options$ = shareRL$$(map$$(rawOptions$, (options: IOptionsList<GOption>): IReadonlyOptionsSet<GOption> => {
 //         return isSet<GOption>(options)
 //           ? options
 //           : new Set<GOption>(options);
 //       }));
 //       this.options$ = options$;
 //
-//       const selectedOptions$ = shareR$$(function$$(
+//       const selectedOptions$ = shareRL$$(function$$(
 //         [rawSelectedOptions$, options$, multiple$],
 //         (
 //           rawSelectedOptions: IOptionsList<GOption>,
@@ -299,14 +375,14 @@ export interface IOptionsManagerProperties<GOption> extends //
 //     const rawSelectedOptions$ = defineSimpleObservableProperty<IOptionsList<GOption>>(this, 'rawSelectedOptions', []);
 //     const multiple$ = defineSimpleObservableProperty<boolean>(this, 'multiple', false);
 //
-//     const options$ = shareR$$(map$$(rawOptions$, (options: IOptionsList<GOption>): IReadonlyOptionsSet<GOption> => {
+//     const options$ = shareRL$$(map$$(rawOptions$, (options: IOptionsList<GOption>): IReadonlyOptionsSet<GOption> => {
 //       return isSet<GOption>(options)
 //         ? options
 //         : new Set<GOption>(options);
 //     }));
 //     this.options$ = options$;
 //
-//     const selectedOptions$ = shareR$$(function$$(
+//     const selectedOptions$ = shareRL$$(function$$(
 //       [rawSelectedOptions$, options$, multiple$],
 //       (
 //         rawSelectedOptions: IOptionsList<GOption>,

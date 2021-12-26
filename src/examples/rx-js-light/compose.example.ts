@@ -1,10 +1,10 @@
-import { composeObserver, composeEmitPipeFunctions, mapEmitPipe } from '@lifaon/rx-js-light';
+import { composeObserver, composeObserverPipes, mapObserverPipe } from '@lifaon/rx-js-light';
 
 
 function composeExample1() {
-  const emitPipe = composeEmitPipeFunctions([
-    mapEmitPipe<number, number>((value: number) => (value + 2)),
-    mapEmitPipe<number, string>((value: number) => value.toString(10)),
+  const emitPipe = composeObserverPipes([
+    mapObserverPipe<number, number>((value: number) => (value + 2)),
+    mapObserverPipe<number, string>((value: number) => value.toString(10)),
   ]);
 
   const emit = emitPipe((value: string) => {
@@ -16,8 +16,8 @@ function composeExample1() {
 
 function composeExample2() {
   const emit = composeObserver([
-    mapEmitPipe<number, number>((value: number) => (value + 2)),
-    mapEmitPipe<number, string>((value: number) => value.toString(10)),
+    mapObserverPipe<number, number>((value: number) => (value + 2)),
+    mapObserverPipe<number, string>((value: number) => value.toString(10)),
   ], (value: string) => {
     console.log('value', value);
   });

@@ -1,8 +1,9 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
+  compileReactiveCSSAsComponentStyle,
+  compileReactiveHTMLAsGenericComponentTemplate, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, IObservable, let$$, map$$ } from '@lifaon/rx-js-light';
+import { IMulticastReplayLastSource, IObservable, let$$, map$$, single } from '@lifaon/rx-js-light';
 
 
 /** COMPONENT **/
@@ -26,19 +27,21 @@ const CONSTANTS_TO_IMPORT = {
 
 @Component({
   name: 'app-for-loop-example',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <div class="count">
-      count: {{ $.count$ }} in {{ $.time$ }}ms
-    </div>
-    <div
-      class="item"
-      *for="let item of $.items$"
-      (click)="() => $.onClickItem(item)"
-      [class.selected]="item.$selected$.subscribe"
-    >
-      {{ item.text$ }}
-    </div>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html: `
+      <div class="count">
+        count: {{ $.count$ }} in {{ $.time$ }}ms
+      </div>
+      <div
+        class="item"
+        *for="let item of $.items$"
+        (click)="() => $.onClickItem(item)"
+        [class.selected]="item.$selected$.subscribe"
+      >
+        {{ item.text$ }}
+      </div>
+    `,
+  }),
   styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
@@ -76,7 +79,7 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
     const count$ = map$$($items$.subscribe, (items: IItem[]) => items.length);
 
     const items = Array.from({ length: 1e4 }, (v: any, index: number): IItem => ({
-      text$: single$$(`#${ index }`),
+      text$: single(`#${ index }`),
       $selected$: let$$<boolean>(false),
     }));
 

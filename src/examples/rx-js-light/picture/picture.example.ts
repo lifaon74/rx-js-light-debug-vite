@@ -1,15 +1,15 @@
 import {
-  fromPromise, IMapFilterDiscard, IObservable, IObservableFromPromiseNotifications,
-  IObservablePipe,
-  MAP_FILTER_DISCARD, mapFilter$$, mergeMapS$$$, single
+  fromPromise, IMapFilterDiscard, IObservable, IFromPromiseObservableNotifications, IObservablePipe, MAP_FILTER_DISCARD,
+  mapFilter$$, mergeMapS$$, mergeMapS$$$, not$$, single
 } from '@lifaon/rx-js-light';
-import { multiMediaSourcesPipe } from './source/multi-media-sources-pipe';
-import { mediaSourcePipe } from './source/media-source-pipe';
+import { selectFirstValidMediaSource } from './source/select-first-valid-media-source';
+import { mediaSourceWithConditions } from './source/media-source-with-conditions';
 import { maxSizeElement } from './conditions/size/element/max-size-element';
-import { awaitImageLoaded, createImage, sourceToDataURL } from '../../misc/image/image-helpers';
+import { sourceToDataURL } from '../../misc/media/image/image-helpers';
 import { mediaSource } from './source/media-source';
-
-export type IOptionalSource = string | undefined;
+import { IOptionalSource } from './source/optional-source.type';
+import { createElementSizeObservableInitialized } from './conditions/size/element/helpers/create-element-size-observable';
+import { elementInvisible, elementVisible } from './conditions/size/element/element-visible';
 
 
 function isWindow(
@@ -21,43 +21,45 @@ function isWindow(
 
 /** SOURCE **/
 
+const SOURCE_LOAD_AND_CACHE_CACHE = new Map<string, IObservable<IOptionalSource>>();
 
 function sourceLoadAndCache(
   subscribe: IObservable<IOptionalSource>,
 ): IObservable<IOptionalSource> {
-  return sourceLoadAndCachePipe()(subscribe);
-}
-
-const SOURCE_LOAD_AND_CACHE_PIPE_CACHE = new Map<string, IObservable<IOptionalSource>>();
-
-function sourceLoadAndCachePipe(): IObservablePipe<IOptionalSource, IOptionalSource> {
-  return mergeMapS$$$<IOptionalSource, IOptionalSource>((src: IOptionalSource): IObservable<IOptionalSource> => {
+  return mergeMapS$$<IOptionalSource, IOptionalSource>(subscribe, (src: IOptionalSource): IObservable<IOptionalSource> => {
     if (src === void 0) {
       return single(void 0);
     } else {
-      let cached: IObservable<IOptionalSource> | undefined = SOURCE_LOAD_AND_CACHE_PIPE_CACHE.get(src);
-      if (cached === void 0) {
-        cached = mapFilter$$(fromPromise(sourceToDataURL(src)), (notification: IObservableFromPromiseNotifications<string>): IOptionalSource | IMapFilterDiscard => {
-          switch (notification.name) {
-            case 'error':
-              return void 0;
-            case 'next':
-              return notification.value;
-            case 'complete':
-              return MAP_FILTER_DISCARD;
-          }
-        });
-        SOURCE_LOAD_AND_CACHE_PIPE_CACHE.set(src, cached as IObservable<IOptionalSource>);
+      if (src.startsWith('data:')) {
+        return single(src);
+      } else {
+        let cached: IObservable<IOptionalSource> | undefined = SOURCE_LOAD_AND_CACHE_CACHE.get(src);
+        if (cached === void 0) {
+          cached = mapFilter$$(fromPromise(sourceToDataURL(src)), (notification: IFromPromiseObservableNotifications<string>): IOptionalSource | IMapFilterDiscard => {
+            switch (notification.name) {
+              case 'error':
+                return void 0;
+              case 'next':
+                return notification.value;
+              case 'complete':
+                return MAP_FILTER_DISCARD;
+            }
+          });
+          SOURCE_LOAD_AND_CACHE_CACHE.set(src, cached as IObservable<IOptionalSource>);
+        }
+        return cached as IObservable<IOptionalSource>;
       }
-      return cached as IObservable<IOptionalSource>;
     }
   });
 }
 
 
 
-
-
+export function mediaSourceForInvisibleElement(
+  element: Element,
+): IObservable<IOptionalSource> {
+  return mediaSourceWithConditions('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>', [elementInvisible(element)]);
+}
 
 /*---------------------*/
 
@@ -66,19 +68,21 @@ function samplePicture$$(
 ): IObservable<IOptionalSource> {
   const root: string = '/assets/images/dynamic';
 
-  const source100$ = mediaSourcePipe(`${ root }/sample-100.jpg`, [maxSizeElement(element, { width: 100, height: 67 })]);
-  const source500$ = mediaSourcePipe(`${ root }/sample-500.jpg`, [maxSizeElement(element, { width: 500, height: 336 })]);
-  const source1000$ = mediaSourcePipe(`${ root }/sample-1000.jpg`, [maxSizeElement(element, { width: 1000, height: 671 })]);
-  const source2000$ = mediaSourcePipe(`${ root }/sample-2000.jpg`, [maxSizeElement(element, { width: 2000, height: 1342 })]);
+  const source0 = mediaSourceForInvisibleElement(element);
+  const source100$ = mediaSourceWithConditions(`${ root }/sample-100.jpg`, [maxSizeElement(element, { width: 100, height: 67 })]);
+  const source500$ = mediaSourceWithConditions(`${ root }/sample-500.jpg`, [maxSizeElement(element, { width: 500, height: 336 })]);
+  const source1000$ = mediaSourceWithConditions(`${ root }/sample-1000.jpg`, [maxSizeElement(element, { width: 1000, height: 671 })]);
+  const source2000$ = mediaSourceWithConditions(`${ root }/sample-2000.jpg`, [maxSizeElement(element, { width: 2000, height: 1342 })]);
   const sourceNative$ = mediaSource(`${ root }/sample-native.jpg`);
 
-  return multiMediaSourcesPipe([
+  return sourceLoadAndCache(selectFirstValidMediaSource([
+    source0,
     source100$,
     source500$,
     source1000$,
     source2000$,
     sourceNative$,
-  ].map(sourceLoadAndCache));
+  ]));
 }
 
 
@@ -86,19 +90,6 @@ function samplePicture$$(
 
 export function pictureExample() {
   // const root: string = '/assets/images/dynamic';
-
-  // const picture$ = pipe$$(source(`${ root }/sample-100.jpg`), []);
-  // const source100$ = mediaSourcePipe(`${ root }/sample-100.jpg`, [maxWidthWindow(100)]);
-  // const source500$ = mediaSourcePipe(`${ root }/sample-500.jpg`, [maxWidthWindow(500)]);
-  // const source2000$ = mediaSourcePipe(`${ root }/sample-2000.jpg`, [maxWidthWindow(2000)]);
-  // const sourceNative$ = mediaSourcePipe(`${ root }/sample-native.jpg`, []);
-  // const picture$ = multiMediaSourcesPipe([
-  //   source100$,
-  //   source500$,
-  //   source2000$,
-  //   sourceNative$,
-  // ]);
-
 
   const container = document.createElement('div');
 
@@ -118,7 +109,7 @@ export function pictureExample() {
   container.style.setProperty('background-size', 'contain');
 
   picture$((src: IOptionalSource) => {
-    console.log('change');
+    // console.log('change', src);
     if (src === void 0) {
       container.style.removeProperty('background-image');
     } else {

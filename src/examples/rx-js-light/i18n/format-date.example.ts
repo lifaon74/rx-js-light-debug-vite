@@ -1,8 +1,8 @@
 import {
-  fromEventTarget, function$$, interval, IObservable, map$$, map$$$, merge, of, pipe$$, single
+  fromEventTarget, function$$, interval, IObservable, map$$, map$$$, merge, pipe$$, single,
 } from '@lifaon/rx-js-light';
 import { createLocaleFormatContext } from './shared-functions';
-import { DATE_TIME_FORMAT_MEDIUM_DATE, dateTimeFormatObservablePipe, ILocales } from '@lifaon/rx-i18n';
+import { dateTimeFormatS$$$, ILocales } from '@lifaon/rx-i18n';
 
 /*----------------------*/
 
@@ -50,7 +50,7 @@ function createLocaleSelectElement(
 
   const selectElement = document.createElement('select');
 
-  const displayNames = new Intl.DisplayNames(navigator.languages, { type: 'language' });
+  const displayNames = new Intl.DisplayNames(navigator.languages as string[], { type: 'language' });
 
   for (let i = 0, l = languages.length; i < l; i++) {
     const locale: string = languages[i];
@@ -177,7 +177,7 @@ function formatDateExample1() {
     return function$$(
       [
         map$$(merge([fromEventTarget(selectElement, 'change'), single(void 0)]), () => selectElement.value),
-        map$$(interval(1000), () => Date.now())
+        map$$(interval(1000), () => Date.now()),
       ],
       formatDate,
     )((value: string) => {
@@ -196,8 +196,8 @@ function formatDateExample2() {
   createLocaleFormatContext((locales$: IObservable<ILocales>) => {
     return pipe$$(interval(1000), [
       map$$$<void, number>(() => Date.now()),
-      dateTimeFormatObservablePipe(locales$, of(DATE_TIME_FORMAT_MEDIUM_DATE)),
-      // dateTimeShortcutFormatObservablePipe(locales$, of<IDateTimeShortcutFormat>('medium')),
+      // dateTimeFormat$$$(locales$, single(DATE_TIME_FORMAT_MEDIUM_DATE)),
+      dateTimeFormatS$$$(locales$, single('medium')),
     ]);
   });
 }
@@ -206,7 +206,7 @@ function formatDateExample2() {
 /*----------------------*/
 
 export function formatDateExample() {
-  formatDateExample1();
-  // formatDateExample2();
+  // formatDateExample1();
+  formatDateExample2();
 }
 

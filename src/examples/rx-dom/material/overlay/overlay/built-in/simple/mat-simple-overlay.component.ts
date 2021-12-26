@@ -3,7 +3,7 @@ import style from './mat-simple-overlay.component.scss?inline';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
 import { compileReactiveCSSAsComponentStyle, injectComponentStyle, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
 import { combineLatest, IObservable } from '@lifaon/rx-js-light';
-import { MatOverlayWithAnimationComponent } from '../../component/with-animation/overlay-with-animation.component';
+import { MatOverlayWithAnimationComponent } from '../../__component/with-animation/overlay-with-animation.component';
 import { findDOMElement } from '../../../../../../misc/find-dom-element';
 import { ICSSPositionAndSize } from '../../../../../../misc/types/position-and-size/css-position-and-size.type';
 import { applyCSSPositionAndSize } from '../../../../../../misc/types/position-and-size/apply-css-position-and-size';

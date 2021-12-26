@@ -1,26 +1,13 @@
-import {
-  compileReactiveHTMLAsGenericComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
-  generateCreateElementFunctionWithCustomElements, OnCreate
-} from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
 
-const APP_HOME_PAGE_CUSTOM_ELEMENTS = [
-  AppMenuPageComponent,
-];
 
 /** COMPONENT **/
 
 interface IData {
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  createElement: generateCreateElementFunctionWithCustomElements(APP_HOME_PAGE_CUSTOM_ELEMENTS),
-};
 
-// @Page({
-//   path: new Path('/home'),
-// })
 @Component({
   name: 'app-home-page',
   template: compileReactiveHTMLAsGenericComponentTemplate({
@@ -30,6 +17,9 @@ const CONSTANTS_TO_IMPORT = {
       </div>
       <app-menu/>
     `,
+    customElements: [
+      AppMenuPageComponent,
+    ],
   }),
 })
 export class AppHomePageComponent extends HTMLElement implements OnCreate<IData> {

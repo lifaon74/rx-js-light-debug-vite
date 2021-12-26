@@ -8,20 +8,31 @@
   $weather-page-background-color: #333; // or #222
   $weather-page-color: #333;
 
-  $weather-page-daily-forecast-border-color: #999;
-  $weather-page-daily-forecast-border-color-selected: #444;
-  $weather-page-daily-forecast-background-color-selected: #f6f6f6;
-  $weather-page-daily-forecast-day-color: #5d5d5d;
-  $weather-page-daily-forecast-date-color: #666;
-  $weather-page-daily-forecast-probability-of-precipitation-color: #666;
-  $weather-page-daily-forecast-precipitation-color: #3865b8;
-  $weather-page-daily-forecast-temperature-separator-color: #666;
-  $weather-page-daily-forecast-temperature-min-color: #6198fc;
-  $weather-page-daily-forecast-temperature-max-color: #fc6161;
+  $weather-page-error-color: #fc6161;
+
+  $weather-page-daily-weather-border-color: #999;
+  $weather-page-daily-weather-border-color-selected: #444;
+  $weather-page-daily-weather-background-color-selected: #f6f6f6;
+  $weather-page-daily-weather-day-color: #5d5d5d;
+  $weather-page-daily-weather-date-color: #666;
+  $weather-page-daily-weather-probability-of-precipitation-color: #666;
+  $weather-page-daily-weather-precipitation-color: #3865b8;
+  $weather-page-daily-weather-temperature-separator-color: #666;
+  $weather-page-daily-weather-temperature-min-color: #6198fc;
+  $weather-page-daily-weather-temperature-max-color: #fc6161;
 
 
-  //$weather-page-progress-bar-background-color: create-var('weather-page-progress-bar-background-color', $weather-page-background-color);
-  //@include create-css-var($weather-page-progress-bar-background-color);
+  $weather-page-hourly-weather-border-color: #999;
+  $weather-page-hourly-weather-horizontal-padding: 10px;
+  $weather-page-hourly-weather-vertical-padding: 10px;
+  $weather-page-hourly-weather-inner-border-color: #d9d9d9;
+  $weather-page-hourly-weather-day-color: #5d5d5d;
+  $weather-page-hourly-weather-date-color: #666;
+  $weather-page-hourly-weather-hour-color: #888;
+  $weather-page-hourly-weather-precipitation-color: #888;
+  $weather-page-hourly-weather-temperature-color: #888;
+  $weather-page-hourly-weather-humidity-color: #888;
+  $weather-page-hourly-weather-ultraviolet-index-color: #888;
 
   /* STYLE */
 
@@ -30,20 +41,27 @@
   font-size: 0;
   padding: 15px;
 
-  & > .place {
-    font-size: 18px;
-    padding-bottom: 15px;
+  & > .place-and-granularity {
+    & > .place {
+      font-size: 18px;
+      padding-bottom: 15px;
+    }
+
+    & > .weather-granularity {
+      font-size: 18px;
+      padding-bottom: 15px;
+    }
   }
 
-  & > .daily-forecast-container {
+  & > .daily-weather-container {
     //display: flex;
     //flex-wrap: nowrap;
     //justify-content: space-between;
     //align-items: stretch;
 
-    & > .daily-forecast {
+    & > .daily-weather {
       //display: inline-block;
-      border: 1px solid $weather-page-daily-forecast-border-color;
+      border: 1px solid $weather-page-daily-weather-border-color;
       border-radius: 4px;
       //flex-basis: math.div(100%, 9);
       text-align: center;
@@ -51,14 +69,14 @@
 
       & > .day {
         font-size: 16px;
-        color: $weather-page-daily-forecast-day-color;
+        color: $weather-page-daily-weather-day-color;
         font-weight: 600;
         text-transform: uppercase;
       }
 
       & > .date {
         font-size: 14px;
-        color: $weather-page-daily-forecast-date-color;
+        color: $weather-page-daily-weather-date-color;
       }
 
       & > .illustration {
@@ -73,12 +91,12 @@
 
       & > .probability-of-precipitation {
         font-size: 12px;
-        color: $weather-page-daily-forecast-probability-of-precipitation-color;
+        color: $weather-page-daily-weather-probability-of-precipitation-color;
       }
 
       & > .precipitation {
         font-size: 12px;
-        color: $weather-page-daily-forecast-precipitation-color;
+        color: $weather-page-daily-weather-precipitation-color;
         line-height: 16px;
         min-height: 16px;
         margin: 2px 0;
@@ -92,22 +110,22 @@
         }
 
         & > .min {
-          color: $weather-page-daily-forecast-temperature-min-color;
+          color: $weather-page-daily-weather-temperature-min-color;
         }
 
         & > .separator {
           padding: 0 5px;
-          color: $weather-page-daily-forecast-temperature-separator-color;
+          color: $weather-page-daily-weather-temperature-separator-color;
         }
 
         & > .max {
-          color: $weather-page-daily-forecast-temperature-max-color;
+          color: $weather-page-daily-weather-temperature-max-color;
         }
       }
 
       &.selected {
-        border-color: $weather-page-daily-forecast-border-color-selected;
-        background-color: $weather-page-daily-forecast-background-color-selected;
+        border-color: $weather-page-daily-weather-border-color-selected;
+        background-color: $weather-page-daily-weather-background-color-selected;
       }
 
       &:not(:last-child) {
@@ -116,10 +134,122 @@
     }
   }
 
-  & > .hourly-forecast-container {
-    display: table;
-    width: 100%;
-    font-size: 14px;
+  & > .hourly-weather-container {
+    & > .hourly-weather-grouped-daily {
+      border: 1px solid $weather-page-hourly-weather-border-color;
+      border-radius: 4px;
+      //padding: 10px;
+      padding: 0 $weather-page-hourly-weather-horizontal-padding;
+
+      & > .date-container {
+        //padding: $weather-page-hourly-weather-vertical-padding $weather-page-hourly-weather-horizontal-padding;
+        border-bottom: 1px solid $weather-page-hourly-weather-inner-border-color;
+        padding: $weather-page-hourly-weather-vertical-padding 0;
+
+        & > * {
+          display: inline-block;
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 20px;
+        }
+
+        & > .day {
+          color: $weather-page-hourly-weather-day-color;
+
+          &::after {
+            content: '-';
+            display: inline-block;
+            padding: 0 5px;
+          }
+        }
+
+        & > .date {
+          color: $weather-page-hourly-weather-date-color;
+        }
+      }
+
+      & > .details-container {
+        & > .hourly-weather {
+          padding: 5px 0;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+
+          $size: 30px;
+
+          & > * {
+            display: inline-block;
+            vertical-align: top;
+            height: 30px;
+            line-height: 30px;
+
+            &:not(:last-child) {
+              margin-right: 6px;
+            }
+          }
+
+          & > .hour {
+            min-width: 54px;
+            color: $weather-page-hourly-weather-hour-color;
+            font-size: 12px;
+            font-weight: 600;
+          }
+
+          & > .illustration {
+            width: $size;
+            height: $size;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+          }
+
+          & > .precipitation,
+          & > .temperature,
+          & > .humidity,
+          & > .ultraviolet-index {
+            font-size: 12px;
+
+          }
+
+          & > .precipitation {
+            min-width: 34px;
+            color: $weather-page-hourly-weather-precipitation-color;
+          }
+
+          & > .temperature {
+            min-width: 34px;
+            color: $weather-page-hourly-weather-temperature-color;
+            font-weight: 600;
+          }
+
+          & > .humidity {
+            min-width: 90px;
+            color: $weather-page-hourly-weather-humidity-color;
+            padding-left: 5px;
+          }
+
+          & > .ultraviolet-index {
+            min-width: 64px;
+            color: $weather-page-hourly-weather-ultraviolet-index-color;
+            padding-left: 5px;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid $weather-page-hourly-weather-inner-border-color;
+          }
+        }
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  & > .error {
+    font-size: 18px;
+    text-align: center;
+    color: $weather-page-error-color;
   }
 }
 

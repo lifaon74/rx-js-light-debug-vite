@@ -1,11 +1,10 @@
 import {
-  createEventListener, createMulticastSource, createNotification, freeze, INotification, IObservable
+  createEventListener, createMulticastSource, createNotification, freeze, INotification, IObservable,
 } from '@lifaon/rx-js-light';
-import { patchObjectMethod } from '@lifaon/rx-dom';
+import { getBaseURI, stringOrURLToURL, IStringOrURL } from '@lifaon/rx-dom';
 import { getLocation } from './get-location';
 import { getHistory } from './get-history';
-import { getBaseURI } from './get-base-uri';
-
+import { patchObjectMethod } from './patch-object-method';
 
 export interface INavigationState {
   readonly url: URL;
@@ -38,12 +37,30 @@ export type INavigationEvent =
   | 'replace'
   ;
 
+
 export type INavigationNotification = INotification<INavigationEvent, INavigationState>;
+export type INavigationNavigateTarget = '_blank' | '_self';
+
+export interface INavigationNavigateOptions {
+  replaceState?: boolean; // (default: false)
+  target?: INavigationNavigateTarget; // (default: '_self')
+  noopener?: boolean; // (default: true)
+  noreferrer?: boolean; // (default: true)
+}
+
+
+export interface INavigationGetStateFunction {
+  (index?: number): (INavigationState | null);
+}
+
+export interface INavigationNavigateFunction {
+  (url: IStringOrURL, options?: INavigationNavigateOptions): void;
+}
 
 export interface INavigation {
-  readonly onChange: IObservable<INavigationNotification>;
-  readonly getState: (index?: number) => (INavigationState | null);
-  readonly navigate: (url: URL | string, replaceState?: boolean) => void;
+  readonly change$: IObservable<INavigationNotification>;
+  readonly getState: INavigationGetStateFunction;
+  readonly navigate: INavigationNavigateFunction;
   readonly back: () => void;
   readonly canBack: () => boolean;
   readonly forward: () => void;
@@ -65,10 +82,10 @@ export function createNavigation(
   const log = (...args: any[]) => {
   };
 
-  const $onNavigation$ = createMulticastSource<INavigationNotification>();
+  const { emit: $navigationChange, subscribe: navigationChange$ } = createMulticastSource<INavigationNotification>();
 
   const dispatch = (name: INavigationEvent, state: INavigationState): void => {
-    $onNavigation$.emit(createNotification<INavigationEvent, INavigationState>(name, state));
+    $navigationChange(createNotification<INavigationEvent, INavigationState>(name, state));
   };
 
   const onIntegrityError = (
@@ -83,7 +100,7 @@ export function createNavigation(
     index = -1;
   };
 
-  const getState = (relativeIndex: number = 0): INavigationState | null => {
+  const getState: INavigationGetStateFunction = (relativeIndex: number = 0): INavigationState | null => {
     const historyIndex: number = index + relativeIndex;
     return (
       (0 <= historyIndex)
@@ -98,7 +115,7 @@ export function createNavigation(
   };
 
   const createNavigationStateFromPushStateURL = (
-    url?: string | null,
+    url?: string | URL | null,
   ): INavigationState => {
     return createNavigationState(new URL(url ?? location.href, getBaseURI()));
   };
@@ -163,10 +180,6 @@ export function createNavigation(
 
   const onForward = (state: INavigationState = createCurrentNavigationState()): void => {
     const nextState: INavigationState | null = getState(1);
-    if (state === void 0) {
-      state = nextState ?? createCurrentNavigationState();
-    }
-
     if (nextState === null) {
       onIntegrityError('forward / no forward location');
       onPush(state);
@@ -176,28 +189,30 @@ export function createNavigation(
     } else {
       log('forward');
       index = Math.min(index + 1, states.length - 1);
+      dispatch('forward', state);
     }
-    dispatch('forward', state);
   };
 
 
-  patchObjectMethod(history, 'pushState', function (
-    this: History,
+  patchObjectMethod(history, 'pushState',  (
+    _this: History,
+    native: History['pushState'],
     data: any,
-    title: string,
-    url?: string | null
-  ): void {
-    this.pushState(data, title, url);
+    unused: string,
+    url?: string | URL | null,
+  ): void => {
+    native.call(_this, data, unused, url);
     onPush(createNavigationStateFromPushStateURL(url));
   });
 
-  patchObjectMethod(history, 'replaceState', function (
-    this: History,
+  patchObjectMethod(history, 'replaceState', (
+    _this: History,
+    native: History['replaceState'],
     data: any,
-    title: string,
-    url?: string | null
-  ): void {
-    this.replaceState(data, title, url);
+    unused: string,
+    url?: string | URL | null,
+  ): void => {
+    native.call(_this, data, unused, url);
     onReplace(createNavigationStateFromPushStateURL(url));
   });
 
@@ -215,6 +230,7 @@ export function createNavigation(
   //   onForward();
   // });
 
+  // INFO only triggered by the user or by using history.back, go, or forward
   createEventListener(window, 'popstate', () => {
     // if (popstateDetected) {
     //   popstateDetected = false;
@@ -250,25 +266,51 @@ export function createNavigation(
     return ((index + 1) < states.length);
   };
 
-  const navigate = (
-    url: URL | string,
-    replaceState: boolean = false,
+  const navigate: INavigationNavigateFunction = (
+    url: IStringOrURL,
+    options?: INavigationNavigateOptions,
   ): void => {
     if (typeof url === 'string') {
-      return navigate(new URL(url, getBaseURI()), replaceState);
+      return navigate(stringOrURLToURL(url), options);
     } else {
-      if (url.origin === location.origin) {
-        if (replaceState) {
-          history.replaceState(null, '', url.href);
-        } else {
-          history.pushState(null, '', url.href);
+      const {
+        replaceState = false,
+        target = '_self',
+        noopener = true,
+        noreferrer = true,
+      }: INavigationNavigateOptions = options ?? {};
+
+      if (target === '_blank') {
+        const features: string[] = [];
+        if (noopener) {
+          features.push('noopener');
+        }
+        if (noreferrer) {
+          features.push('noreferrer');
+        }
+        const win: Window | null = window.open(url, target, features.join(','));
+        if (win !== null) {
+          if (noopener) {
+            win.opener = null;
+          }
+          if (noreferrer) {
+            (win.location as any) = 'http://domain.com'; // fake domain on purpose
+          }
         }
       } else {
-        const location: Location = getLocation();
-        if (replaceState) {
-          location.replace(url.href);
+        if (url.href.startsWith(getBaseURI())) {
+          if (replaceState) {
+            history.replaceState(null, '', url);
+          } else {
+            history.pushState(null, '', url);
+          }
         } else {
-          location.assign(url.href);
+          const location: Location = getLocation();
+          if (replaceState) {
+            location.replace(url);
+          } else {
+            location.assign(url);
+          }
         }
       }
     }
@@ -277,7 +319,7 @@ export function createNavigation(
   onPush(createCurrentNavigationState());
 
   return {
-    onChange: $onNavigation$.subscribe,
+    change$: navigationChange$,
     getState,
     navigate,
     back,

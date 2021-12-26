@@ -6,12 +6,25 @@ $mat-select-input-overlay-option-color: var(--mat-select-input-overlay-option-co
 $mat-select-input-overlay-option-line-height: var(--mat-select-input-overlay-option-line-height, 18px);
 $mat-select-input-overlay-option-background-color-hover: var(--mat-select-input-overlay-option-background-color-hover, #fafafa);
 $mat-select-input-overlay-option-background-color-selected: var(--mat-select-input-overlay-option-background-color-selected, #f1f1f1);
-$mat-select-input-overlay-option-background-color-active: var(--mat-select-input-overlay-option-background-color-active, #e5e5e5);
+//$mat-select-input-overlay-option-background-color-active: var(--mat-select-input-overlay-option-background-color-active, #e5e5e5);
+$mat-select-input-overlay-option-border-color-active: var(--mat-select-input-overlay-option-border-color-active, #000);
 
 :host {
   display: block;
+  position: absolute;
 
-  & > .content {
+  left: -10000px;
+  top: -10000px;
+  width: 0;
+  height: 0;
+  background-color: white;
+  border-radius: 5px;
+
+  box-shadow: 0 2px 7px 0 rgba(black, 0.15);
+
+  //pointer-events: none;
+  //
+  //& > .content {
     padding: 0;
     overflow: hidden;
     pointer-events: auto;
@@ -32,6 +45,7 @@ $mat-select-input-overlay-option-background-color-active: var(--mat-select-input
 
         color: $mat-select-input-overlay-option-color;
         background-color: white;
+        border-left: 4px solid transparent;
 
 
         &:hover {
@@ -43,10 +57,11 @@ $mat-select-input-overlay-option-background-color-active: var(--mat-select-input
         }
 
         &.active {
-          background-color: $mat-select-input-overlay-option-background-color-active;
+          //background-color: $mat-select-input-overlay-option-background-color-active;
+          border-color: $mat-select-input-overlay-option-border-color-active;
         }
       }
     }
-  }
+  //}
 }
 

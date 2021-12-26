@@ -1,0 +1,139 @@
+@import '../mat-checkbox-input.variables';
+
+$mat-checkbox-input-switch-transition-duration: var(--mat-checkbox-input-switch-transition-duration, $mat-checkbox-input-transition-duration);
+
+$mat-checkbox-input-switch-height: var(--mat-checkbox-input-switch-height, 24px);
+$mat-checkbox-input-switch-width: var(--mat-checkbox-input-switch-width, calc(#{$mat-checkbox-input-switch-height} * 2));
+
+$mat-checkbox-input-switch-border-width: var(--mat-checkbox-input-switch-border-width, 2px);
+
+$mat-checkbox-input-switch-border-color-focused: var(--mat-checkbox-input-switch-border-color-focused, #000);
+
+$mat-checkbox-input-switch-border-color-off: var(--mat-checkbox-input-switch-border-color-off, #cecece);
+$mat-checkbox-input-switch-background-color-off: var(--mat-checkbox-input-switch-background-color-off, #cecece);
+$mat-checkbox-input-switch-button-background-color-off: var(--mat-checkbox-input-switch-button-background-color-off, #fff);
+$mat-checkbox-input-switch-border-color-disabled-off: var(--mat-checkbox-input-switch-border-color-disabled-off, #cecece);
+$mat-checkbox-input-switch-background-color-disabled-off: var(--mat-checkbox-input-switch-background-color-disabled-off, #cecece);
+$mat-checkbox-input-switch-button-background-color-disabled-off: var(--mat-checkbox-input-switch-button-background-color-disabled-off, $mat-checkbox-input-switch-button-background-color-off);
+
+$mat-checkbox-input-switch-border-color-on: var(--mat-checkbox-input-switch-border-color-on, #0066ff);
+$mat-checkbox-input-switch-background-color-on: var(--mat-checkbox-input-switch-background-color-on, #0066ff);
+$mat-checkbox-input-switch-button-background-color-on: var(--mat-checkbox-input-switch-button-background-color-on, #fff);
+$mat-checkbox-input-switch-border-color-disabled-on: var(--mat-checkbox-input-switch-border-color-disabled-on, $mat-checkbox-input-switch-border-color-disabled-off);
+$mat-checkbox-input-switch-background-color-disabled-on: var(--mat-checkbox-switch-input-background-color-disabled-on, $mat-checkbox-input-switch-background-color-disabled-off);
+$mat-checkbox-input-switch-button-background-color-disabled-on: var(--mat-checkbox-input-switch-button-background-color-disabled-on, $mat-checkbox-input-switch-button-background-color-on);
+
+$mat-checkbox-input-switch-border-color-indeterminate: var(--mat-checkbox-input-switch-border-color-indeterminate, $mat-checkbox-input-switch-border-color-off);
+$mat-checkbox-input-switch-background-color-indeterminate: var(--mat-checkbox-switch-input-background-color-indeterminate, $mat-checkbox-input-switch-background-color-off);
+$mat-checkbox-input-switch-button-background-color-indeterminate: var(--mat-checkbox-input-switch-button-background-color-indeterminate, $mat-checkbox-input-switch-button-background-color-off);
+$mat-checkbox-input-switch-border-color-disabled-indeterminate: var(--mat-checkbox-input-switch-border-color-disabled-indeterminate, $mat-checkbox-input-switch-border-color-disabled-off);
+$mat-checkbox-input-switch-background-color-disabled-indeterminate: var(--mat-checkbox-input-switch-background-color-disabled-indeterminate, $mat-checkbox-input-switch-background-color-disabled-off);
+$mat-checkbox-input-switch-button-color-disabled-indeterminate: var(--mat-checkbox-input-switch-button-color-disabled-indeterminate, $mat-checkbox-input-switch-button-background-color-disabled-off);
+
+
+%mat-checkbox-input-radio {
+  $mat-checkbox-input-switch-button-size: calc(#{$mat-checkbox-input-switch-height} - (#{$mat-checkbox-input-switch-border-width} * 2));
+
+  width: $mat-checkbox-input-switch-width;
+  height: $mat-checkbox-input-switch-height;
+  background-color: $mat-checkbox-input-switch-background-color-off;
+  border: $mat-checkbox-input-switch-border-width solid $mat-checkbox-input-switch-border-color-off;
+  border-radius: calc(#{$mat-checkbox-input-switch-height} * 0.5);
+
+  & > .checkbox-wrapper {
+    & > .on-icon {
+      left: 0;
+      width: $mat-checkbox-input-switch-button-size;
+      height: $mat-checkbox-input-switch-button-size;
+      border-radius: 50%;
+      background-color: $mat-checkbox-input-switch-button-background-color-off;
+      transition: left $mat-checkbox-input-switch-transition-duration, background-color $mat-checkbox-input-switch-transition-duration;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    & > .indeterminate-icon {
+      display: none;
+    }
+  }
+
+  &.mat-focused {
+    border-color: $mat-checkbox-input-switch-border-color-focused;
+  }
+
+  &.mat-disabled {
+    border-color: $mat-checkbox-input-switch-border-color-disabled-off;
+    background-color: $mat-checkbox-input-switch-background-color-disabled-off;
+
+    & > .checkbox-wrapper {
+      & > .on-icon {
+        background-color: $mat-checkbox-input-switch-button-background-color-disabled-off;
+      }
+    }
+  }
+
+  &.mat-on {
+    background-color: $mat-checkbox-input-switch-background-color-on;
+
+    & > .checkbox-wrapper {
+      & > .on-icon {
+        background-color: $mat-checkbox-input-switch-button-background-color-on;
+        left: calc(#{$mat-checkbox-input-switch-width} - #{$mat-checkbox-input-switch-height});
+      }
+    }
+
+    &:not(.mat-focused) {
+      border-color: $mat-checkbox-input-switch-border-color-on;
+    }
+
+    &.mat-disabled {
+      border-color: $mat-checkbox-input-switch-border-color-disabled-on;
+      background-color: $mat-checkbox-input-switch-background-color-disabled-on;
+
+      & > .checkbox-wrapper {
+        & > .on-icon {
+          background-color: $mat-checkbox-input-switch-button-background-color-disabled-on;
+        }
+      }
+    }
+  }
+
+  &.mat-indeterminate {
+    background-color: $mat-checkbox-input-switch-background-color-indeterminate;
+
+    & > .checkbox-wrapper {
+      & > .on-icon {
+        background-color: $mat-checkbox-input-switch-button-background-color-indeterminate;
+        left: calc((#{$mat-checkbox-input-switch-width} - #{$mat-checkbox-input-switch-height}) * 0.5);
+      }
+    }
+
+    &:not(.mat-focused) {
+      border-color: $mat-checkbox-input-switch-border-color-indeterminate;
+    }
+
+    &.mat-disabled {
+      border-color: $mat-checkbox-input-switch-border-color-disabled-indeterminate;
+      background-color: $mat-checkbox-input-switch-background-color-disabled-indeterminate;
+
+      & > .checkbox-wrapper {
+        & > .on-icon {
+          background-color: $mat-checkbox-input-switch-button-color-disabled-indeterminate;
+        }
+      }
+    }
+  }
+
+  &:not(.mat-on) {
+    & > .checkbox-wrapper {
+      & > .on-icon {
+        display: block;
+      }
+    }
+  }
+}
+
+
+

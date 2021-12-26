@@ -1,4 +1,4 @@
-<div class="content">
+<!--<div class="content" tabindex="0">-->
   <div
     class="focus-out-helper"
     tabindex="0"
@@ -15,7 +15,7 @@
       *for="let option of $.options$; index as index$"
       [class.selected]="$.isOptionSelected(option)"
       [class.active]="$.isOptionActive(option)"
-      (click)="() => $.$onClickOption(option)"
+      (click)="(event) => $.onClickOption(option, event)"
       [attr.index]="index$"
     >
       <div class="label">
@@ -29,5 +29,5 @@
     tabindex="0"
     (focus)="$.$onFocusOut"
   ></div>
-</div>
+<!--</div>-->
 

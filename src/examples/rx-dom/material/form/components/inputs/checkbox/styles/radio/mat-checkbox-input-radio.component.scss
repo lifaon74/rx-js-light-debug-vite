@@ -1,0 +1,22 @@
+@import '../mat-checkbox-input.variables';
+
+$mat-checkbox-input-radio-icon-size: var(--mat-checkbox-input-radio-icon-size, calc(#{$mat-checkbox-input-icon-size} * 0.8));
+
+%mat-checkbox-input-radio {
+  border-radius: 50%;
+
+  & > .checkbox-wrapper {
+    & > .on-icon,
+    & > .indeterminate-icon {
+      &::before {
+        margin-left: calc(#{$mat-checkbox-input-radio-icon-size} * -0.5);
+        margin-top: calc(#{$mat-checkbox-input-radio-icon-size} * -0.5);
+        width: $mat-checkbox-input-radio-icon-size;
+        height: $mat-checkbox-input-radio-icon-size;
+        font-size: $mat-checkbox-input-radio-icon-size;
+        line-height: $mat-checkbox-input-radio-icon-size;
+      }
+    }
+  }
+}
+

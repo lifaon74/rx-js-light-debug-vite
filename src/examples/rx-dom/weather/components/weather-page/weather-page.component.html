@@ -1,59 +1,140 @@
-<div class="place">
-  {{ $.place$ }}
-</div>
 
-<div class="daily-forecast-container">
-  <div
-    class="daily-forecast"
-    *for="let dailyData of $.daily$"
-    (click)="() => $.onClickDailyForecast(dailyData)"
-    [class.selected]="$.isDailyForecastSelected(dailyData)"
-  >
-    <div class="day">
-      {{ dailyData.day$ }}
-    </div>
-
-    <div class="date">
-      {{ dailyData.date$ }}
+<rx-template name="weather">
+  <div class="place-and-granularity">
+    <div class="place">
+      {{ $.place$ }}
     </div>
 
     <div
-      class="illustration"
-      [style.background-image]="dailyData.illustration$"
-      [title]="dailyData.weatherTitle$"
-    ></div>
-
-    <div class="temperature">
-      <div class="min">
-        {{ dailyData.minTemperature$ }}
-      </div>
-      <div class="separator">/</div>
-      <div class="max">
-        {{ dailyData.maxTemperature$ }}
-      </div>
+      class="weather-granularity"
+      (click)="$.onClickWeatherGranularity"
+    >
+      {{ $.weatherGranularityText$ }}
     </div>
-
-<!--    <div class="probability-of-precipitation">-->
-<!--      {{ dailyData.probabilityOfPrecipitation$ }}-->
-<!--    </div>-->
-
-    <div class="precipitation">
-      {{ dailyData.precipitation$ }}
-    </div>
-
   </div>
-</div>
 
-<!--<div class="hourly-forecast-container">-->
-<!--  <div-->
-<!--    class="hourly-forecast"-->
-<!--    *for="let hourlyData of $.hourly$"-->
-<!--  >-->
-<!--    <div class="hour">-->
-<!--      {{ hourlyData.hour$ }}-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+  <rx-switch
+    expression="$.weatherGranularity$"
+  >
+    <div
+      class="daily-weather-container"
+      *switch-case="'daily'"
+    >
+      <div
+        class="daily-weather"
+        *for="let dailyWeather of $.dailyWeather$"
+      >
+        <div class="day">
+          {{ dailyWeather.day$ }}
+        </div>
+
+        <div class="date">
+          {{ dailyWeather.date$ }}
+        </div>
+
+        <div
+          class="illustration"
+          [style.background-image]="dailyWeather.illustration$"
+          [title]="dailyWeather.weatherTitle$"
+        ></div>
+
+        <div class="temperature">
+          <div class="min">
+            {{ dailyWeather.minTemperature$ }}
+          </div>
+          <div class="separator">/</div>
+          <div class="max">
+            {{ dailyWeather.maxTemperature$ }}
+          </div>
+        </div>
+
+        <!--    <div class="probability-of-precipitation">-->
+        <!--      {{ dailyData.probabilityOfPrecipitation$ }}-->
+        <!--    </div>-->
+
+        <div class="precipitation">
+          {{ dailyWeather.precipitation$ }}
+        </div>
+
+      </div>
+    </div>
+
+    <div
+      class="hourly-weather-container"
+      *switch-case="'hourly'"
+    >
+      <div
+        class="hourly-weather-grouped-daily"
+        *for="let hourlyWeatherGroupedDaily of $.hourlyWeatherGroupedDaily$"
+      >
+        <div class="date-container">
+          <div class="day">
+            {{ hourlyWeatherGroupedDaily.day$ }}
+          </div>
+
+          <div class="date">
+            {{ hourlyWeatherGroupedDaily.date$ }}
+          </div>
+        </div>
+
+        <div class="details-container">
+          <div
+            class="hourly-weather"
+            *for="let hourlyWeather of hourlyWeatherGroupedDaily.hourly$"
+          >
+            <div class="hour">
+              {{ hourlyWeather.hour$ }}
+            </div>
+
+            <div
+              class="illustration"
+              [style.background-image]="hourlyWeather.illustration$"
+              [title]="hourlyWeather.weatherTitle$"
+            ></div>
+
+            <div class="precipitation">
+              {{ hourlyWeather.precipitation$ }}
+            </div>
+
+            <div class="temperature">
+              {{ hourlyWeather.temperature$ }}
+            </div>
+
+            <div class="humidity">
+              Humidity: {{ hourlyWeather.humidity$ }}
+            </div>
+
+            <div class="ultraviolet-index">
+              UVI: {{ hourlyWeather.ultravioletIndex$ }}
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+  </rx-switch>
+
+</rx-template>
+
+<rx-template name="error">
+  <div class="error">
+    {{ $.errorText$ }}
+  </div>
+</rx-template>
+
+<rx-if
+  condition="$.hasError$"
+  true="error"
+  false="weather"
+></rx-if>
+
+
+
+
+
 
 
 

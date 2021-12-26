@@ -2,7 +2,6 @@ import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } fr
 import { INavigation, NAVIGATION } from '../../navigation/navigation';
 import { idle, IObservable, map$$ } from '@lifaon/rx-js-light';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
-import { generateRouterOutletHTML } from '../../router/router-outlet/rx-router-outlet';
 
 /** COMPONENT **/
 
@@ -11,15 +10,6 @@ interface IData {
   readonly canBack$: IObservable<boolean>;
 }
 
-// @Page({
-//   path: new Path('/list'),
-//   isEndPoint: true,
-//   children: () => {
-//     return Promise.all([
-//       import('../sub-list/sub-list.page.component').then(_ => _.AppSubListPageComponent),
-//     ]);
-//   },
-// })
 @Component({
   name: 'app-list-page',
   template: compileReactiveHTMLAsGenericComponentTemplate({
@@ -37,7 +27,7 @@ interface IData {
       </div>
       
       <app-menu></app-menu>
-      ${ generateRouterOutletHTML() }
+      <div rx-router-outlet></div>
     `,
     customElements: [
       AppMenuPageComponent,

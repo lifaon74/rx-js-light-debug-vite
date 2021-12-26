@@ -7,6 +7,8 @@ import { aotPlugin } from '@lifaon/rx-dom-aot-plugin';
 const config = {
   build: {
     target: 'esnext',
+    minify: 'terser',
+    polyfillModulePreload: false,
     terserOptions: {
       toplevel: true,
       ecma: 2020,
@@ -33,7 +35,8 @@ const config = {
     aotPlugin(),
   ],
   server: {
-    https: false,
+    // https: true,
+    // host: true,
   },
   optimizeDeps: {
     include: [

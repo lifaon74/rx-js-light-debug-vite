@@ -8,7 +8,7 @@ import html from './files-list.component.html?raw';
 // @ts-ignore
 import style from './files-list.component.scss';
 import {
-  fromPromise, IObservable, IObservableFromPromiseNotifications, let$$, letU$$, map$$, notificationObserver, of,
+  fromPromise, IObservable, IFromPromiseObservableNotifications, let$$, letU$$, map$$, notificationObserver, of,
   SubscriptionManager
 } from '@lifaon/rx-js-light';
 import { mutateReadonlyReplayLastSourceArray } from '@lifaon/rx-js-light';
@@ -78,7 +78,7 @@ export interface IFile {
 
 
 type ILoadMoreFilesResult = IteratorResult<readonly IFile[]>;
-type ILoadMoreFilesNotifications = IObservableFromPromiseNotifications<ILoadMoreFilesResult>;
+type ILoadMoreFilesNotifications = IFromPromiseObservableNotifications<ILoadMoreFilesResult>;
 
 type IFilesListState = 'awaiting' | 'loading' | 'done' | 'errored';
 

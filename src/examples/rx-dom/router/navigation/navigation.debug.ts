@@ -3,7 +3,7 @@ import { INavigationNotification, NAVIGATION } from './navigation';
 export async function debugNavigation() {
   const navigation = NAVIGATION;
 
-  navigation.onChange((notification: INavigationNotification) => {
+  navigation.change$((notification: INavigationNotification) => {
     console.log(notification);
   });
 

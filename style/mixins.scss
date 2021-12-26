@@ -27,14 +27,38 @@ $icon-vertical-offset: 5%;
     text-align: center;
     left: 50%;
     top: 50% + $icon-vertical-offset;
-    margin-left: -($icon-size-inner * 0.5);
-    margin-top: -($icon-size-inner * 0.5);
+    margin-left: calc(#{$icon-size-inner} * -0.5);
+    margin-top: calc(#{$icon-size-inner} * -0.5);
     width: $icon-size-inner;
     height: $icon-size-inner;
     font-size: $icon-size-inner;
     line-height: $icon-size-inner;
   }
 }
+
+//@mixin square-icon-mixin($icon-size-inner, $icon-size-outer-x: $icon-size-inner,  $icon-size-outer-y: $icon-size-outer-x) {
+//  display: inline-block;
+//  cursor: inherit;
+//  user-select: none;
+//  position: relative;
+//  width: $icon-size-outer-x;
+//  height: $icon-size-outer-y;
+//
+//  &::before {
+//    position: absolute;
+//    //left: ($icon-size-outer-x - $icon-size-inner) / 2;
+//    //top: ($icon-size-outer-y - $icon-size-inner) / 2;
+//    text-align: center;
+//    left: 50%;
+//    top: 50% + $icon-vertical-offset;
+//    margin-left: -($icon-size-inner * 0.5);
+//    margin-top: -($icon-size-inner * 0.5);
+//    width: $icon-size-inner;
+//    height: $icon-size-inner;
+//    font-size: $icon-size-inner;
+//    line-height: $icon-size-inner;
+//  }
+//}
 
 @mixin dynamic-icon-mixin($color, $color-hover, $transition-duration: 250ms) {
   cursor: pointer;

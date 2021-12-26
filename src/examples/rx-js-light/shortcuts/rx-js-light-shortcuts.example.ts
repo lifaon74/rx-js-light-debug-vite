@@ -1,4 +1,4 @@
-import { andM$$, let$$, map$$, share$$, single } from '../../../../../rx-js-light/dist';
+import { andM$$, let$$, map$$, share$$, single } from '@lifaon/rx-js-light';
 
 
 function rxjsLightShortcutsExample1() {

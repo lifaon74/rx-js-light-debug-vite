@@ -1,36 +1,37 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './weather-page.component.html?raw';
 // @ts-ignore
-import style from './weather-page.component.scss';
-import { getCurrentPosition } from '../../helpers/get-current-position';
+import style from './weather-page.component.scss?inline';
 import {
-  fromPromise, IDefaultNotificationsUnion,
-  IObserver, ILocaleToTranslationKeyToTranslationValueMap, INextNotification, IRelativeTimeFormatValueAndUnit,
-  isNextNotification,
-  IObservable,
-  ITranslationKeyToTranslationValueMap, LOCALES, single, map$$, map$$$, pipe$$, letU$$, mergeMapS$$$, filter$$$
+  filter$$$, fromGeolocationPosition, fromPromise, function$$, IDefaultNotificationsUnion,
+  IFromGeolocationPositionObservableNotifications, IMapFilterDiscard, INextNotification, IObservable, IObservablePipe,
+  IObserver, isErrorNotification, isNextNotification, let$$, map$$, map$$$, MAP_FILTER_DISCARD, mapFilter$$,
+  mergeMapS$$, mergeMapS$$$, pipe$$, pipe$$$, shareR$$, shareRL$$, single, throttleTime$$,
 } from '@lifaon/rx-js-light';
-import { getReverseNominatimCached } from '../../api/get-reverse-nominatim/get-reverse-nominatim';
+import { getReverseNominatim, getReverseNominatimCached } from '../../api/get-reverse-nominatim/get-reverse-nominatim';
 import { IGetReverseNominatimJSONResponse } from '../../api/get-reverse-nominatim/response.type';
 import { Immutable, ImmutableArray } from '@lifaon/rx-store';
-import { IDailyWeather, IGetWeatherResponse } from '../../api/get-weather/response.type';
-import { getWeather } from '../../api/get-weather/get-weather';
-import { getWeatherImageURLFromId } from '../../api/get-weather/weather-state-id/image/get-weather-image-url-from-id';
-import { getWeatherDescriptionFromId } from '../../api/get-weather/weather-state-id/get-weather-description-from-id';
 import { generateWeatherImage, IWeatherData } from '../../helpers/generate-weather-image/generate-weather-image';
 import {
-  kelvinToCelsius, metreToMillimetre, MM_PER_DAY_TO_METER_PER_SECOND, MS_PER_DAY
+  kelvinToCelsius, MM_PER_DAY_TO_METER_PER_SECOND, MM_PER_HOUR_TO_METER_PER_SECOND, MS_PER_DAY,
 } from '../../helpers/units/converters';
+import {
+  dateTimeFormat$$$, ILocaleToTranslations, IRelativeTimeFormatValue, ITranslations, LOCALES, numberFormat$$$,
+  relativeTimeFormat$$$,
+} from '@lifaon/rx-i18n';
+import { IGeographicPosition } from '../../api/shared/geographic-position';
+import { getWeather } from '../../api/get-weather/get-weather';
+import { IDailyWeather, IGetWeatherResponse, IHourlyWeather } from '../../api/get-weather/response.type';
+import { getWeatherDescriptionFromId } from '../../api/get-weather/weather-state-id/get-weather-description-from-id';
 
 /** CONSTANTS **/
 
 const locales$ = LOCALES.subscribe;
 
-const TRANSLATIONS: ILocaleToTranslationKeyToTranslationValueMap = new Map<string, ITranslationKeyToTranslationValueMap>([
+const TRANSLATIONS: ILocaleToTranslations = new Map<string, ITranslations>([
   ['en', new Map([
     ['translate.uvi', 'UV Indice'],
     ['translate.humidity', 'Humidity'],
@@ -86,21 +87,50 @@ function getWeatherImageURL(
 /** FORMAT **/
 
 const formatRelativeDay$$$ = pipe$$$([
-  relativeTimeFormat$$$(locales$, single({
+  relativeTimeFormat$$$(single('days'), locales$, single({
     numeric: 'auto',
     style: 'long',
   })),
   map$$$<string, string>(capitalizeFirstLetter),
 ]);
 
-const formatWeekDay$$$ = dateTimeFormat$$$(locales$, single({
-  weekday: 'long',
-}));
+const formatWeekDay$$$ = pipe$$$([
+  dateTimeFormat$$$(locales$, single({
+    weekday: 'long',
+  })),
+  map$$$<string, string>(capitalizeFirstLetter),
+]);
+
+
+// TODO upgrade to Temporal when available
+function dayDiff(
+  startDate: Date,
+  endDate: Date,
+): number {
+  if (startDate.getTime() > endDate.getTime()) {
+    return -dayDiff(endDate, startDate);
+  } else {
+    let dayCount: number = 0;
+
+    const _startDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const _endDate: number = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()).getTime();
+
+    while (_endDate > _startDate.getTime()) {
+      dayCount++;
+      _startDate.setDate(_startDate.getDate() + 1);
+    }
+
+    return dayCount;
+  }
+}
+
 
 const formatDay$$$ = mergeMapS$$$<number, string>((timestamp: number): IObservable<string> => {
-  const days: number = Math.floor((timestamp - Date.now()) / MS_PER_DAY);
+  const date: Date = new Date(timestamp);
+  const currentDate: Date = new Date();
+  const days: number = dayDiff(currentDate, date);
   if (days <= 1) {
-    return pipe$$(single<IRelativeTimeFormatValueAndUnit>({ value: days, unit: 'days' }), [
+    return pipe$$(single<IRelativeTimeFormatValue>(days), [
       formatRelativeDay$$$,
     ]);
   } else {
@@ -118,17 +148,41 @@ const formatPercent$$$ = numberFormat$$$(locales$, single({
   style: 'percent',
 }));
 
+const formatNumber$$$ = numberFormat$$$(locales$, single({
+  style: 'decimal',
+}));
+
 const formatPrecipitation$$$ = numberFormat$$$(locales$, single({
   style: 'unit',
   unit: 'millimeter',
   unitDisplay: 'narrow',
-  maximumFractionDigits: 1,
+  maximumFractionDigits: 0,
 }));
+
+const formatOptionalPrecipitation$$$$ = (
+  formatPipe: IObservablePipe<number, string>,
+): IObservablePipe<number, string> => {
+  return mergeMapS$$$((value: number): IObservable<string> => {
+    return (value === 0)
+      ? single('')
+      : formatPipe(single<number>(value));
+  });
+};
 
 const formatDailyPrecipitation$$$ = pipe$$$([
   map$$$<number, number>((value: number) => (value / MM_PER_DAY_TO_METER_PER_SECOND)),
   formatPrecipitation$$$,
 ]);
+
+const formatOptionalDailyPrecipitation$$$ = formatOptionalPrecipitation$$$$(formatDailyPrecipitation$$$);
+
+const formatHourlyPrecipitation$$$ = pipe$$$([
+  map$$$<number, number>((value: number) => (value / MM_PER_HOUR_TO_METER_PER_SECOND)),
+  formatPrecipitation$$$,
+]);
+
+const formatOptionalHourlyPrecipitation$$$ = formatOptionalPrecipitation$$$$(formatHourlyPrecipitation$$$);
+
 
 const formatTemperature$$$ = pipe$$$([
   map$$$<number, number>(kelvinToCelsius),
@@ -145,11 +199,17 @@ const formatHour$$$ = dateTimeFormat$$$(locales$, single({
   hour: 'numeric', minute: 'numeric',
 }));
 
+const mapNotificationToOptionalErrorError$$ = map$$$((notification: IDefaultNotificationsUnion<any>): unknown | null => {
+  return isErrorNotification(notification)
+    ? notification.value
+    : null;
+});
+
 /** COMPONENT **/
 
-type IDailyState = Immutable<{
-  timestamp: number;
-  // data
+type IWeatherGranularity = 'daily' | 'hourly';
+
+type IDailyWeatherData = Immutable<{
   day$: IObservable<string>;
   date$: IObservable<string>;
   illustration$: IObservable<string>;
@@ -160,37 +220,42 @@ type IDailyState = Immutable<{
   maxTemperature$: IObservable<string>;
 }>;
 
-type IHourlyState = Immutable<{
+type IHourlyWeatherData = Immutable<{
   hour$: IObservable<string>;
+  illustration$: IObservable<string>;
+  weatherTitle$: IObservable<string>;
+  precipitation$: IObservable<string>;
+  temperature$: IObservable<string>;
+  humidity$: IObservable<string>;
+  ultravioletIndex$: IObservable<string>;
+}>;
+
+type IHourlyWeatherDataGroupedDaily = Immutable<{
+  day$: IObservable<string>;
+  date$: IObservable<string>;
+  hourly$: IObservable<ImmutableArray<IHourlyWeatherData>>;
 }>;
 
 type IData = Immutable<{
   // data
+  errorText$: IObservable<string>;
+  hasError$: IObservable<boolean>;
   place$: IObservable<string>;
-  daily$: IObservable<ImmutableArray<IDailyState>>;
-  selectedDailyForecast$: IObservable<IDailyState>;
-  // hourly$: IObservable<ImmutableArray<IHourlyState>>;
+  weatherGranularity$: IObservable<string>;
+  weatherGranularityText$: IObservable<string>;
+
+  dailyWeather$: IObservable<ImmutableArray<IDailyWeatherData>>;
+  hourlyWeatherGroupedDaily$: IObservable<ImmutableArray<IHourlyWeatherDataGroupedDaily>>;
 
   // events
-  onClickDailyForecast: IObserver<IDailyState>;
-
-  // others
-  isDailyForecastSelected: (dailyForecast: IDailyState) => IObservable<boolean>;
-
+  onClickWeatherGranularity: IObserver<IDailyWeatherData>;
 }>;
-
-const APP_WEATHER_PAGE_CUSTOM_ELEMENTS = [
-  // AppWeatherIconComponent,
-];
-
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  // createElement: generateCreateElementFunctionWithCustomElements(APP_WEATHER_PAGE_CUSTOM_ELEMENTS),
-};
 
 @Component({
   name: 'app-weather-page',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsGenericComponentTemplate({
+    html,
+  }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppWeatherPageComponent extends HTMLElement implements OnCreate<IData> {
@@ -200,27 +265,72 @@ export class AppWeatherPageComponent extends HTMLElement implements OnCreate<IDa
   constructor() {
     super();
 
-    /* SELECT DAILY FORECAST */
+    /* POSITION */
 
-    const $selectedDailyForecast$ = letU$$<IDailyState>();
-    const selectedDailyForecast$ = $selectedDailyForecast$.subscribe;
-    const onClickDailyForecast = $selectedDailyForecast$.emit;
+    const geolocationPosition$ = shareRL$$(throttleTime$$(fromGeolocationPosition(), 5 * 60 * 1000));
 
-    const isDailyForecastSelected = (dailyForecast: IDailyState): IObservable<boolean> => {
-      return map$$(selectedDailyForecast$, (selectedDailyForecast: IDailyState) => (selectedDailyForecast === dailyForecast));
+    const position$ = mapFilter$$(geolocationPosition$, (notification: IFromGeolocationPositionObservableNotifications): IGeographicPosition | IMapFilterDiscard => {
+      return isNextNotification(notification)
+        ? {
+          latitude: notification.value.coords.latitude,
+          longitude: notification.value.coords.longitude,
+        }
+        : MAP_FILTER_DISCARD;
+    });
+
+    const positionError$ = mapNotificationToOptionalErrorError$$(geolocationPosition$);
+
+
+    /* PLACE */
+
+    const reverseNominatimRequest$ = shareR$$(mergeMapS$$(position$, getReverseNominatim));
+
+    const reverseNominatimData$ = mapFilter$$(reverseNominatimRequest$, (notification: IDefaultNotificationsUnion<IGetReverseNominatimJSONResponse>): IGetReverseNominatimJSONResponse | IMapFilterDiscard => {
+      return isNextNotification(notification)
+        ? notification.value
+        : MAP_FILTER_DISCARD;
+    });
+
+    const reverseNominatimDataError$ = mapNotificationToOptionalErrorError$$(reverseNominatimRequest$);
+
+    const place$ = map$$(reverseNominatimData$, (reverseNominatimData: IGetReverseNominatimJSONResponse): string => {
+      return `${ reverseNominatimData.address.town } (${ reverseNominatimData.address.country })`;
+    });
+
+    /* WEATHER GRANULARITY */
+
+    const {
+      emit: $weatherGranularity,
+      subscribe: weatherGranularity$,
+      getValue: getWeatherGranularityValue,
+    } = let$$<IWeatherGranularity>(retrieveWeatherGranularity());
+
+    const onClickWeatherGranularity = () => {
+      const weatherGranularity: IWeatherGranularity = getNextWeatherGranularity(getWeatherGranularityValue());
+      storeWeatherGranularity(weatherGranularity);
+      $weatherGranularity(weatherGranularity);
     };
+
+    const weatherGranularityText$ = map$$(weatherGranularity$, getWeatherGranularityTranslated);
 
     /* WEATHER */
 
-    const $weatherData$ = letU$$<IGetWeatherResponse>();
-    const weatherData$ = $weatherData$.subscribe;
+    const weatherRequest$ = shareR$$(mergeMapS$$(position$, getWeather));
 
-    // const daily$ = single([]);
-    // const hourly$ = single([]);
+    const weatherData$ = mapFilter$$(weatherRequest$, (notification: IDefaultNotificationsUnion<IGetWeatherResponse>): IGetWeatherResponse | IMapFilterDiscard => {
+      return isNextNotification(notification)
+        ? notification.value
+        : MAP_FILTER_DISCARD;
+    });
 
-    const daily$ = map$$(weatherData$, (weatherData: IGetWeatherResponse): ImmutableArray<IDailyState> => {
-      return weatherData.daily.map((dailyData: IDailyWeather): IDailyState => {
-        const timestamp = dailyData.date;
+    const weatherDataError$ = mapNotificationToOptionalErrorError$$(weatherRequest$);
+
+
+    /* DAILY WEATHER */
+
+    const dailyWeather$ = map$$(weatherData$, (weatherData: IGetWeatherResponse): ImmutableArray<IDailyWeatherData> => {
+      return weatherData.daily.map((dailyWeather: IDailyWeather): IDailyWeatherData => {
+        const timestamp = dailyWeather.date;
         const timestamp$ = single(timestamp);
 
         const day$ = formatDay$$$(timestamp$);
@@ -228,22 +338,19 @@ export class AppWeatherPageComponent extends HTMLElement implements OnCreate<IDa
 
         // const illustration$ = single(`url(${ getWeatherImageURL(dailyData.weather[0].icon) }`);
         // const illustration$ = single(`url(${ getWeatherImageURLFromId(dailyData.state[0], false, false) }`);
-        const illustration$ = getWeatherImageURL(dailyData);
+        const illustration$ = getWeatherImageURL(dailyWeather);
 
-        const weatherTitle$ = single(getWeatherDescriptionFromId(dailyData.state[0]));
+        const weatherTitle$ = single(getWeatherDescriptionFromId(dailyWeather.state[0]));
 
         // const probabilityOfPrecipitation$ = formatPercent$$$(single<number>(dailyData.pop));
 
-        const precipitation$ = ((dailyData.rain === void 0) || (dailyData.rain === 0))
-          ? single('')
-          : formatDailyPrecipitation$$$(single<number>(dailyData.rain));
+        const precipitation$ = formatOptionalDailyPrecipitation$$$(single<number>(dailyWeather.rain + dailyWeather.snow));
 
-        const minTemperature$ = formatTemperature$$$(single<number>(dailyData.temperature.min));
+        const minTemperature$ = formatTemperature$$$(single<number>(dailyWeather.temperature.min));
 
-        const maxTemperature$ = formatTemperature$$$(single<number>(dailyData.temperature.max));
+        const maxTemperature$ = formatTemperature$$$(single<number>(dailyWeather.temperature.max));
 
         return {
-          timestamp,
           day$,
           date$,
           illustration$,
@@ -256,85 +363,154 @@ export class AppWeatherPageComponent extends HTMLElement implements OnCreate<IDa
       });
     });
 
-    // const hourly$ = function$$([
-    //   weatherData$,
-    //   selectedDailyForecast$,
-    // ], (
-    //   weatherData: IGetWeatherJSONResponse,
-    //   selectedDailyForecast: IDailyState,
-    // ): ImmutableArray<IHourlyState> => {
-    //   const dailyForecastTimestamp: number = selectedDailyForecast.timestamp;
-    //   const dailyForecastTimestampEnd: number = dailyForecastTimestamp + MS_PER_DAY;
-    //
-    //   return weatherData.hourly
-    //     .filter((hourlyData: IGetWeatherJSONResponseHourlyState): boolean => {
-    //       const timestamp = hourlyData.dt * 1000;
-    //       return (dailyForecastTimestamp <= timestamp)
-    //         && (timestamp < dailyForecastTimestampEnd);
-    //     })
-    //     .map((hourlyData: IGetWeatherJSONResponseHourlyState): IHourlyState => {
-    //       const timestamp = hourlyData.dt * 1000;
-    //       const timestamp$ = single(timestamp);
-    //
-    //       const hour$ = formatHour$$$(timestamp$);
-    //
-    //       return {
-    //         hour$,
-    //       };
-    //     });
-    // });
+    /* HOURLY WEATHER */
 
-    /* PLACE */
+    const hourlyWeatherGroupedDaily$ = map$$(weatherData$, (weatherData: IGetWeatherResponse): ImmutableArray<IHourlyWeatherDataGroupedDaily> => {
+      const hourlyWeatherMap = new Map<string, IHourlyWeather[]>(); // key: Y-M-D,
 
-    const $reverseNominatimData$ = letU$$<IGetReverseNominatimJSONResponse>();
-    const reverseNominatimData$ = $reverseNominatimData$.subscribe;
+      for (let i = 0, l = weatherData.hourly.length; i < l; i++) {
+        const hourlyWeather: IHourlyWeather = weatherData.hourly[i];
+        const date = new Date(hourlyWeather.date);
+        const key: string = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        let hourlyWeatherGrouped: IHourlyWeather[] | undefined = hourlyWeatherMap.get(key);
+        if (hourlyWeatherGrouped === void 0) {
+          hourlyWeatherGrouped = [];
+          hourlyWeatherMap.set(key, hourlyWeatherGrouped);
+        }
+        hourlyWeatherGrouped.push(hourlyWeather);
+      }
 
 
-    const place$ = map$$(reverseNominatimData$, (reverseNominatimData: IGetReverseNominatimJSONResponse): string => {
-      return `${ reverseNominatimData.address.town } (${ reverseNominatimData.address.country })`;
+      return Array.from(hourlyWeatherMap.values(), (hourlyWeatherGrouped: IHourlyWeather[]): IHourlyWeatherDataGroupedDaily => {
+        // sort from first to last
+        hourlyWeatherGrouped.sort((a, b) => a.date - b.date);
+
+        const timestamp = hourlyWeatherGrouped[hourlyWeatherGrouped.length - 1].date;
+        const timestamp$ = single(timestamp);
+
+        const day$ = formatDay$$$(timestamp$);
+        const date$ = formatDate$$$(timestamp$);
+
+        const hourly$ = single<IHourlyWeatherData[]>(
+          hourlyWeatherGrouped.map((hourlyWeather: IHourlyWeather): IHourlyWeatherData => {
+            const hour$ = formatHour$$$(single(hourlyWeather.date));
+
+            const illustration$ = getWeatherImageURL(hourlyWeather);
+
+            const weatherTitle$ = single(getWeatherDescriptionFromId(hourlyWeather.state[0]));
+
+            const precipitation$ = formatOptionalHourlyPrecipitation$$$(single<number>(hourlyWeather.rain + hourlyWeather.snow));
+
+            const temperature$ = formatTemperature$$$(single<number>(hourlyWeather.temperature));
+
+            const humidity$ = formatPercent$$$(single<number>(hourlyWeather.humidity));
+
+            const ultravioletIndex$ = formatNumber$$$(single<number>(hourlyWeather.ultravioletIndex));
+
+            return {
+              hour$,
+              illustration$,
+              weatherTitle$,
+              precipitation$,
+              temperature$,
+              humidity$,
+              ultravioletIndex$,
+            };
+          }),
+        );
+
+        return {
+          day$,
+          date$,
+          hourly$,
+        };
+      });
     });
 
-    // fromGeolocationPosition()((notification) => {
-    //   console.log(notification);
-    // });
+    /* ERROR */
 
-    /* LOAD */
+    const error$ = function$$(
+      [
+        positionError$,
+        reverseNominatimDataError$,
+        weatherDataError$,
+      ],
+      (
+        positionError,
+        reverseNominatimDataError,
+        weatherDataError,
+      ): string | null => {
+        if (positionError !== null) {
+          return `error.position`;
+        } else if (reverseNominatimDataError !== null) {
+          return `error.reverse-nominatim-data`;
+        } else if (weatherDataError !== null) {
+          return `error.weather-data`;
+        } else {
+          return null;
+        }
+      },
+    );
 
-    getCurrentPosition()
-      .then((position: GeolocationPosition) => {
-        const options = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        // return Promise.all([
-        //   getWeather(options),
-        //   getReverseNominatim(options),
-        // ]);
-        return Promise.all([
-          getWeather(options),
-          getReverseNominatimCached(options),
-        ]);
-      })
-      .then(([weatherData, reverseNominatimData]: [IGetWeatherResponse, IGetReverseNominatimJSONResponse]) => {
-        console.log(weatherData);
-        // generateWeatherImage( weatherData.daily[0], 100);
-        // console.log(reverseNominatimData);
-        $weatherData$.emit(weatherData);
-        $reverseNominatimData$.emit(reverseNominatimData);
-      });
+    const errorText$ = map$$(error$, (error: string | null): string => {
+      return (error === null)
+        ? ''
+        : error;
+    });
+
+    const hasError$ = map$$(error$, (error: string | null) => (error !== null));
 
     this._data = {
+      errorText$,
+      hasError$,
       place$,
-      daily$,
-      selectedDailyForecast$,
-      // hourly$,
-      onClickDailyForecast,
-      isDailyForecastSelected,
+      weatherGranularity$,
+      weatherGranularityText$,
+      dailyWeather$,
+      hourlyWeatherGroupedDaily$,
+      onClickWeatherGranularity,
     };
   }
 
   public onCreate(): IData {
     return this._data;
   }
+}
+
+/** FUNCTIONS **/
+
+function getNextWeatherGranularity(
+  weatherGranularity: IWeatherGranularity,
+): IWeatherGranularity {
+  switch (weatherGranularity) {
+    case 'hourly':
+      return 'daily';
+    case 'daily':
+      return 'hourly';
+  }
+}
+
+function getWeatherGranularityTranslated(
+  weatherGranularity: IWeatherGranularity,
+): string {
+  switch (weatherGranularity) {
+    case 'hourly':
+      return 'Hourly';
+    case 'daily':
+      return 'Daily';
+  }
+}
+
+
+const WEATHER_GRANULARITY_KEY = 'weather-granularity';
+
+function storeWeatherGranularity(
+  weatherGranularity: IWeatherGranularity,
+): void {
+  localStorage.setItem(WEATHER_GRANULARITY_KEY, weatherGranularity);
+}
+
+function retrieveWeatherGranularity(): IWeatherGranularity {
+  return (localStorage.getItem(WEATHER_GRANULARITY_KEY) as IWeatherGranularity | null) ?? 'hourly';
 }
 

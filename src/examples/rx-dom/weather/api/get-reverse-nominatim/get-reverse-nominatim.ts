@@ -1,6 +1,6 @@
-import { fetchJSON } from '../helpers/fetch-json';
 import { IGetReverseNominatimOptions } from './request.type';
 import { IGetReverseNominatimJSONResponse } from './response.type';
+import { fromFetchJSON, INotificationsObservable, singleN } from '@lifaon/rx-js-light';
 
 
 export function getReverseNominatim(
@@ -8,8 +8,7 @@ export function getReverseNominatim(
     latitude,
     longitude,
   }: IGetReverseNominatimOptions,
-  signal?: AbortSignal,
-): Promise<IGetReverseNominatimJSONResponse> {
+): INotificationsObservable<IGetReverseNominatimJSONResponse> {
   // https://openweathermap.org/api/geocoding-api
   const url: URL = new URL(`https://nominatim.openstreetmap.org/reverse`);
 
@@ -18,18 +17,16 @@ export function getReverseNominatim(
   url.searchParams.set('lat', String(latitude));
   url.searchParams.set('lon', String(longitude));
 
-  return fetchJSON<IGetReverseNominatimJSONResponse>(
+  return fromFetchJSON<IGetReverseNominatimJSONResponse>(
     url.href,
-    { signal },
   );
 }
 
 
 export function getReverseNominatimCached(
   options?: IGetReverseNominatimOptions,
-  signal?: AbortSignal,
-): Promise<IGetReverseNominatimJSONResponse> {
-  return Promise.resolve(
+): INotificationsObservable<IGetReverseNominatimJSONResponse> {
+  return singleN<IGetReverseNominatimJSONResponse>(
     {
       'place_id': 306827010,
       'licence': 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright',
@@ -48,10 +45,10 @@ export function getReverseNominatimCached(
         'state': 'Geneva',
         'postcode': '1212',
         'country': 'Switzerland',
-        'country_code': 'ch'
+        'country_code': 'ch',
       },
-      'boundingbox': ['46.1863082', '46.186804', '6.1270788', '6.1277358']
-    }
+      'boundingbox': ['46.1863082', '46.186804', '6.1270788', '6.1277358'],
+    },
   );
 }
 

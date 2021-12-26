@@ -1,6 +1,8 @@
 import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
 import { IReadonlyMulticastReplayLastSource, IObservable, single, map$$, eq$$, let$$ } from '@lifaon/rx-js-light';
+import { getRouteParams } from '../../router/inject/inject';
+import { IRouteParams } from '../../router/route/route-params/route-params.type';
 
 
 /** COMPONENT **/
@@ -30,11 +32,11 @@ interface IData {
         <li *for="let productId of $.productIds$">
            <a
              is="v-link"
-             [href]="single('./product/' + productId)"
-             [replaceState]="$.single(true)"
+             [href]="'./product/' + productId"
+             [replaceState]="true"
            >
             Product: {{ single(productId) }}
-            <rx-container *if="$.eq$$(single(productId), $.productId$)">
+            <rx-container *if="$.eq$$($.single(productId), $.productId$)">
               Selected
             </rx-container>
            </a>
@@ -51,18 +53,19 @@ export class AppProductPageComponent extends HTMLElement implements OnCreate<IDa
   protected readonly data: IData;
 
   constructor(
-    $params$: IReadonlyMulticastReplayLastSource<{ productId: string }>,
   ) {
     super();
+
+    const params$ = getRouteParams(this);
 
     const $productIds$ = let$$(Array.from({ length: 1e1 }, (v: any, i: number) => `${ i }`));
     const productIds$ = $productIds$.subscribe;
 
-    // $params$.subscribe((params: IRouteParams) => {
+    // params$((params: IRouteParams) => {
     //   console.log('params', params);
     // });
 
-    const productId$ = map$$($params$.subscribe, params => params.productId);
+    const productId$ = map$$(params$, params => params.productId);
 
     this.data = {
       productId$,

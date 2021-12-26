@@ -1,11 +1,11 @@
 import { IGetOpenWeatherMapOneCallWeatherOptions } from './request.type';
 import { IGetOpenWeatherMapOneCallWeatherJSONResponse } from './response.type';
+import { INotificationsObservable, singleN } from '../../../../../../../../../rx-js-light/dist';
 
 export function getOpenWeatherMapOneCallWeatherCached(
   options?: IGetOpenWeatherMapOneCallWeatherOptions,
-  signal?: AbortSignal,
-): Promise<IGetOpenWeatherMapOneCallWeatherJSONResponse> {
-  return Promise.resolve({
+): INotificationsObservable<IGetOpenWeatherMapOneCallWeatherJSONResponse> {
+  return singleN<any>({
     'lat': 46.1865,
     'lon': 6.1276,
     'timezone': 'Europe/Zurich',
