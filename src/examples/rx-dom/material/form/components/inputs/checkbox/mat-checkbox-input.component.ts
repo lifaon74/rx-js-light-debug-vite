@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component,
   defineObservableProperty, IHavingObservableProperty, OnCreate,
   setReactiveClass, setReactiveClassList, setReactiveEventListener, subscribeOnNodeConnectedTo, uuid,
 } from '@lifaon/rx-dom';
@@ -58,7 +58,7 @@ interface IData {
 
 @Component({
   name: 'mat-checkbox-input',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html,
     modifiers: [
       INPUT_VALUE_MODIFIER,

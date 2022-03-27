@@ -17,6 +17,8 @@
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/navigation/__old" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/router/router/__router" />
       <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/material/form/components/inputs/select/__old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-dom/audio-player/components/__old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/examples/rx-js-light/websocket/array-buffer/__old" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

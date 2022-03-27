@@ -1,5 +1,5 @@
-import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
-import { INavigation, NAVIGATION } from '../../navigation/navigation';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { INavigation, NAVIGATION } from '@lifaon/rx-router';
 import { idle, IObservable, map$$ } from '@lifaon/rx-js-light';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
 
@@ -12,7 +12,7 @@ interface IData {
 
 @Component({
   name: 'app-list-page',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <div class="header">
         List page

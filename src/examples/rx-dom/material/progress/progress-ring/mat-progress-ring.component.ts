@@ -1,8 +1,7 @@
-import { IObserver, IObservable, single, map$$, function$$, let$$ } from '@lifaon/rx-js-light';
+import { function$$, IObservable, IObserver, let$$, map$$, single } from '@lifaon/rx-js-light';
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, IDynamicStyleValue, OnCreate,
-  defineObservableProperty, setReactiveStyle
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, defineObservableProperty,
+  IReactiveStyleValue, OnCreate,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-progress-ring.component.html?raw';
@@ -13,7 +12,7 @@ import style from './mat-progress-ring.component.scss?inline';
 
 interface IData {
   readonly strokeWidth$: IObservable<number>;
-  readonly strokeDashOffset$: IObservable<IDynamicStyleValue>;
+  readonly strokeDashOffset$: IObservable<IReactiveStyleValue>;
   readonly strokeDashArray$: IObservable<string>;
   readonly radius$: IObservable<number>;
   readonly diameter$: IObservable<number>;
@@ -26,10 +25,10 @@ interface IData {
 
 @Component({
   name: 'mat-progress-ring',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class AppProgressRingComponent extends HTMLElement implements OnCreate<IData> {
+export class MatProgressRingComponent extends HTMLElement implements OnCreate<IData> {
 
   progress$!: IObservable<number>;
   readonly $progress!: IObserver<number>;
@@ -87,11 +86,11 @@ export class AppProgressRingComponent extends HTMLElement implements OnCreate<ID
       },
     );
 
-    const strokeDashArray$ = map$$(circumference$, (circumference: number): string => `${ circumference } ${ circumference }`);
+    const strokeDashArray$ = map$$(circumference$, (circumference: number): string => `${circumference} ${circumference}`);
 
     const diameter$ = map$$(radius$, (radius: number): number => (radius * 2));
 
-    const transform$ = map$$(radius$, (radius: number): string => `rotate(-90 ${ radius } ${ radius })`);
+    const transform$ = map$$(radius$, (radius: number): string => `rotate(-90 ${radius} ${radius})`);
 
     this._data = {
       strokeWidth$,

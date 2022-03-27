@@ -1,10 +1,10 @@
 import {
-  attachNodeChildrenToNewDocumentFragment, compileReactiveCSSAsComponentStyle,
-  compileReactiveHTMLAsGenericComponentTemplate, Component, createDocumentFragment,
-  createDocumentFragmentFilledWithNodes,
-  defineObservableProperty, IHTMLTemplate, OnCreate, querySelector, querySelectorAll
+  attachNodeChildrenToNewDocumentFragment, compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate,
+  Component, componentInputU$$, createDocumentFragment, createDocumentFragmentFilledWithNodes, IComponentInput,
+  IDocumentFragmentOrNull, IHTMLTemplate, OnCreate, querySelector, querySelectorAll,
 } from '@lifaon/rx-dom';
-import { IObservable, IObserver, let$$, letU$$, map$$, single } from '@lifaon/rx-js-light';
+import { IObservable, map$$, single } from '@lifaon/rx-js-light';
+
 
 export function selectComponentContentElements(
   content: DocumentFragment,
@@ -28,7 +28,7 @@ export function selectComponentContentNodes(
 ): DocumentFragment {
   const element: Element | null = querySelector(content, selector);
   if (element === null) {
-    throw new Error(`Unable to locate: ${ selector }`);
+    throw new Error(`Unable to locate: ${selector}`);
   } else {
     return attachNodeChildrenToNewDocumentFragment(element);
   }
@@ -46,14 +46,14 @@ export function selectComponentContentNodesAsObservable(
 type IHeaderTemplate = IHTMLTemplate<any>;
 
 interface IData {
-  readonly headerContent$: IObservable<DocumentFragment>;
+  readonly headerContent$: IObservable<IDocumentFragmentOrNull>; // IReactiveContent;
   readonly selectComponentContentElementsAsObservable: typeof selectComponentContentElementsAsObservable;
   readonly selectComponentContentNodesAsObservable: typeof selectComponentContentNodesAsObservable;
 }
 
 @Component({
   name: 'app-inject-content',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <div class="header">
         <rx-inject-content
@@ -80,20 +80,16 @@ interface IData {
 })
 export class AppInjectContentComponent extends HTMLElement implements OnCreate<IData> {
 
-  headerTemplate$!: IObservable<IHeaderTemplate>;
-  readonly $headerTemplate!: IObserver<IHeaderTemplate>;
-  headerTemplate!: IHeaderTemplate;
+  readonly headerTemplate: IComponentInput<IHeaderTemplate>;
 
   protected readonly _data: IData;
 
   constructor() {
     super();
+    this.headerTemplate = componentInputU$$<IHeaderTemplate>();
+    const headerTemplate$ = this.headerTemplate.value$;
 
-    const $header$ = letU$$<IObservable<IHeaderTemplate>>();
-    defineObservableProperty(this, 'headerTemplate', $header$);
-    const headerTemplate$ = this.headerTemplate$;
-
-    const headerContent$ = map$$(headerTemplate$, (header: IHeaderTemplate) => header({}));
+    const headerContent$ = map$$(headerTemplate$, (header: IHeaderTemplate): IDocumentFragmentOrNull => header(createDocumentFragment()));
 
     this._data = {
       headerContent$,

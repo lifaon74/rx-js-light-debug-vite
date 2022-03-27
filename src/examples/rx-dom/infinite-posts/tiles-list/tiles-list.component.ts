@@ -1,9 +1,8 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_FROM_CONSTANTS_TO_IMPORT, OnConnect, OnCreate, OnDisconnect
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 import {
-  IDefaultNotificationsUnion, IObservable, Subscription, SubscriptionManager, mutateReadonlyReplayLastSourceArray, let$$
+  IDefaultNotificationsUnion, IObservable, let$$, mutateReadonlyReplayLastSourceArray, Subscription, SubscriptionManager,
 } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './tiles-list.component.scss';
@@ -13,7 +12,9 @@ import { createInfiniteScrollObservable } from '../helpers/infinite-scroll';
 import { fetchMonkeyUsersPosts, IMonkeyUserResponse } from '../services/fetch-monkey-user-posts';
 import { fetchNineGagPosts } from '../services/fetch-nine-gag-posts';
 import { IResource } from '../services/resource.type';
-import { filter$$ } from '../../../../../../rx-js-light/dist/src/observable/pipes/built-in/without-notifications/observer-pipe-related/filter/filter-observable.shortcut';
+import {
+  filter$$,
+} from '@lifaon/rx-js-light';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 
@@ -57,17 +58,12 @@ interface IData {
   readonly loading$: IObservable<boolean>;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_FROM_CONSTANTS_TO_IMPORT,
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
-
 @Component({
   name: 'app-tiles-list',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class AppTilesListComponent extends HTMLElement implements OnCreate<IData>, OnConnect, OnDisconnect {
+export class AppTilesListComponent extends HTMLElement implements OnCreate<IData> {
 
   protected readonly subscriptions: SubscriptionManager;
 
@@ -87,7 +83,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
     this.subscriptions.set('infinite-scroll', new Subscription(
       filter$$(
         createInfiniteScrollObservable({ scrollElement: this }),
-        () => !$loading$.getValue()
+        () => !$loading$.getValue(),
       ),
       () => {
         $loading$.emit(true);
@@ -95,7 +91,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
         this.subscriptions.set('fetch', new Subscription(
           fetchMonkeyUsersPosts({ next: this.next as (string | undefined) }),
           (
-            notification: IDefaultNotificationsUnion<IMonkeyUserResponse>
+            notification: IDefaultNotificationsUnion<IMonkeyUserResponse>,
           ) => {
             switch (notification.name) {
               case 'next': {
@@ -115,7 +111,7 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
               case 'error':
                 throw notification.value;
             }
-          }
+          },
         ).activate());
       }),
     );
@@ -124,18 +120,12 @@ export class AppTilesListComponent extends HTMLElement implements OnCreate<IData
       tiles$: $tiles$.subscribe,
       loading$: $loading$.subscribe,
     };
+
+    this.subscriptions.activateAll();
   }
 
   onCreate(): IData {
     return this.data;
-  }
-
-  onConnect(): void {
-    // this.subscriptions.activateAll();
-  }
-
-  onDisconnect(): void {
-    this.subscriptions.deactivateAll();
   }
 }
 

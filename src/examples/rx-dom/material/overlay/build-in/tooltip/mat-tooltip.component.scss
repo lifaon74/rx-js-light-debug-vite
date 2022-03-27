@@ -2,9 +2,11 @@
 
 :host {
   @extend %mat-overlay-content;
+
   display: block;
+  position: absolute;
   max-width: 200px;
-  inset: auto;
-  overflow: scroll;
+  overflow: auto;
+  pointer-events: none;
 }
 

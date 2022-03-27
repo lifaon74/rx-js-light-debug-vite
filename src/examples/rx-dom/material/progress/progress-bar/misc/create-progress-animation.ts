@@ -1,9 +1,11 @@
+import { IComponentInput } from '@lifaon/rx-dom';
+
 export function createProgressAnimation(
-  element: HTMLElement & { progress: number },
+  element: HTMLElement & { progress: IComponentInput<number> },
 ) {
   const loop = () => {
     // element.progress = (element.progress + 0.01 * Math.random()) % 1;
-    element.progress = (element.progress + 0.01) % 1;
+    element.progress.value = (element.progress.value + 0.01) % 1;
     // setAttributeValueWithEvent(element, 'progress', String((element.progress + 0.01 * Math.random()) % 1));
     // setTimeout(loop, 100);
     requestAnimationFrame(loop);
@@ -11,3 +13,15 @@ export function createProgressAnimation(
   loop();
 }
 
+// export function createProgressAnimation(
+//   element: HTMLElement & { progress: number },
+// ) {
+//   const loop = () => {
+//     // element.progress = (element.progress + 0.01 * Math.random()) % 1;
+//     element.progress = (element.progress + 0.01) % 1;
+//     // setAttributeValueWithEvent(element, 'progress', String((element.progress + 0.01 * Math.random()) % 1));
+//     // setTimeout(loop, 100);
+//     requestAnimationFrame(loop);
+//   };
+//   loop();
+// }

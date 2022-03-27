@@ -1,7 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle,
-  compileReactiveHTMLAsGenericComponentTemplate, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 import { IMulticastReplayLastSource, IObservable, let$$, map$$, single } from '@lifaon/rx-js-light';
 
@@ -21,13 +19,10 @@ interface IData {
   readonly onClickItem: (item: IItem) => void;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
 
 @Component({
   name: 'app-for-loop-example',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <div class="count">
         count: {{ $.count$ }} in {{ $.time$ }}ms
@@ -71,7 +66,7 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
   constructor() {
     super();
     const $time$ = let$$<number>(0);
-    const time$ =  $time$.subscribe;
+    const time$ = $time$.subscribe;
 
     const $items$ = let$$<IItem[]>([]);
     const items$ = $items$.subscribe;
@@ -79,7 +74,7 @@ export class AppForLoopExampleComponent extends HTMLElement implements OnCreate<
     const count$ = map$$($items$.subscribe, (items: IItem[]) => items.length);
 
     const items = Array.from({ length: 1e4 }, (v: any, index: number): IItem => ({
-      text$: single(`#${ index }`),
+      text$: single(`#${index}`),
       $selected$: let$$<boolean>(false),
     }));
 

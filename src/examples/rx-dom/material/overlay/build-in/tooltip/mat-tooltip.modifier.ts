@@ -1,12 +1,11 @@
 import {
-  createElementModifier, IHTMLElementModifierFunctionToNodeModifierFunction, INodeModifier, IReactiveContent,
-  onNodeConnectedToWithImmediateCached, setAttributeValue, uuid
+  createHTMLElementModifier, IHTMLElementModifier, IReactiveContent, nodeRemove, onNodeConnectedToWithImmediateCached,
+  setAttributeValue, uuid,
 } from '@lifaon/rx-dom';
 import { MatOverlayManagerComponent } from '../../overlay/manager/mat-overlay-manager.component';
 import { MatTooltipComponent } from './mat-tooltip.component';
 import { debounceTime$$$, distinct$$$, IUnsubscribe, pipe$$ } from '@lifaon/rx-js-light';
 import { mouseEnterObservable } from '../../../helpers/mouse-enter-subscribe-function';
-
 
 
 export interface IMatTooltipModifierFunction {
@@ -30,7 +29,7 @@ export function createMatTooltipModifierFunction(
 
     const close = () => {
       if (overlay !== void 0) {
-        overlay.close();
+        nodeRemove(overlay);
         overlay = void 0;
       }
     };
@@ -47,10 +46,11 @@ export function createMatTooltipModifierFunction(
       if (connected) {
         _unsubscribe = display$((display: boolean): void => {
           if (display) {
-            overlay = managerRef().open_legacy(MatTooltipComponent, [{ targetElement: element, content$ }]);
+            overlay = managerRef().open(new MatTooltipComponent({ targetElement: element, content$ }));
             overlay.id = ariaUUID;
             setAttributeValue(overlay, 'role', 'tooltip');
           } else {
+            console.log('close');
             close();
           }
         });
@@ -68,15 +68,15 @@ export function createMatTooltipModifierFunction(
 
 /*-------------*/
 
-export type IMatTooltipModifier = INodeModifier<'tooltip', IHTMLElementModifierFunctionToNodeModifierFunction<IMatTooltipModifierFunction>>;
+export type IMatTooltipModifier = IHTMLElementModifier<'tooltip', IMatTooltipModifierFunction>;
 
 export function createMatTooltipModifier(
   managerRef: () => MatOverlayManagerComponent,
 ): IMatTooltipModifier {
-  return createElementModifier('tooltip', createMatTooltipModifierFunction(managerRef));
+  return createHTMLElementModifier('tooltip', createMatTooltipModifierFunction(managerRef));
 }
 
 /*-------------*/
 
-export const MAT_TOOLTIP_MODIFIER = createElementModifier('tooltip', createMatTooltipModifierFunction());
+export const MAT_TOOLTIP_MODIFIER = createHTMLElementModifier('tooltip', createMatTooltipModifierFunction());
 

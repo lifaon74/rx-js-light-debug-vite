@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDynamicStyleValue,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, IDynamicStyleValue,
   OnCreate, querySelectorOrThrow, defineObservableProperty,
 } from '@lifaon/rx-dom';
 // @ts-ignore
@@ -58,7 +58,7 @@ interface IData {
 
 @Component({
   name: 'mat-color-input',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html,
     modifiers: [
       INPUT_VALUE_MODIFIER,

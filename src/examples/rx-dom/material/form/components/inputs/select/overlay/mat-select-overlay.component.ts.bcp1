@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
   querySelectorOrThrow, subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
 import { IEmitFunction, IObservable, readObservableValue } from '@lifaon/rx-js-light';
@@ -54,7 +54,7 @@ interface IData<GValue> {
 
 @Component({
   name: 'mat-select-input-overlay',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatSelectInputOverlayComponent<GValue> extends MatSimpleOverlayComponent implements OnCreate<IData<GValue>> {

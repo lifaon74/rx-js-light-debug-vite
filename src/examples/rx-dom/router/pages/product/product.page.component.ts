@@ -1,8 +1,7 @@
-import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
-import { IReadonlyMulticastReplayLastSource, IObservable, single, map$$, eq$$, let$$ } from '@lifaon/rx-js-light';
-import { getRouteParams } from '../../router/inject/inject';
-import { IRouteParams } from '../../router/route/route-params/route-params.type';
+import { eq$$, IObservable, let$$, map$$, single } from '@lifaon/rx-js-light';
+import { getRouteParams } from '@lifaon/rx-router';
 
 
 /** COMPONENT **/
@@ -17,7 +16,7 @@ interface IData {
 
 @Component({
   name: 'app-product-page',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <div class="header">
         Product page
@@ -35,7 +34,7 @@ interface IData {
              [href]="'./product/' + productId"
              [replaceState]="true"
            >
-            Product: {{ single(productId) }}
+            Product: {{ $.single(productId) }}
             <rx-container *if="$.eq$$($.single(productId), $.productId$)">
               Selected
             </rx-container>
@@ -52,13 +51,12 @@ export class AppProductPageComponent extends HTMLElement implements OnCreate<IDa
 
   protected readonly data: IData;
 
-  constructor(
-  ) {
+  constructor() {
     super();
 
     const params$ = getRouteParams(this);
 
-    const $productIds$ = let$$(Array.from({ length: 1e1 }, (v: any, i: number) => `${ i }`));
+    const $productIds$ = let$$(Array.from({ length: 1e1 }, (v: any, i: number) => `${i}`));
     const productIds$ = $productIds$.subscribe;
 
     // params$((params: IRouteParams) => {

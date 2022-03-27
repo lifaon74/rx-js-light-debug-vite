@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IDynamicStyleValue,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, IDynamicStyleValue,
   OnCreate, querySelectorAll, querySelectorOrThrow, setReactiveClass, subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
 import { andM$$, debounceFrame$$, fromEventTarget, IObservable, IObserver, map$$, single } from '@lifaon/rx-js-light';
@@ -96,7 +96,7 @@ interface IData {
 
 @Component({
   name: 'mat-color-input-overlay',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatColorInputOverlayComponent extends MatSimpleOverlayComponent implements OnCreate<IData> {

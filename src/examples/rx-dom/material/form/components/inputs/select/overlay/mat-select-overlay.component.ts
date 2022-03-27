@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
   subscribeOnNodeConnectedTo,
 } from '@lifaon/rx-dom';
 import {
@@ -29,8 +29,7 @@ import {
   getElementExpectedSize,
 } from '../../../../../overlay/overlay/built-in/simple/helper/get-element-expected-size';
 import {
-  getPositionAndSizeObservableForSimpleOverlay, getPositionAndSizeObservableForOverlayNearTargetElement,
-  IContentElementSizeOptions,
+  getPositionAndSizeObservableForSimpleOverlay,
 } from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-subscribe-function-for-simple-overlay';
 import { isOptionSelected } from '../../../../../helpers/options/is-option-selected';
 import { readMultipleObservableValue } from '../../../../../helpers/options/read-multiple-observable-value';
@@ -50,6 +49,9 @@ import {
 } from '../../../../../overlay/overlay/built-in/positioned-overlay-content/mat-positioned-overlay-content.component';
 import { applyCSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/apply-css-position-and-size';
 import { isElementOrChildrenFocusedObservableDebounced } from '../../../../../helpers/focus-subscribe-function';
+import {
+  getPositionAndSizeObservableForOverlayNearTargetElement, IContentElementSizeOptions,
+} from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-observable-for-overlay-near-target-element';
 
 
 /** TYPE **/
@@ -83,7 +85,7 @@ interface IData<GValue> {
 
 @Component({
   name: 'mat-select-input-overlay',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html,
     customElements: [
       MatPositionedOverlayContentComponent,

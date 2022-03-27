@@ -1,7 +1,10 @@
-import { createElement, getDocumentBody, nodeAppendChild, toReactiveContent } from '@lifaon/rx-dom';
+import {
+  createElement, getDocumentBody, nodeAppendChild, toReactiveContent, toReactiveContentObservable,
+} from '@lifaon/rx-dom';
 import { fromEventTarget } from '@lifaon/rx-js-light';
 import { MatOverlayManagerComponent } from './overlay/manager/mat-overlay-manager.component';
 import { MatTooltipComponent } from './build-in/tooltip/mat-tooltip.component';
+import { MAT_TOOLTIP_MODIFIER } from './build-in/tooltip/mat-tooltip.modifier';
 
 const LOREM_IPSUM = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -72,15 +75,26 @@ export function overlayComponentExampleTooltip1() {
   const openTooltip = () => {
     return MatOverlayManagerComponent.open(new MatTooltipComponent({
       targetElement: button,
-      content$: toReactiveContent(LOREM_IPSUM),
+      content$: toReactiveContentObservable(LOREM_IPSUM),
     }));
+  };
+
+  let overlay: MatTooltipComponent | undefined;
+
+  const closeTooltip = () => {
+    if (overlay !== void 0) {
+      MatOverlayManagerComponent.close(overlay);
+      overlay = void 0;
+    }
   };
 
   /*---*/
 
+
   fromEventTarget(getDocumentBody(), 'click')((event: Event) => {
     if (event.currentTarget === event.target) {
-      const overlay = openTooltip();
+      closeTooltip();
+      overlay = openTooltip();
       // setTimeout(() => {
       //   MatOverlayManagerComponent.close(overlay);
       // }, 1000);
@@ -88,31 +102,30 @@ export function overlayComponentExampleTooltip1() {
   });
 }
 
-// export function overlayComponentExampleTooltip2() {
-//
-//   const button = createElement('button');
-//   button.style.position = 'absolute';
-//   button.style.left = '50px';
-//   button.style.top = '50px';
-//   button.innerText = 'hello';
-//   nodeAppendChild(getDocumentBody(), button);
-//
-//   /*---*/
-//
-//   const manager = new MatOverlayManagerComponent();
-//   bootstrap(manager);
-//
-//   /*---*/
-//
-//   MAT_TOOLTIP_MODIFIER.modify(button, toReactiveContent(LOREM_IPSUM));
-// }
-//
+export function overlayComponentExampleTooltip2() {
+
+  const button = createElement('button');
+  button.style.position = 'absolute';
+  button.style.left = '50px';
+  button.style.top = '50px';
+  button.innerText = 'hello';
+  nodeAppendChild(getDocumentBody(), button);
+
+  /*---*/
+
+  MatOverlayManagerComponent.init();
+
+  /*---*/
+
+  MAT_TOOLTIP_MODIFIER.modify(button, toReactiveContentObservable(LOREM_IPSUM));
+}
+
 
 /*------------*/
 
 export function overlayComponentExample() {
   // overlayComponentExample1();
   // overlayComponentExampleAlert();
-  overlayComponentExampleTooltip1();
-  // overlayComponentExampleTooltip2();
+  // overlayComponentExampleTooltip1();
+  overlayComponentExampleTooltip2();
 }

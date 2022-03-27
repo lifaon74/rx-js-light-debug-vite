@@ -1,5 +1,5 @@
-import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
-import { AppVirtualLinkComponent } from '../../components/virtual-link/virtual-link.component';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { AppVirtualLinkComponent } from '@lifaon/rx-router';
 
 
 /** COMPONENT **/
@@ -9,7 +9,7 @@ interface IData {
 
 @Component({
   name: 'app-not-found-page',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <div class="header">
          404 not found

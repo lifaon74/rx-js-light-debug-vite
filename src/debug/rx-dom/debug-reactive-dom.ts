@@ -460,7 +460,7 @@ export async function debugReactiveDOM() {
   // await debugObservableReactive9();
   // await debugObservableReactive10();
 
-  await debugOnNodeConnectedTo1();
+  // await debugOnNodeConnectedTo1();
   // await debugOnNodeConnectedTo2();
 
   // await debugContainerNode1();

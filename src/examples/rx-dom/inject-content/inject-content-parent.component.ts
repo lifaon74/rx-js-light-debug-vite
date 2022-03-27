@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 import { AppInjectContentComponent } from './inject-content.component';
 import { debounceFrame$$$, interval, IObservable, map$$$, pipe$$, single } from '@lifaon/rx-js-light';
@@ -20,13 +20,13 @@ interface IData {
 
 @Component({
   name: 'app-inject-content-parent',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <rx-template name="header">
         header
       </rx-template>
       <app-inject-content
-        [headerTemplate]="single(template_header)"
+        [headerTemplate.value]="template_header"
       >
         <div body>
           <div

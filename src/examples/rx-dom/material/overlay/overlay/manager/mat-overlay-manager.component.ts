@@ -1,21 +1,9 @@
 import {
-  bootstrap, compileReactiveCSSAsComponentStyle, Component, getDocument, IReactiveContent, nodeAppendChild, nodeRemove,
+  bootstrap, compileReactiveCSSAsComponentStyle, Component, getDocument, nodeAppendChild, nodeRemove,
   querySelectorOrThrow,
 } from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
 // @ts-ignore
 import style from './mat-overlay-manager.component.scss?inline';
-
-/** INTERFACES **/
-
-interface IOverlay {
-  readonly component: HTMLElement;
-  readonly content$: IReactiveContent;
-}
-
-interface IData {
-  readonly overlays$: IObservable<readonly IOverlay[]>;
-}
 
 /** COMPONENT **/
 

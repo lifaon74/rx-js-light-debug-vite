@@ -1,6 +1,6 @@
 import {
-  fromFetch, fromPromise, IDefaultNotificationsUnion, IObservable, IObservableFromFetchNotifications,
-  mergeMapObservablePipeWithNotifications, pipeObservable
+  fromFetch, fromFetchJSON, fromPromise, IDefaultNotificationsUnion, IObservable,
+  pipeObservable,
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../../misc/no-cors';
 
@@ -62,9 +62,5 @@ export function fetchNineGagPosts(
 
   url.searchParams.set('c', String((request.count === void 0) ? 10 : request.count));
 
-  return pipeObservable(fromFetch(noCORS(url.href)), [
-    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, any>((response: Response) => {
-      return fromPromise<INineGagJSONResponse>(response.json());
-    }, 1),
-  ]);
+  return fromFetchJSON<INineGagJSONResponse>(noCORS(url.href));
 }

@@ -1,4 +1,4 @@
-import { createElementModifier, setReactiveEventListener, setReactiveProperty } from '@lifaon/rx-dom';
+import { createHTMLElementModifier, setReactiveEventListener, setReactiveProperty } from '@lifaon/rx-dom';
 import { $$map, ISource } from '@lifaon/rx-js-light';
 
 export function inputValueModifierFunction(
@@ -20,6 +20,6 @@ export function inputValueModifierFunction(
 }
 
 
-export const INPUT_VALUE_MODIFIER = createElementModifier('input-value', inputValueModifierFunction);
+export const INPUT_VALUE_MODIFIER = createHTMLElementModifier('input-value', inputValueModifierFunction);
 
 

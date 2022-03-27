@@ -8,11 +8,11 @@ import { matSelectInputExample } from './form/components/inputs/select/mat-selec
 
 export function materialExample() {
   // matIconExample();
-  matSelectInputExample();
+  // matSelectInputExample();
   // matColorInputExample();
   // matCheckboxInputExample();
   // matSwitchInputExample();
-  // matProgressBarExample();
+  matProgressBarExample();
   // matProgressRingExample();
   // matGrayBlockSkeletonExample();
 }

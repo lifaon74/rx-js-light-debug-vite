@@ -4,6 +4,7 @@ import { DEFAULT_SANITIZE_HTML_CONFIG } from './default-sanitize-html-config.con
 import { HTMLTrustedTypePolicy } from './trusted-types.type';
 import { createMulticastReplayLastSource, pipeObservable } from '@lifaon/rx-js-light';
 import { sanitizeHTMLWithPolicyObservablePipe } from './pipes/sanitize-html-with-policy-observable-pipe';
+import { sanitizeHTMLWithPolicyObservable } from './pipes/sanitize-html-with-policy-observable';
 
 
 export function sanitizeHTML(
@@ -59,9 +60,7 @@ function trustedTypesExample2() {
 
   const $dirty$ = createMulticastReplayLastSource<string>();
 
-  const subscribe = pipeObservable($dirty$.subscribe, [
-    sanitizeHTMLWithPolicyObservablePipe(sanitizer),
-  ]);
+  const subscribe = sanitizeHTMLWithPolicyObservable($dirty$.subscribe, sanitizer);
 
   subscribe((safeHTML: TrustedHTML) => {
     document.body.innerHTML = safeHTML as unknown as string;

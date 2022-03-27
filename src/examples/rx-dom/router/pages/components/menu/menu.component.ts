@@ -1,6 +1,5 @@
-import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
-import { AppVirtualLinkComponent } from '../../../components/virtual-link/virtual-link.component';
-import { CLICK_OR_LINK_MODIFIER } from '../../../click-or-link/click-or-link.modifier';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { AppVirtualLinkComponent, LINK_MODIFIER } from '@lifaon/rx-router';
 
 
 /** COMPONENT **/
@@ -11,12 +10,12 @@ interface IData {
 
 @Component({
   name: 'app-menu',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <ul>
          <li>
-           <a is="v-link" href="./home">Home</a>
-<!--           <a $click-or-link="['./home']">Home</a>-->
+<!--           <a is="v-link" href="./home">Home</a>-->
+           <a $link="['./home']">Home</a>
         </li>
         <li>
            <a is="v-link" href="./product/0">Products</a>
@@ -26,6 +25,9 @@ interface IData {
         </li>
         <li>
            <a is="v-link" href="./list/sub">Sub-list</a>
+        </li>
+        <li>
+           <a is="v-link" href="./list/async">List async</a>
         </li>
         <li>
            <a is="v-link" href="./forbidden">Forbidden</a>
@@ -41,9 +43,9 @@ interface IData {
     customElements: [
       AppVirtualLinkComponent,
     ],
-    // modifiers: [
-    //   CLICK_OR_LINK_MODIFIER,
-    // ],
+    modifiers: [
+      LINK_MODIFIER,
+    ],
   }),
 })
 export class AppMenuPageComponent extends HTMLElement implements OnCreate<IData> {

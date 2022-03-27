@@ -1,7 +1,5 @@
 import {
-  filterObservablePipe, fromEventTarget, IObserver, interval, IObservable, mapObservablePipe, merge,
-  periodTimeObservablePipe,
-  pipeObservable
+  filterObservablePipe, fromEventTarget, interval, IObservable, merge, pipe$$, throttleTime$$$,
 } from '@lifaon/rx-js-light';
 
 export interface IInfiniteScrollOptions {
@@ -17,22 +15,19 @@ export function createInfiniteScrollObservable(
   const triggerDistance: number = (options.triggerDistance === void 0) ? 0 : options.triggerDistance;
   const refreshRate: number = (options.refreshRate === void 0) ? 50 : options.refreshRate;
 
-  return pipeObservable(
+  return pipe$$(
     merge([
-      pipeObservable(fromEventTarget(scrollElement, 'scroll', { passive: true }), [
-        mapObservablePipe<Event, void>(() => void 0),
-      ]),
+      fromEventTarget(scrollElement, 'scroll', { passive: true }),
       interval(refreshRate),
     ]),
     [
-      periodTimeObservablePipe<void>(refreshRate),
-      filterObservablePipe<void>((): boolean => {
+      throttleTime$$$<any>(refreshRate),
+      filterObservablePipe<any>((): boolean => {
         const bottomDistance: number = scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.offsetHeight;
         return (bottomDistance <= triggerDistance);
       }),
     ],
   );
-
 }
 
 

@@ -1,13 +1,11 @@
 import { dynamicDateExample } from './examples/rx-js-light/dynamic-date.example';
 import { mousePositionExample } from './examples/rx-js-light/mouse-position.example';
 import { debugObservableV5 } from './debug/debug-observables-v5';
-import { debugI18N } from './debug/debug-observables-i18n';
 import { debugReactiveDOM } from './debug/rx-dom/debug-reactive-dom';
 import { autoUpdateExample } from './examples/rx-dom/auto-update/auto-update.example';
 import { infinitePostsExample } from './examples/rx-dom/infinite-posts/infinite-posts.example';
 import { intersectionObserverExample } from './examples/rx-js-light/intersection-observer.example';
 import { matchMediaExample } from './examples/rx-js-light/match-media.example';
-import { helloWorldExample } from './examples/rx-dom/hello-world/hello-world.example';
 import { trustedTypesExample } from './examples/trusted-types/trusted-types.example';
 import { routerExample } from './examples/rx-dom/router/router.example';
 import { composeExample } from './examples/rx-js-light/compose.example';
@@ -47,11 +45,18 @@ import { pathExample } from './examples/path/path.example';
 import { rxJSLightPerformancesExample2 } from './examples/rx-js-light/performances/performances-2.example';
 import { debugMovement } from './debug/movement/debug-movement';
 import { personalityExample } from './examples/rx-dom/personality/personality.example';
+import { debugNFC } from './debug/nfc/debug-nfc';
+import { websocketExample } from './examples/rx-js-light/websocket/websocket.example';
+import { youtubePlayerExample } from './examples/rx-dom/youtube-player/youtube-player.example';
+import { gyroCubeExample } from './examples/rx-dom/gyro-cube/gyro-cube.example';
+import { debugUnits } from './debug/unit/unit.debug';
+import { inputDemoExample } from './examples/rx-dom/input-demo/input-demo.example';
+import { fileTreeExample } from './examples/rx-dom/file-tree/file-tree.example';
+import { asyncComponentLoaderExample } from './examples/rx-dom/async-component-loader/async-component-loader.example';
 
 
 function run() {
   // debugObservableV5();
-  // debugI18N();
   // debugReactiveDOM();
   // debugReactiveDOMCompiler();
   // rxjsLightNotificationsExample();
@@ -60,6 +65,8 @@ function run() {
   // webRTCDebug();
   // pathExample();
   // debugMovement();
+  // debugNFC();
+  // debugUnits();
 
   // rxJSLightPerformancesExample();
   // rxJSLightPerformancesExample2();
@@ -68,13 +75,15 @@ function run() {
   // dynamicDateExample();
   // mousePositionExample();
   // overlayComponentExample();
+  // youtubePlayerExample();
   // infinitePostsExample();
   // trustedTypesExample();
   // intersectionObserverExample();
   // matchMediaExample();
-  // helloWorldExample();
+  // inputDemoExample();
   // forLoopExample();
   // routerExample();
+  asyncComponentLoaderExample();
 
   // guidelineExample();
   // composeExample();
@@ -93,11 +102,14 @@ function run() {
   // storeExample();
   // weatherExample();
   // pictureExample();
-  animationsExample();
+  // animationsExample();
   // aotExample();
   // debugTSX();
   // materialExample();
   // personalityExample();
+  // websocketExample();
+  // gyroCubeExample();
+  // fileTreeExample();
 }
 
 run();

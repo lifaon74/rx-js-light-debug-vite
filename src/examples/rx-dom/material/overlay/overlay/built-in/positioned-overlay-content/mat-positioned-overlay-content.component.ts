@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import style from './mat-positioned-overlay-content.component.scss';
@@ -15,7 +15,7 @@ interface IData {
 
 @Component({
   name: 'mat-positioned-overlay-content',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatPositionedOverlayContentComponent extends HTMLElement implements OnCreate<IData> {

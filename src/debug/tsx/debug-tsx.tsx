@@ -1,9 +1,9 @@
-import { interval, IObservable } from '@lifaon/rx-js-light';
-import { map$$ } from '@lifaon/rx-js-light-shortcuts';
+import { interval, IObservable, map$$ } from '@lifaon/rx-js-light';
 import {
   createDocumentFragment, createElement, createReactiveTextNode, createTextNode, getDocumentBody, isDOMNode,
   nodeAppendChild
 } from '@lifaon/rx-dom';
+// @ts-ignore
 import classes from './debug-tsx.module.scss'
 
 export type IComponentLike =

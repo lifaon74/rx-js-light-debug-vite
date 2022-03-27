@@ -1,13 +1,12 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements,
-  OnCreate, OnDisconnect
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
+  onNodeConnectedToWithImmediate,
 } from '@lifaon/rx-dom';
-import { AppProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
+import { MatProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
-  createNetworkErrorFromResponse, createProgress, fromPromise, fromXHR, IObserver, IProgress, IObservable,
-  IFromPromiseObservableNotifications, IObservableFromXHRNotifications, IUnsubscribe, noop,
-  notificationObserver, map$$, let$$, letU$$
+  createNetworkErrorFromResponse, createProgress, eq$$, fromPromise, fromXHR, IFromPromiseObservableNotifications,
+  IFromXHRObservableNotifications,
+  IObservable, IObserver, IProgress, IUnsubscribe, let$$, letU$$, map$$, neq$$, noop, notificationObserver, single,
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../misc/no-cors';
 // @ts-ignore
@@ -17,37 +16,36 @@ import style from './file-transfer.component.scss';
 import { downloadBlob, extractFileNameFromResponse } from './helpers';
 
 
-export const APP_FILE_TRANSFER_CUSTOM_ELEMENTS = [
-  AppProgressRingComponent,
-];
-
 /** COMPONENT **/
 
 type IStatus = 'awaiting' | 'loading' | 'complete' | 'error';
 
 interface IData {
-  status$: IObservable<IStatus>;
-  progress$: IObservable<number>;
-  errorMessage$: IObservable<string>;
+  readonly status$: IObservable<IStatus>;
+  readonly progress$: IObservable<number>;
+  readonly errorMessage$: IObservable<string>;
 
-  onClickStartDownload: IObserver<Event>;
-  onClickCancelDownload: IObserver<Event>;
+  readonly onClickStartDownload: IObserver<Event>;
+  readonly onClickCancelDownload: IObserver<Event>;
+
+  readonly eq$$: typeof eq$$;
+  readonly neq$$: typeof neq$$;
+  readonly single: typeof single;
 }
-
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  ...DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
-  createElement: generateCreateElementFunctionWithCustomElements(APP_FILE_TRANSFER_CUSTOM_ELEMENTS)
-};
 
 const NO_PROGRESS = createProgress(0, Number.POSITIVE_INFINITY);
 
 @Component({
   name: 'app-file-transfer',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsComponentTemplate({
+    html,
+    customElements: [
+      MatProgressRingComponent,
+    ],
+  }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class AppFileTransferComponent extends HTMLElement implements OnCreate<IData>, OnDisconnect {
+export class AppFileTransferComponent extends HTMLElement implements OnCreate<IData> {
   protected readonly data: IData;
   protected unsubscribeStartDownload: IUnsubscribe;
 
@@ -84,7 +82,7 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
       $status$.emit('loading');
       $progress$.emit(NO_PROGRESS);
 
-      this.unsubscribeStartDownload = startDownload$(notificationObserver<IObservableFromXHRNotifications>({
+      this.unsubscribeStartDownload = startDownload$(notificationObserver<IFromXHRObservableNotifications>({
         next: (response: Response) => {
           if (response.ok) {
             const responseToBlob$ = fromPromise(response.blob());
@@ -109,6 +107,12 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
       $status$.emit('awaiting');
     };
 
+    onNodeConnectedToWithImmediate(this)( (connected: boolean) => {
+      if (!connected) {
+        this.unsubscribeStartDownload();
+      }
+    });
+
     this.data = {
       status$,
       progress$,
@@ -116,15 +120,15 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
 
       onClickStartDownload,
       onClickCancelDownload,
+
+      eq$$,
+      neq$$,
+      single,
     };
   }
 
   public onCreate(): IData {
     return this.data;
-  }
-
-  public onDisconnect(): void {
-    this.unsubscribeStartDownload();
   }
 }
 

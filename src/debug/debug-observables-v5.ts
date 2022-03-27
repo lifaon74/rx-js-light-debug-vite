@@ -6,7 +6,7 @@ import {
   IObservableProxy,
   IUnsubscribe, mapObservablePipe, mapObserverPipe, of, pipe$$, pipeObservablePipes, singleWithNotifications, then$$$,
   throwError, timeout, map$$, singleN, emptyN, IEmptyObservableNotifications, mergeMapS$$, ofWithNotifications,
-  toAsyncIterable, fromAsyncIterable,
+  toAsyncIterable, fromAsyncIterable, raceWithNotifications, let$$,
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../examples/misc/no-cors';
 import { sleep } from '../examples/misc/sleep';
@@ -372,13 +372,20 @@ async function debugObservable13() {
   //   }),
   // ]);
 
-  const subscribe = pipe$$(request$, [
-    finally$$$((): IObservable<IEmptyObservableNotifications> => {
-      return mergeMapS$$(timeout(2000), () => emptyN());
-    }),
-  ]);
+  // const subscribe = pipe$$(request$, [
+  //   finally$$$((): IObservable<IEmptyObservableNotifications> => {
+  //     return mergeMapS$$(timeout(2000), () => emptyN());
+  //   }),
+  // ]);
 
-  subscribe((value) => {
+
+  const observable1$ = mergeMapS$$(timeout(500), () => singleN<'a1'>('a1'));
+  const observable2$ = mergeMapS$$(timeout(1000), () => singleN<'a2'>('a2'));
+
+
+  const subscribe = raceWithNotifications([observable1$, observable2$]);
+
+  subscribe((value: IDefaultNotificationsUnion<'a1' | 'a2'>) => {
     console.log(value);
   });
 }
@@ -699,7 +706,7 @@ export async function debugObservableV5() {
   // await debugObservable11();
   // await debugObservable12();
   // await debugObservable13();
-  await debugObservable14();
+  // await debugObservable14();
 
 
   // await debugMulticastSource1();

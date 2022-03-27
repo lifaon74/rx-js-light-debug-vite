@@ -1,6 +1,6 @@
 import { eq$$, function$$, IObservable, IObserver, map$$, readObservableValue } from '@lifaon/rx-js-light';
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component,
   defineSimpleObservableProperty, IHavingObservableProperty, OnCreate, toReactiveContent,
 } from '@lifaon/rx-dom';
 
@@ -49,7 +49,7 @@ interface IData<GValue> {
 
 @Component({
   name: 'app-generic-range-input',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html,
     customElements: [
       MatCheckboxInputComponent,

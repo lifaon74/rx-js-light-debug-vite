@@ -1,4 +1,4 @@
-import { compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
 
 /** COMPONENT **/
 
@@ -11,7 +11,7 @@ interface IData {
 // })
 @Component({
   name: 'app-sub-list-page',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html: `
       <div class="header">
         Sub-list page

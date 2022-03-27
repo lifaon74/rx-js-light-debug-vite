@@ -4,7 +4,7 @@ import {
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lifaon/rx-dom';
 import { MatProgressBarComponent } from '../material/progress/progress-bar/mat-progress-bar.component';
-import { AppProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
+import { MatProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
   conditionalObservablePipe, createMulticastReplayLastSource, distinctObservablePipe, fromEventTarget, interval,
   IObservable, mapObservablePipe, of, pipeObservable, reactiveFunction, shareObservablePipe
@@ -12,7 +12,7 @@ import {
 
 export const APP_GUIDELINE_CUSTOM_ELEMENTS = [
   MatProgressBarComponent,
-  AppProgressRingComponent
+  MatProgressRingComponent
 ];
 
 

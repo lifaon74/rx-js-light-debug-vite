@@ -1,19 +1,28 @@
-import {
-  fromAnimationFrame, IMapFilterDiscard, interval, IObservable, map$$, MAP_FILTER_DISCARD, mapFilter$$,
-} from '@lifaon/rx-js-light';
+import { fromAnimationFrame, IObservable, map$$ } from '@lifaon/rx-js-light';
 import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/css-position-and-size.type';
 import { querySelector } from '@lifaon/rx-dom';
 import { POSITION_AND_SIZE_OUT_OF_WINDOW } from './position-and-size-out-of-window.constant';
 import { IPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size.type';
-import { getElementPositionAndSize } from '../../../../../../../misc/types/position-and-size/get-element-position-and-size';
+import {
+  getElementPositionAndSize,
+} from '../../../../../../../misc/types/position-and-size/get-element-position-and-size';
 import { ISize } from '../../../../../../../misc/types/size/size.type';
-import { positionAndSizeToCSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
-import { getFittingBoxForContainer$Target$ContentElements } from './get-fitting-box-for-container-target-content-elements';
-import { IGetExternalBoxForContainerElementWithMarginOptions } from './get-external-box-for-container-element-with-margin';
+import {
+  positionAndSizeToCSSPositionAndSize,
+} from '../../../../../../../misc/types/position-and-size/position-and-size-to-css-position-and-size';
+import {
+  getFittingBoxForContainer$Target$ContentElements,
+} from './get-fitting-box-for-container-target-content-elements';
+import {
+  IGetExternalBoxForContainerElementWithMarginOptions,
+} from './get-external-box-for-container-element-with-margin';
 import { IGetTargetBoxForTargetElementWithMarginOptions } from './get-target-box-for-target-element-with-margin';
 import { MatOverlayComponent } from '../../../__component/mat-overlay.component';
+import { IGetContentElementSizeFunction } from './get-position-and-size-observable-for-overlay-near-target-element';
 
-
+/**
+ * @deprecated
+ */
 export interface IGetPositionAndSizeObservableForSimpleOverlayOptions extends //
   Pick<IGetExternalBoxForContainerElementWithMarginOptions, 'containerHorizontalMargin' | 'containerVerticalMargin'>,
   Pick<IGetTargetBoxForTargetElementWithMarginOptions, 'elementMargin'>
@@ -24,21 +33,17 @@ export interface IGetPositionAndSizeObservableForSimpleOverlayOptions extends //
   getContentElementSize: IGetContentElementSizeFunction;
 }
 
+/**
+ * @deprecated
+ */
 export interface IGetContainerElementFunction {
   (): MatOverlayComponent
 }
 
-export interface IGetContentElementSizeFunction {
-  (options: IContentElementSizeOptions): ISize
-}
 
-export interface IContentElementSizeOptions {
-  contentElement: HTMLElement;
-  containerElementPositionAndSize: IPositionAndSize;
-  targetElementPositionAndSize: IPositionAndSize;
-}
-
-
+/**
+ * @deprecated
+ */
 export function getPositionAndSizeObservableForSimpleOverlay(
   {
     getContainerElement,
@@ -83,52 +88,5 @@ export function getPositionAndSizeObservableForSimpleOverlay(
 
 
 
-
-
-export interface IGetPositionAndSizeObservableForOverlayNearTargetElementOptions extends //
-  Pick<IGetExternalBoxForContainerElementWithMarginOptions, 'containerHorizontalMargin' | 'containerVerticalMargin'>,
-  Pick<IGetTargetBoxForTargetElementWithMarginOptions, 'elementMargin'>
-//
-{
-  contentElement: HTMLElement;
-  getContentElementSize: IGetContentElementSizeFunction;
-  targetElement: HTMLElement; // the element where to display the content
-}
-
-export function getPositionAndSizeObservableForOverlayNearTargetElement(
-  {
-    contentElement,
-    getContentElementSize,
-    targetElement,
-    ...options
-  }: IGetPositionAndSizeObservableForOverlayNearTargetElementOptions,
-): IObservable<ICSSPositionAndSize> {
-  // fromAnimationFrame()
-  return mapFilter$$<void, ICSSPositionAndSize>(interval(1000), (): ICSSPositionAndSize | IMapFilterDiscard => {
-    const containerElement: HTMLElement | null = contentElement.parentElement;
-    if (containerElement === null) {
-      return MAP_FILTER_DISCARD;
-    } else {
-      const containerElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(containerElement);
-      const targetElementPositionAndSize: IPositionAndSize = getElementPositionAndSize(targetElement);
-
-      const contentElementSize: ISize = getContentElementSize({
-        contentElement,
-        containerElementPositionAndSize,
-        targetElementPositionAndSize,
-      });
-
-      return positionAndSizeToCSSPositionAndSize(
-        getFittingBoxForContainer$Target$ContentElements({
-          containerElementPositionAndSize,
-          targetElementPositionAndSize,
-          contentElementSize,
-          // extra
-          ...options,
-        }),
-      );
-    }
-  });
-}
 
 

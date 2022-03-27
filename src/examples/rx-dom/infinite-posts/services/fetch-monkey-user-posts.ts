@@ -1,6 +1,5 @@
 import {
-  fromFetch, fromPromise, IDefaultNotificationsUnion, IObservable, IObservableFromFetchNotifications,
-  mapObservablePipeWithNotifications, mergeMapObservablePipeWithNotifications, pipeObservable
+  fromFetchText, fulfilled$$$, IDefaultNotificationsUnion, IObservable, pipe$$, singleN,
 } from '@lifaon/rx-js-light';
 import { noCORS } from '../../../misc/no-cors';
 import { IImageResource, IResource, IYoutubeResource } from './resource.type';
@@ -28,11 +27,8 @@ export function fetchMonkeyUsersPosts(
   const url = new URL(`https://www.monkeyuser.com`);
   url.pathname = next;
 
-  return pipeObservable(fromFetch(noCORS(url.href)), [
-    mergeMapObservablePipeWithNotifications<IObservableFromFetchNotifications, any>((response: Response) => {
-      return fromPromise<string>(response.text());
-    }, 1),
-    mapObservablePipeWithNotifications<IDefaultNotificationsUnion<string>, IMonkeyUserResponse>((html: string): IMonkeyUserResponse => {
+  return pipe$$(fromFetchText(noCORS(url.href)), [
+    fulfilled$$$((html: string): IObservable<IDefaultNotificationsUnion<IMonkeyUserResponse>> => {
       const document: Document = new DOMParser().parseFromString(html, 'text/html');
 
       let resource: IResource;
@@ -55,7 +51,7 @@ export function fetchMonkeyUsersPosts(
         } else {
           resource = {
             kind: 'youtube',
-            url: `https://www.youtube.com/embed/${ match[1] }`,
+            url: `https://www.youtube.com/embed/${match[1]}`,
           } as IYoutubeResource;
         }
       } else {
@@ -65,10 +61,10 @@ export function fetchMonkeyUsersPosts(
         } as IImageResource;
       }
 
-      return {
+      return singleN({
         resource,
         next,
-      };
+      });
     }),
   ]);
 }

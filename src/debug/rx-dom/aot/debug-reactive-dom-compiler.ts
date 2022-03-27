@@ -1,93 +1,103 @@
 import {
-  compileReactiveCSSAsComponentStyle, getDocumentBody, loadAndCompileReactiveCSSAsComponentStyle, nodeAppendChild
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, createDocumentFragment, getDocumentBody,
+  loadReactiveHTMLAsComponentTemplate, nodeAppendChild,
+  toReactiveContent, toReactiveContentObservable,
+  trackByIdentity, transpileReactiveHTMLAsRawComponentTemplateFunctionWithImportsAsFirstArgumentToReactiveDOMJSLines,
 } from '@lifaon/rx-dom';
 // @ts-ignore
-import html from './debug-reactive-dom-compiler.rxhtml?raw';
+import html from './debug-reactive-dom-compiler-3.rxhtml?raw';
 // @ts-ignore
 import style from './debug-reactive-dom-compiler.scss?inline';
+import { interval, let$$, letU$$, map$$, shareRL$$, single } from '@lifaon/rx-js-light';
 
-// async function rxDOMCompilerTextExample() {
-//   const html = `abc`;
+async function fatHTMLGenerator(
+  length: number = 1e3,
+): Promise<void> {
+  const lines: string[] = Array.from({ length }, (_, index: number): string => {
+    return `<div>${index}</div>`;
+  });
+
+  await navigator.clipboard.writeText(lines.join('\n'));
+}
+
+async function debugReactiveDOMCompiler1() {
+
+  // const template = await loadReactiveHTMLAsComponentTemplate({
+  //   url: new URL('./debug-reactive-dom-compiler-3.rxhtml', import.meta.url),
+  //   // customElements: [
+  //   //   HTMLElement,
+  //   //   HTMLAnchorElement,
+  //   // ],
+  //   modifiers: [
+  //     {
+  //       name: 'modifier',
+  //       modify: (_: Element) => _,
+  //     },
+  //   ],
+  // });
+
+  // const template = compileReactiveHTMLAsComponentTemplate({ html: 'abc' });
+  const template = compileReactiveHTMLAsComponentTemplate({ html });
+
+  template(
+    getDocumentBody(),
+    {},
+    null as any,
+  );
+
+
+  // requestAnimationFrame(() => {
+  //   nodeAppendChild(getDocumentBody(),  template(createDocumentFragment(), {}, null as any));
+  // });
+}
+
+// async function debugReactiveDOMCompiler2() {
 //
-//   const js = transpileReactiveHTMLAsComponentTemplateFunctionToReactiveDOMJSLines(html);
-//   const template = compileReactiveHTMLAsGenericComponentTemplate({ html });
-//   // console.log(js.join('\n'));
+//   // const template = await loadAndCompileReactiveCSSAsComponentStyle(
+//   //   new URL('./debug-reactive-dom-compiler.rxhtml', import.meta.url)
+//   // );
 //
-//   const result = template({
-//     data: {},
-//     content: null as any,
-//     getNodeReference: null as any,
-//     setNodeReference: null as any,
-//     getTemplateReference: null as any,
-//     setTemplateReference: null as any,
-//   });
+//   // const template = await compileReactiveCSSAsComponentStyle(style);
+//   const template = await compileReactiveCSSAsComponentStyle(`
+//     :host {
+//       display: block;
+//     }
+//   `);
+//
+//   // const template = compileReactiveHTMLAsComponentTemplate({ html: 'abc' });
+//   // const template = compileReactiveHTMLAsComponentTemplate({ html });
+//
+//   const result = template.innerText;
 //
 //   console.log(result);
 // }
-
-
-// async function debugReactiveDOMCompiler1() {
 //
-//   const template = await loadReactiveHTMLAsGenericComponentTemplate({
-//     url: new URL('./debug-reactive-dom-compiler.rxhtml', import.meta.url),
-//     customElements: [
-//       HTMLElement,
-//       HTMLAnchorElement,
-//     ],
-//     modifiers: [
-//       {
-//         name: 'modifier',
-//         modify: _ => _,
-//       },
-//     ],
-//   });
+// // https://www.w3schools.com/graphics/svg_examples.asp
 //
-//   // const template = compileReactiveHTMLAsGenericComponentTemplate({ html: 'abc' });
-//   // const template = compileReactiveHTMLAsGenericComponentTemplate({ html });
+// async function debugReactiveDOMCompiler3() {
 //
-//   const result = template({
-//     data: {},
-//     content: null as any,
-//   });
+//   // document.body.innerHTML = `
+//   //   <div color="red"></div>
+//   //   <app-c color="red"></app-c>
+//   //   <svg height="100" width="100">
+//   //     <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+//   //   </svg>
+//   // `;
 //
-//   nodeAppendChild(getDocumentBody(), result);
-// }
-
-async function debugReactiveDOMCompiler2() {
-
-  // const template = await loadAndCompileReactiveCSSAsComponentStyle(
-  //   new URL('./debug-reactive-dom-compiler.rxhtml', import.meta.url)
-  // );
-
-  // const template = await compileReactiveCSSAsComponentStyle(style);
-  const template = await compileReactiveCSSAsComponentStyle(`
-    :host {
-      display: block;
-    }
-  `);
-
-  // const template = compileReactiveHTMLAsGenericComponentTemplate({ html: 'abc' });
-  // const template = compileReactiveHTMLAsGenericComponentTemplate({ html });
-
-  const result = template.innerText;
-
-  console.log(result);
-}
-
-// async function debugReactiveDOMCompiler1() {
-//
-//   // const html = `abc`;
+//   const html = `abc`;
 //   // const html = `{{ $.text }}`;
 //   // const html = `a {{ $.text }} b`;
 //   // const html = `<div color="red"></div>`;
-//   // const html = `<div [title]="$.title">some content</div>`;
-//   // const html = `<div [attr.id]="$.id"></div>`;
-//   // const html = `<div [class.class-a]="$.classA"></div>`;
+//   // const html = `<svg height="100" width="100">
+//   //   <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+//   // </svg>`;
+//   // const html = `<div [title]="$.text">some content</div>`;
+//   // const html = `<div [attr.id]="$.text"></div>`;
+//   // const html = `<div [class.class-a]="$.bool"></div>`;
 //   // const html = `<div [class...]="$.classes"></div>`;
 //   // const html = `<div [style.font-size]="$.fontSize"></div>`;
 //   // const html = `<div [style...]="$.style"></div>`;
 //   // const html = `<div style="width: 500px; height: 500px; background-color: #fafafa" (click)="$.onClick"></div>`;
-//   const html = `<div #nodeA></div>`;
 //
 //   // const html = `
 //   //   <rx-template
@@ -106,10 +116,10 @@ async function debugReactiveDOMCompiler2() {
 //   //   >
 //   //     {{ text }}
 //   //   </rx-template>
-//   //   <rx-inject-static-template
+//   //   <rx-inject-template
 //   //     template="templateReference"
 //   //     let-text="$.text"
-//   //   ></rx-inject-static-template>
+//   //   ></rx-inject-template>
 //   // `;
 //
 //   // const html = `
@@ -164,9 +174,9 @@ async function debugReactiveDOMCompiler2() {
 //   // const html = `
 //   //   <div
 //   //     color="red"
-//   //     [title]="$.title"
-//   //     [attr.id]="$.id"
-//   //     [class.class-a]="$.classA"
+//   //     [title]="$.text"
+//   //     [attr.id]="$.text"
+//   //     [class.class-a]="$.bool"
 //   //     [class...]="$.classes"
 //   //     [style.font-size]="$.fontSize"
 //   //     [style...]="$.style"
@@ -176,7 +186,7 @@ async function debugReactiveDOMCompiler2() {
 //   // `;
 //
 //   // const html = `
-//   //   <rx-container *if="$.condition">
+//   //   <rx-container *if="$.bool">
 //   //     a {{ $.text }} b
 //   //   </rx-container>
 //   // `;
@@ -257,44 +267,49 @@ async function debugReactiveDOMCompiler2() {
 //   // const url = `https://www.w3.org/TR/2021/WD-css-cascade-5-20210119/`;
 //   // const html = await (await fetch(noCORS(url))).text();
 //
-//   function $of<GValue>(value: GValue): IObservable<GValue> {
-//     return pipeObservable(of<GValue>(value), [
-//       sourceObservablePipe<GValue>(() => createUnicastReplayLastSource<GValue>()),
-//     ]);
-//   }
+//   // function $of<GValue>(value: GValue): IObservable<GValue> {
+//   //   return pipeObservable(of<GValue>(value), [
+//   //     sourceObservablePipe<GValue>(() => createUnicastReplayLastSource<GValue>()),
+//   //   ]);
+//   // }
+//   //
+//   const timer = shareRL$$(interval(1000));
 //
-//   const timer = interval(1000);
+//   const { emit: $click, subscribe: click$, getValue: clickState } = letU$$<boolean>();
 //
-//   const clickSource = createMulticastReplayLastSource<boolean>();
+//   const text = map$$(timer, () => String(Math.random()));
 //
 //   const data = {
-//     title: $of('my-title'),
-//     id: expression(() => Math.random(), timer),
-//     classA: expression(() => Math.random() < 0.5, timer),
-//     classes: $of(['a', 'b']),
-//     fontSize: expression(() => Math.floor(Math.random() * 20) + 'px', timer),
-//     style: $of({ color: 'red' }),
-//     text: expression(() => new Date().toString(), timer),
+//     text,
+//     bool: map$$(timer, () => Math.random() < 0.5),
+//     classes: single(['a', 'b']),
+//     fontSize: map$$(timer, () => `${Math.random() * 20}px`),
+//     style: single(new Map([['color', { value: 'red' }]])),
 //     onClick: (event: MouseEvent) => {
 //       console.log('click');
-//       clickSource.emit(!clickSource.getValue());
+//       $click(!clickState());
 //     },
-//     condition: expression(() => Math.random() < 0.5, timer),
-//     items: $of([1, 2, 3].map($of)),
-//     trackByFn: (_: any) => _,
-//     clickCondition: clickSource.subscribe,
-//     // content: $of(compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-//     //   hello world
-//     // `, {})({
-//     //   data: {},
-//     //   content: createDocumentFragment(),
-//     // })),
-//     switchValue: $of(3)
+//     clickCondition: click$,
+//     items: single([1, 2, 3].map(single)),
+//     trackByFn: trackByIdentity,
+//     content: toReactiveContentObservable(text),
+//     switchValue: single(3)
 //   };
 //
-//   type GData = typeof data;
+//   // type GData = typeof data;
 //
-//   // console.log(compileHTMLAsHTMLTemplate(html).join('\n'));
+//   const jsContent = transpileReactiveHTMLAsRawComponentTemplateFunctionWithImportsAsFirstArgumentToReactiveDOMJSLines(html).join('\n');
+//   console.log(jsContent);
+//
+//   // const moduleContent = transpileReactiveHTMLAsComponentTemplateModuleToReactiveDOMJSLines(html).join('\n');
+//   // console.log(moduleContent);
+//
+//   // const url: string = `data:application/javascript;base64,${btoa(moduleContent)}`;
+//   // const mod = await import(url)
+//   // console.log(mod);
+//
+//   const template = compileReactiveHTMLAsComponentTemplate({ html });
+//   template(getDocumentBody(), data, null as any);
 //
 //   // console.time('compilation');
 //   // const template = compileAndEvaluateReactiveHTMLAsComponentTemplate<GData>(html.trim());
@@ -337,13 +352,14 @@ async function debugReactiveDOMCompiler2() {
 //   // nodeAppendChild(document.body, node);
 //   // console.timeEnd('injection');
 // }
-//
+
 
 /*----*/
 
 
 export async function debugReactiveDOMCompiler() {
-  // await rxDOMCompilerTextExample();
-  // await debugReactiveDOMCompiler1();
-  await debugReactiveDOMCompiler2();
+  // fatHTMLGenerator(5e4);
+  await debugReactiveDOMCompiler1();
+  // await debugReactiveDOMCompiler2();
+  // await debugReactiveDOMCompiler3();
 }

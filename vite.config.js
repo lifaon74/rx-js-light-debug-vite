@@ -37,11 +37,15 @@ const config = {
   server: {
     // https: true,
     // host: true,
+    watch: {
+      ignored: [/\.cache/],
+    }
   },
   optimizeDeps: {
     include: [
       '@lifaon/rx-js-light',
       '@lifaon/rx-dom',
+      '@lifaon/rx-router',
     ],
   },
 };

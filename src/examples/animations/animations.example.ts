@@ -1,10 +1,22 @@
-
 /** CONSTANTS **/
+import { parseCSSAngle } from '../misc/css/quantities/angle/parse-css-angle';
+import { parseCSSAbsoluteLengthOrThrow } from '../misc/css/quantities/length/parse-css-absolute-length';
 
-export const ANIMATION_START = Number.NEGATIVE_INFINITY;
-export const ANIMATION_END = Number.POSITIVE_INFINITY;
+
+// export const ANIMATION_START = Number.NEGATIVE_INFINITY;
+// export const ANIMATION_END = Number.POSITIVE_INFINITY;
+
+export const ANIMATION_START_FLAG = Symbol('ANIMATION_START');
+export const ANIMATION_END_FLAG = Symbol('ANIMATION_END');
+
 
 export type IProgress = number; // usually [0, 1]
+
+export type IProgressWithFlags =
+  IProgress
+  | typeof ANIMATION_START_FLAG
+  | typeof ANIMATION_END_FLAG
+  ;
 
 /** PROGRESS FUNCTION **/
 
@@ -84,19 +96,62 @@ export interface IAnimateElementFunction {
 }
 
 
+export interface IAnimateElementFunctionWithFlagsSupport {
+  (
+    element: HTMLElement,
+    progress: IProgressWithFlags,
+  ): void;
+}
+
+// export function animateElementFunctionWithStartAndEndAnimationSupport(
+//   animateElementFunction: IAnimateElementFunction,
+// ): IAnimateElementFunctionWithStartAndEndAnimationSupport {
+//   return (
+//     element: HTMLElement,
+//     progress: IProgressWithFlags,
+//   ): void => {
+//     if (
+//       (progress !== ANIMATION_START_FLAG)
+//       && (progress !== ANIMATION_END_FLAG)
+//     ) {
+//       animateElementFunction(element, progress);
+//     }
+//   };
+// }
+
+
+
 export type IProgressingStylePropertyFunction = IProgressingValueFunction<string>;
 
 export function animateStyleProperty(
   propertyName: string,
   progressingValue: IProgressingStylePropertyFunction,
-): IAnimateElementFunction {
+): IAnimateElementFunctionWithFlagsSupport {
   return (
     element: HTMLElement,
-    progress: IProgress,
+    progress: IProgressWithFlags,
   ): void => {
-    element.style.setProperty(propertyName, progressingValue(progress));
+    if (
+      (progress !== ANIMATION_START_FLAG)
+      && (progress !== ANIMATION_END_FLAG)
+    ) {
+      element.style.setProperty(propertyName, progressingValue(progress));
+    }
   };
 }
+
+// export function animateStyleProperty(
+//   propertyName: string,
+//   progressingValue: IProgressingStylePropertyFunction,
+// ): IAnimateElementFunction {
+//   return (
+//     element: HTMLElement,
+//     progress: IProgress,
+//   ): void => {
+//     element.style.setProperty(propertyName, progressingValue(progress));
+//   };
+// }
+
 
 export type IProgressingScrollFunction = IProgressingValueFunction<number>;
 
@@ -112,12 +167,82 @@ export function animateScrollTop(
 }
 
 
-export function groupElementAnimations(
-  ...animations: IAnimateElementFunction[]
-) {
+export function animateHeightPropertyWithAutoAtStart(
+  to: number,
+): IAnimateElementFunctionWithFlagsSupport {
+  return animateFromOtherToPxStyleProperty('height', 'auto', to);
+}
+
+
+export function animateHeightPropertyWithAutoAtEnd(
+  from: number,
+): IAnimateElementFunctionWithFlagsSupport {
+  return animateFromPxToOtherStyleProperty('height', from, 'auto');
+}
+
+export function animateFromPxToOtherStyleProperty(
+  propertyName: string,
+  fromPx: number,
+  toOther: string,
+): IAnimateElementFunctionWithFlagsSupport {
+  let progressingValue: IProgressingStylePropertyFunction;
+
   return (
     element: HTMLElement,
-    progress: IProgress,
+    progress: IProgressWithFlags,
+  ): void => {
+    let propertyValue: string;
+
+    if (progress === ANIMATION_START_FLAG) {
+      element.style.setProperty(propertyName, toOther, 'important');
+      const toPx: number = parseCSSAbsoluteLengthOrThrow(getComputedStyle(element).getPropertyValue(propertyName));
+      progressingValue = pxFromTo(fromPx, toPx);
+      propertyValue = progressingValue(0);
+    } else if (progress === ANIMATION_END_FLAG) {
+      propertyValue = toOther;
+    } else {
+      propertyValue = progressingValue(progress);
+    }
+
+    element.style.setProperty(propertyName, propertyValue);
+  };
+}
+
+
+export function animateFromOtherToPxStyleProperty(
+  propertyName: string,
+  fromOther: string,
+  toPx: number,
+): IAnimateElementFunctionWithFlagsSupport {
+  let progressingValue: IProgressingStylePropertyFunction;
+
+  return (
+    element: HTMLElement,
+    progress: IProgressWithFlags,
+  ): void => {
+    let propertyValue: string;
+
+    if (progress === ANIMATION_START_FLAG) {
+      element.style.setProperty(propertyName, fromOther, 'important');
+      const fromPx: number = parseCSSAbsoluteLengthOrThrow(getComputedStyle(element).getPropertyValue(propertyName));
+      progressingValue = pxFromTo(fromPx, toPx);
+      propertyValue = fromOther;
+    } else if (progress === ANIMATION_END_FLAG) {
+      propertyValue = progressingValue(1);
+    } else {
+      propertyValue = progressingValue(progress);
+    }
+
+    element.style.setProperty(propertyName, propertyValue);
+  };
+}
+
+export function groupElementAnimations(
+  ...animations: IAnimateElementFunctionWithFlagsSupport[]
+): IAnimateElementFunctionWithFlagsSupport {
+  return (
+    element: HTMLElement,
+    progress: IProgressWithFlags,
   ): void => {
     for (let i = 0, l = animations.length; i < l; i++) {
       animations[i](element, progress);
@@ -128,7 +253,7 @@ export function groupElementAnimations(
 
 export interface IAnimateFunction {
   (
-    progress: IProgress,
+    progress: IProgressWithFlags,
   ): void;
 }
 
@@ -140,12 +265,18 @@ export function animate(
     resolve: (value: void | PromiseLike<void>) => void,
   ): void => {
     const startTime: number = Date.now();
+    let started: boolean = false;
 
     const loop = () => {
       requestAnimationFrame(() => {
+        if (!started) {
+          started = true;
+          animateFunction(ANIMATION_START_FLAG);
+        }
         const progress: number = Math.min((Date.now() - startTime) / duration, 1);
         animateFunction(progress);
         if (progress === 1) {
+          animateFunction(ANIMATION_END_FLAG);
           resolve();
         } else {
           loop();
@@ -182,8 +313,10 @@ export function animationsExample() {
   const translateX = map(numberFromTo(10, 300), _ => `translateX(${_}px)`);
   const transformAnimation = animateStyleProperty('transform', translateX);
 
-  const height = pxFromTo(100, 200);
-  const heightAnimation = animateStyleProperty('height', height);
+  // const height = pxFromTo(100, 200);
+  // const heightAnimation = animateStyleProperty('height', height);
+  // const heightAnimation = animateHeightPropertyWithAutoAtStart(200);
+  const heightAnimation = animateHeightPropertyWithAutoAtEnd(20);
 
   const animation = groupElementAnimations(
     transformAnimation,
@@ -191,7 +324,7 @@ export function animationsExample() {
   );
   // animation(element, 0.5);
 
-  animate((progress: IProgress): void => {
+  animate((progress: IProgressWithFlags): void => {
     animation(element, progress);
   }, 3000);
   // console.log(numberFromTo(10, 20)(0.5));

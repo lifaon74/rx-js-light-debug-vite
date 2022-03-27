@@ -1,5 +1,5 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './weather-page.component.html?raw';
@@ -253,7 +253,7 @@ type IData = Immutable<{
 
 @Component({
   name: 'app-weather-page',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html,
   }),
   styles: [compileReactiveCSSAsComponentStyle(style)],

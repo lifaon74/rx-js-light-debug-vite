@@ -1,8 +1,7 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, IObservable, let$$, of } from '@lifaon/rx-js-light';
+import { IMulticastReplayLastSource, IObservable, let$$ } from '@lifaon/rx-js-light';
 import { createAction, createStore, getStoreState, immutableArrayReplace, mapState } from '@lifaon/rx-store';
 
 
@@ -106,32 +105,28 @@ interface IData {
   readonly onClickItem: (item: IItem) => void;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  of,
-  trackItemById,
-};
 
 @Component({
   name: 'app-for-loop-example',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <button (click)="$.onClickAppendItems">
-      Append items
-    </button>
-    <input
-      #input
-      [value]="$.$inputValue$.subscribe"
-      (input)="() => $.$inputValue$.emit(getNodeReference('input').value)"
-    >
-    <div
-      class="item"
-      *for="let item of $.items$"
-      (click)="() => $.onClickItem(item)"
-      [class.selected]="of(item.selected)"
-    >
-      {{ of(item.text) }}
-    </div>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsComponentTemplate({
+    html: `
+      <button (click)="$.onClickAppendItems">
+        Append items
+      </button>
+      <input
+        [value]="$.$inputValue$.subscribe"
+        (input)="() => $.$inputValue$.emit(node.value)"
+      >
+      <div
+        class="item"
+        *for="let item of $.items$"
+        (click)="() => $.onClickItem(item)"
+        [class.selected]="item.selected"
+      >
+        {{ of(item.text) }}
+      </div>
+    `,
+  }),
   styles: [compileReactiveCSSAsComponentStyle(`
     :host {
       display: block;
@@ -169,11 +164,11 @@ export class AppForLoopExampleUsingStoreComponent extends HTMLElement implements
         const id: string = String(offset + index);
         return {
           id,
-          text: `#${ id }`,
+          text: `#${id}`,
           selected: false,
         };
       });
-    }
+    };
 
     // const onClickAppendItems = () => {
     //   console.time('append-items');

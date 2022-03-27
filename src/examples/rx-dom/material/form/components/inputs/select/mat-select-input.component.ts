@@ -1,18 +1,12 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, IReactiveContent,
-  OnCreate,
-  querySelectorOrThrow, toReactiveContent,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate, querySelectorOrThrow,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './mat-select-input.component.html?raw';
 // @ts-ignore
 import style from './mat-select-input.component.scss?inline';
-import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
-import {
-  combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$, single,
-} from '@lifaon/rx-js-light';
+import { combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$ } from '@lifaon/rx-js-light';
 import { IMatSelectInputOption, IMatSelectInputReadonlySelectedOptions } from './types/mat-select-input-option.type';
-import { ON_FOCUSED_MODIFIER } from '../../../modifiers/on-focused.modifier';
 import { createMatOverlayController } from '../../../../overlay/overlay/__component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { MatSelectInputOverlayComponent } from './overlay/mat-select-overlay.component';
@@ -72,7 +66,7 @@ interface IData {
 
 @Component({
   name: 'mat-select-input',
-  template: compileReactiveHTMLAsGenericComponentTemplate({
+  template: compileReactiveHTMLAsComponentTemplate({
     html,
     modifiers: [],
   }),

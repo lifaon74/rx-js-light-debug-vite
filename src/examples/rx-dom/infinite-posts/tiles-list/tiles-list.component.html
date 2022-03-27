@@ -5,23 +5,23 @@
   >
     <div
       class="title"
-      *if="of(tile.title)"
+      *if="tile.title"
     >
-      {{ of(tile.title) }}
+      {{ tile.title }}
     </div>
     <div
       class="content"
     >
       <rx-switch
-        expression="of(tile.resource.kind)"
+        expression="tile.resource.kind"
       >
         <img
           *switch-case="'image'"
-          [src]="of(tile.resource.url)"
+          [src]="tile.resource.url"
         >
         <iframe
           *switch-case="'youtube'"
-          [src]="of(tile.resource.url)"
+          [src]="tile.resource.url"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowfullscreen

@@ -1,6 +1,6 @@
 import { interval, IObservable, map$$ } from '@lifaon/rx-js-light';
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsGenericComponentTemplate, Component, OnCreate,
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
 } from '@lifaon/rx-dom';
 // @ts-ignore
 import html from './aot.component.html?raw';
@@ -16,7 +16,7 @@ interface IData {
 
 @Component({
   name: 'app-aot',
-  template: compileReactiveHTMLAsGenericComponentTemplate({ html }),
+  template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AotComponent<GValue> extends HTMLElement implements OnCreate<IData> {

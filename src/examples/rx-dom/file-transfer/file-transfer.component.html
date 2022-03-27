@@ -2,14 +2,14 @@
   <button
     class="button-style"
     (click)="$.onClickStartDownload"
-    [disabled]="eq($.status$, of('loading'))"
+    [disabled]="$.eq$$($.status$, $.single('loading'))"
   >
     Start download
   </button>
   <button
     class="button-style"
     (click)="$.onClickCancelDownload"
-    [disabled]="neq($.status$, of('loading'))"
+    [disabled]="$.neq$$($.status$, $.single('loading'))"
   >
     Cancel
   </button>
@@ -23,11 +23,11 @@
       *switch-case="'loading'"
       class="loading"
     >
-      <app-progress-ring
+      <mat-progress-ring
         [progress]="$.progress$"
         radius="60"
         stroke="20"
-      ></app-progress-ring>
+      ></mat-progress-ring>
     </div>
     <div
       *switch-case="'complete'"

@@ -10,12 +10,15 @@ export interface IResource {
 }
 
 export interface IImageResource extends IResource {
+  kind: 'image';
   url: string;
 }
 
 export interface IYoutubeResource extends IResource {
   url: string;
 }
+
+
 
 // export interface IHTMLResource extends IResource {
 //   html: string;
