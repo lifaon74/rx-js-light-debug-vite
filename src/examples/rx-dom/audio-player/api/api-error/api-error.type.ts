@@ -1,4 +1,4 @@
-import { ICustomErrorOptions } from '@lifaon/rx-js-light';
+import { ICustomErrorOptions } from '@lirx/core';
 
 export interface IAPIError extends Error {
   code: string;

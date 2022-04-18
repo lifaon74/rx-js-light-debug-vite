@@ -1,8 +1,8 @@
-import { function$$, IObservable, IObserver, let$$, map$$, single } from '@lifaon/rx-js-light';
+import { function$$, IObservable, map$$ } from '@lirx/core';
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, defineObservableProperty,
-  IReactiveStyleValue, OnCreate,
-} from '@lifaon/rx-dom';
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, HTMLElementWithInputs,
+  IComponentInput, IReactiveStyleValue, OnCreate,
+} from '@lirx/dom';
 // @ts-ignore
 import html from './mat-progress-ring.component.html?raw';
 // @ts-ignore
@@ -20,6 +20,13 @@ interface IData {
   readonly transform$: IObservable<string>;
 }
 
+type IComponentInputs = [
+  IComponentInput<'progress', number>,
+  IComponentInput<'radius', number>,
+  IComponentInput<'stroke', number>,
+];
+
+
 // https://css-tricks.com/building-progress-ring-quickly/
 // https://css-tricks.com/transforms-on-svg-elements/
 
@@ -28,20 +35,7 @@ interface IData {
   template: compileReactiveHTMLAsComponentTemplate({ html }),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class MatProgressRingComponent extends HTMLElement implements OnCreate<IData> {
-
-  progress$!: IObservable<number>;
-  readonly $progress!: IObserver<number>;
-  progress!: number;
-
-  radius$!: IObservable<number>;
-  readonly $radius!: IObserver<number>;
-  radius!: number;
-
-  stroke$!: IObservable<number>;
-  readonly $stroke!: IObserver<number>;
-  stroke!: number;
-
+export class MatProgressRingComponent extends HTMLElementWithInputs<IComponentInputs>(['progress', 'radius', 'stroke']) implements OnCreate<IData> {
   protected readonly _data: IData;
 
   constructor() {
@@ -49,16 +43,12 @@ export class MatProgressRingComponent extends HTMLElement implements OnCreate<ID
 
     /** SETUP PROPERTIES **/
 
-    const $progress$ = let$$<IObservable<number>>(single(0));
-    defineObservableProperty(this, 'progress', $progress$);
+    this.progress = 0;
+    this.radius = 0;
+    this.stroke = 0;
+
     const progress$ = this.progress$;
-
-    const $radius$ = let$$<IObservable<number>>(single(50));
-    defineObservableProperty(this, 'radius', $radius$);
     const radius$ = this.radius$;
-
-    const $stroke$ = let$$<IObservable<number>>(single(5));
-    defineObservableProperty(this, 'stroke', $stroke$);
     const stroke$ = this.stroke$;
 
     /** SETUP SUBSCRIBE FUNCTIONS **/

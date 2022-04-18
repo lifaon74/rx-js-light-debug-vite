@@ -1,4 +1,4 @@
-import { fromEventTarget, map$$ } from '@lifaon/rx-js-light';
+import { fromEventTarget, map$$ } from '@lirx/core';
 
 
 export function rxJSLightPerformancesExample2() {

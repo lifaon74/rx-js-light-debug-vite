@@ -1,6 +1,6 @@
 import {
   fromEventTarget, IMapFilterDiscard, IObservable, MAP_FILTER_DISCARD, mapFilter$$, merge
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 export function mouseEnterObservable(

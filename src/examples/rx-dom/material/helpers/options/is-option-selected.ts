@@ -1,4 +1,4 @@
-import { IObservable, map$$ } from '@lifaon/rx-js-light';
+import { IObservable, map$$ } from '@lirx/core';
 import { IReadonlyOptionsSet } from './types/readonly-options-set.type';
 
 /** FUNCTION **/

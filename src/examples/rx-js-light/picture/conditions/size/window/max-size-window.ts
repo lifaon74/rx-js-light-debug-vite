@@ -1,5 +1,5 @@
 import { IPartialSize, ISize } from '../../../../../misc/types/size/size.type';
-import { IObservable, map$$ } from '@lifaon/rx-js-light';
+import { IObservable, map$$ } from '@lirx/core';
 import { createWindowSizeObservableInitialized } from './helpers/create-window-size-observable';
 import { _isLowerThanOrEqualSize } from '../helpers/is-lower-than-or-equal-size';
 

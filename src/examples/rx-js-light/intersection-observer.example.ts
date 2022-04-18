@@ -1,4 +1,4 @@
-import { fromIntersectionObserver, fromMatchMedia, mapObservablePipe, pipeObservable } from '@lifaon/rx-js-light';
+import { fromIntersectionObserver, fromMatchMedia, mapObservablePipe, pipeObservable } from '@lirx/core';
 
 
 

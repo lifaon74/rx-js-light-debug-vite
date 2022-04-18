@@ -2,8 +2,8 @@ import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, createElement, getDocumentBody,
   nodeAppendChild,
   OnCreate,
-} from '@lifaon/rx-dom';
-import { $log, IObservable, IObserver, map$$, not$$, single } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { $log, IObservable, IObserver, map$$, not$$, single } from '@lirx/core';
 // @ts-ignore
 import html from './audio-player.component.html?raw';
 // @ts-ignore
@@ -11,7 +11,7 @@ import style from './audio-player.component.scss';
 import { createRXMediaPlayer, IRXMediaPlayState } from './rx-media-player/rx-media-player';
 import { createRXMediaListPlayer } from './rx-media-player/rx-tracks-player';
 
-// import { formatDuration } from '@lifaon/rx-js-light';
+// import { formatDuration } from '@lirx/core';
 
 
 /** FUNCTION **/

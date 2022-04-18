@@ -1,14 +1,20 @@
-import {
-  defineSimpleObservableProperty, IHavingObservableProperty, setReactiveClass
-} from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
+import { extendWithHigherOrderObservableView$, setReactiveClass } from '@lirx/dom';
+import { IHigherOrderObservableView, IObserverObservableTuple } from '@lirx/core';
 
-export type IMatInputReadonlyProperty = IHavingObservableProperty<'readonly', boolean>;
+const MAT_INPUT_READONLY_PROPERTY_NAME = 'readonly';
+
+type IMatInputReadonlyPropertyName = typeof MAT_INPUT_READONLY_PROPERTY_NAME;
+
+export type IMatInputReadonlyProperty = IHigherOrderObservableView<IMatInputReadonlyPropertyName, boolean>;
 
 export function addMatInputReadonlyProperty(
   target: any,
-): IObservable<boolean> {
-  return defineSimpleObservableProperty<boolean>(target, 'readonly', false);
+): IObserverObservableTuple<boolean> {
+  return extendWithHigherOrderObservableView$<any, IMatInputReadonlyPropertyName, boolean>(
+    target,
+    MAT_INPUT_READONLY_PROPERTY_NAME,
+    false,
+  );
 }
 
 export function addMatInputReadonlyClass(
@@ -19,8 +25,8 @@ export function addMatInputReadonlyClass(
 
 export function addMatInputReadonlyFunctionality(
   target: any,
-): IObservable<boolean> {
-  const readonly$ = addMatInputReadonlyProperty(target);
+): IObserverObservableTuple<boolean> {
+  const tuple = addMatInputReadonlyProperty(target);
   addMatInputReadonlyClass(target);
-  return readonly$;
+  return tuple;
 }

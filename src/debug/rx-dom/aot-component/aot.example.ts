@@ -1,5 +1,5 @@
 import { AotComponent } from './aot.component';
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 
 /** BOOTSTRAP FUNCTION **/
 

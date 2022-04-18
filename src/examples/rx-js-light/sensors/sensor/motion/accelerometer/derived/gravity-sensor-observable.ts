@@ -1,6 +1,6 @@
 import { IAccelerometerSensorObservableValue } from '../accelerometer-sensor-observable';
 import { createSensorObservable, ISensorObservableNotifications } from '../../../sensor-observable';
-import { IObservable } from '@lifaon/rx-js-light';
+import { IObservable } from '@lirx/core';
 
 export interface IGravitySensorObservableValue extends IAccelerometerSensorObservableValue {
 }

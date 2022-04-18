@@ -1,13 +1,13 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
   onNodeConnectedToWithImmediate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { MatProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
   createNetworkErrorFromResponse, createProgress, eq$$, fromPromise, fromXHR, IFromPromiseObservableNotifications,
   IFromXHRObservableNotifications,
-  IObservable, IObserver, IProgress, IUnsubscribe, let$$, letU$$, map$$, neq$$, noop, notificationObserver, single,
-} from '@lifaon/rx-js-light';
+  IObservable, IObserver, IProgress, IUnsubscribe, let$$, map$$, neq$$, noop, notificationObserver, single,
+} from '@lirx/core';
 import { noCORS } from '../../misc/no-cors';
 // @ts-ignore
 import html from './file-transfer.component.html?raw';
@@ -64,8 +64,8 @@ export class AppFileTransferComponent extends HTMLElement implements OnCreate<ID
 
     const startDownload$ = fromXHR(request, void 0, { useReadableStream: false });
     const $status$ = let$$<IStatus>('awaiting');
-    const $error$ = letU$$<Error>();
-    const $progress$ = letU$$<IProgress>();
+    const $error$ = let$$<Error>();
+    const $progress$ = let$$<IProgress>();
 
     const status$ = $status$.subscribe;
     const progress$ = map$$($progress$.subscribe, (progress: IProgress) => (progress.loaded / progress.total));

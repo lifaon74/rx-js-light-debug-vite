@@ -1,4 +1,4 @@
-import { IObservable } from '@lifaon/rx-js-light';
+import { IObservable } from '@lirx/core';
 import { maxSizeElement } from './max-size-element';
 
 export function maxWidthElement(

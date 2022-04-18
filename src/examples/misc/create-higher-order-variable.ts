@@ -1,13 +1,19 @@
 import {
-  IObserver, IMulticastReplayLastSource, IObservable, single, let$$, mergeAllS$$, letU$$
-} from '@lifaon/rx-js-light';
+  IObserver, IMulticastReplayLastSource, IObservable, single, let$$, mergeAllS$$,
+} from '@lirx/core';
 
+/**
+ * @deprecated
+ */
 export type ICreateHigherOrderVariable<GValue> = [
   source: IMulticastReplayLastSource<IObservable<GValue>>,
   subscribe: IObservable<GValue>,
   emit: IObserver<GValue>,
 ];
 
+/**
+ * @deprecated
+ */
 export function createHigherOrderVariable<GValue>(
   initialValue: GValue,
 ): ICreateHigherOrderVariable<GValue> {
@@ -21,8 +27,11 @@ export function createHigherOrderVariable<GValue>(
   ];
 }
 
+/**
+ * @deprecated
+ */
 export function createHigherOrderVariableUninitialized<GValue>(): ICreateHigherOrderVariable<GValue> {
-  const source: IMulticastReplayLastSource<IObservable<GValue>> = letU$$<IObservable<GValue>>();
+  const source: IMulticastReplayLastSource<IObservable<GValue>> = let$$<IObservable<GValue>>();
   return [
     source,
     mergeAllS$$(source.subscribe),

@@ -1,7 +1,7 @@
 import {
   createMulticastReplayLastSource, IMapFunction, IMulticastReplayLastSource, IObservable, let$$, map$$,
   mapObservablePipe
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 function storeExample1() {
@@ -87,7 +87,7 @@ function storeExample11() {
   function createStore<GState>(
     initialState: GState,
   ): IStore<GState> {
-    return createMulticastReplayLastSource<GState>({ initialValue: initialState });
+    return createMulticastReplayLastSource<GState>(initialState);
   }
 
   /* ACTION */

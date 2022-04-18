@@ -2,7 +2,7 @@ import {
   fromEventTarget, fromPromise, fromPromiseFactory, IFromPromiseFactoryObservableNotifications,
   mergeMapObservablePipe,
   pipeObservable, Subscription
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 

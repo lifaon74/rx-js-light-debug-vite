@@ -1,4 +1,4 @@
-import { IObservable, readObservableValue } from '@lifaon/rx-js-light';
+import { IObservable, readObservableValue } from '@lirx/core';
 
 export function readMultipleObservableValue(
   multiple$: IObservable<boolean>,

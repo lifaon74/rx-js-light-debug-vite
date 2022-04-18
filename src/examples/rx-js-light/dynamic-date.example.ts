@@ -1,6 +1,6 @@
 import {
   fromEventTarget, interval, IUnsubscribe, mapObservablePipe, pipeObservable
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 export function dynamicDateExample() {

@@ -1,4 +1,4 @@
-import { composeObserver, composeObserverPipes, mapObserverPipe } from '@lifaon/rx-js-light';
+import { composeObserver, composeObserverPipes, mapObserverPipe } from '@lirx/core';
 
 
 function composeExample1() {

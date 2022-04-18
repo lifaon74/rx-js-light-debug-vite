@@ -1,7 +1,7 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, IDynamicStyleValue,
   OnCreate, querySelectorOrThrow, defineObservableProperty,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import html from './mat-color-input.component.html?raw';
 // @ts-ignore
@@ -10,7 +10,7 @@ import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
   $$distinct, $$map, $$mapFilter, combineLatest, function$$, IMapFilterDiscard, IObservable, IObserver, ISource, let$$,
   map$$, MAP_FILTER_DISCARD, mapFilter$$, or$$, shareRL$$, single
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { MatColorInputOverlayComponent } from './overlay/mat-color-input-overlay.component';
 import { createMatOverlayController } from '../../../../overlay/overlay/__component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';

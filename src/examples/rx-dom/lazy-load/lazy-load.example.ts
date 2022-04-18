@@ -1,9 +1,8 @@
 import {
-  bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, createDocumentFragment,
-  DEFAULT_CONSTANTS_TO_IMPORT,
-  HTMLElementConstructor, Input, nodeAppendChild, OnCreate
-} from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, IObservable, letU$$, map$$$, mergeAll$$$, of, pipe$$ } from '@lifaon/rx-js-light';
+  bootstrap, compileReactiveHTMLAsComponentTemplate, Component, createDocumentFragment, HTMLElementConstructor, Input,
+  nodeAppendChild, OnCreate,
+} from '@lirx/dom';
+import { IMulticastReplayLastSource, IObservable, let$$, map$$$, mergeAll$$$, of, pipe$$ } from '@lirx/core';
 
 /** COMPONENT **/
 
@@ -11,17 +10,15 @@ interface IData {
   content$: IObservable<DocumentFragment>;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
-
 @Component({
   name: 'app-lazy-component',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(`
-    <rx-inject-content
-      content="$.content$"
-    ></rx-inject-content>
-  `, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsComponentTemplate({
+    html: `
+      <rx-inject-content
+        content="$.content$"
+      ></rx-inject-content>
+    `,
+  }),
 })
 export class AppLazyComponent extends HTMLElement implements OnCreate<IData> {
   @Input((instance: AppLazyComponent) => instance._$component$)
@@ -33,7 +30,7 @@ export class AppLazyComponent extends HTMLElement implements OnCreate<IData> {
 
   constructor() {
     super();
-    const $component$ = letU$$<IObservable<HTMLElementConstructor>>();
+    const $component$ = let$$<IObservable<HTMLElementConstructor>>();
     this._$component$ = $component$;
 
     const content$ = pipe$$($component$.subscribe, [
@@ -42,7 +39,7 @@ export class AppLazyComponent extends HTMLElement implements OnCreate<IData> {
         const fragment: DocumentFragment = createDocumentFragment();
         nodeAppendChild(fragment, new component());
         return fragment;
-      })
+      }),
     ]);
 
     this._data = {

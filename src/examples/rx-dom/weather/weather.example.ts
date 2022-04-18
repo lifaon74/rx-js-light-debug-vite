@@ -1,5 +1,5 @@
 import { AppWeatherPageComponent } from './components/weather-page/weather-page.component';
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 
 
 /** BOOTSTRAP FUNCTION **/

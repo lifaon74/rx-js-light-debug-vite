@@ -3,12 +3,11 @@ import {
   loadReactiveHTMLAsComponentTemplate, nodeAppendChild,
   toReactiveContent, toReactiveContentObservable,
   trackByIdentity, transpileReactiveHTMLAsRawComponentTemplateFunctionWithImportsAsFirstArgumentToReactiveDOMJSLines,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import html from './debug-reactive-dom-compiler-3.rxhtml?raw';
 // @ts-ignore
 import style from './debug-reactive-dom-compiler.scss?inline';
-import { interval, let$$, letU$$, map$$, shareRL$$, single } from '@lifaon/rx-js-light';
 
 async function fatHTMLGenerator(
   length: number = 1e3,

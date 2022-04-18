@@ -1,7 +1,7 @@
 import {
   distinctObservablePipe, idle, interval, IObservable, mapObservablePipe, pipeObservable,
-} from '@lifaon/rx-js-light';
-import { getDocument, querySelector, querySelectorAll } from '@lifaon/rx-dom';
+} from '@lirx/core';
+import { getDocument, querySelector, querySelectorAll } from '@lirx/dom';
 
 export interface IFindDOMElementOptions {
   timeout?: number;

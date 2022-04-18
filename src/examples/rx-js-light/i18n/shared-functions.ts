@@ -1,5 +1,5 @@
-import { IObservable, IObserver, ISource, map$$ } from '@lifaon/rx-js-light';
-import { createLocalesSource, ILocales, localesToStringArray } from '@lifaon/rx-i18n';
+import { IObservable, IObserver, ISource, map$$ } from '@lirx/core';
+import { createLocalesSource, ILocales, localesToStringArray } from '@lirx/i18n';
 
 declare namespace Intl {
   class DisplayNames {

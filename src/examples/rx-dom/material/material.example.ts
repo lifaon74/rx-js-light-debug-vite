@@ -5,6 +5,7 @@ import { matProgressBarExample } from './progress/progress-bar/mat-progress-bar.
 import { matProgressRingExample } from './progress/progress-ring/mat-progress-ring.example';
 import { matGrayBlockSkeletonExample } from './skeletons/gray-block-skeleton/mat-gray-block-skeleton.example';
 import { matSelectInputExample } from './form/components/inputs/select/mat-select-input.example';
+import { overlayComponentExample } from './overlay/overlay-component.example';
 
 export function materialExample() {
   // matIconExample();
@@ -12,7 +13,8 @@ export function materialExample() {
   // matColorInputExample();
   // matCheckboxInputExample();
   // matSwitchInputExample();
-  matProgressBarExample();
+  // matProgressBarExample();
   // matProgressRingExample();
   // matGrayBlockSkeletonExample();
+  overlayComponentExample();
 }

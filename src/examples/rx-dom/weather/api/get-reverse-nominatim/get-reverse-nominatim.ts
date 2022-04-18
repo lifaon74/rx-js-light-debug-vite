@@ -1,6 +1,6 @@
 import { IGetReverseNominatimOptions } from './request.type';
 import { IGetReverseNominatimJSONResponse } from './response.type';
-import { fromFetchJSON, INotificationsObservable, singleN } from '@lifaon/rx-js-light';
+import { fromFetchJSON, INotificationsObservable, singleN } from '@lirx/core';
 
 
 export function getReverseNominatim(

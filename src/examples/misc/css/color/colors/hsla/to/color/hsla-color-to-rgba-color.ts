@@ -3,12 +3,13 @@ import { IRGBAColor } from '../../../rgba/rgba-color.type';
 import { createRGBAColor } from '../../../rgba/create-rgba-color';
 
 export function hslaColorToRGBAColor(
-  color: IReadonlyHSLAColor,
+  {
+    h,
+    s,
+    l,
+    a,
+  }: IReadonlyHSLAColor,
 ): IRGBAColor {
-  const h: number = color.h;
-  const s: number = color.s;
-  const l: number = color.l;
-
   let r: number, g: number, b: number;
 
   if (s === 0) {
@@ -25,7 +26,7 @@ export function hslaColorToRGBAColor(
     r,
     g,
     b,
-    color.a,
+    a,
   );
 }
 

@@ -1,11 +1,11 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import style from './youtube-player.component.scss';
 // @ts-ignore
 import html from './youtube-player.component.html?raw';
-import { fromFetchJSON, IFromFetchJSONObservableNotifications, IObservable } from '../../../../../../rx-js-light/dist';
+import { fromFetchJSON, IFromFetchJSONObservableNotifications, IObservable } from '@lirx/core';
 import { noCORS } from '../../../misc/no-cors';
 
 /** COMPONENT **/

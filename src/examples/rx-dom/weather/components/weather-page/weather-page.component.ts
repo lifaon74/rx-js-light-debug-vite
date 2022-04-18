@@ -1,6 +1,6 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import html from './weather-page.component.html?raw';
 // @ts-ignore
@@ -10,7 +10,7 @@ import {
   IFromGeolocationPositionObservableNotifications, IMapFilterDiscard, INextNotification, IObservable, IObservablePipe,
   IObserver, isErrorNotification, isNextNotification, let$$, map$$, map$$$, MAP_FILTER_DISCARD, mapFilter$$,
   mergeMapS$$, mergeMapS$$$, pipe$$, pipe$$$, shareR$$, shareRL$$, single, throttleTime$$,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { getReverseNominatim, getReverseNominatimCached } from '../../api/get-reverse-nominatim/get-reverse-nominatim';
 import { IGetReverseNominatimJSONResponse } from '../../api/get-reverse-nominatim/response.type';
 import { Immutable, ImmutableArray } from '@lifaon/rx-store';
@@ -21,7 +21,7 @@ import {
 import {
   dateTimeFormat$$$, ILocaleToTranslations, IRelativeTimeFormatValue, ITranslations, LOCALES, numberFormat$$$,
   relativeTimeFormat$$$,
-} from '@lifaon/rx-i18n';
+} from '@lirx/i18n';
 import { IGeographicPosition } from '../../api/shared/geographic-position';
 import { getWeather } from '../../api/get-weather/get-weather';
 import { IDailyWeather, IGetWeatherResponse, IHourlyWeather } from '../../api/get-weather/response.type';

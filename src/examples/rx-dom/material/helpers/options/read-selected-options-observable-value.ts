@@ -1,4 +1,4 @@
-import { IObservable, readObservableValue } from '@lifaon/rx-js-light';
+import { IObservable, readObservableValue } from '@lirx/core';
 import { IReadonlyOptionsSet } from './types/readonly-options-set.type';
 
 export function readSelectedOptionsObservableValue<GOption>(

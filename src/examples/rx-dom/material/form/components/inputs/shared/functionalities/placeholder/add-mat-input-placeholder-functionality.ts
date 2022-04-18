@@ -1,5 +1,5 @@
-import { defineSimpleObservableProperty, IHavingObservableProperty } from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
+import { defineSimpleObservableProperty, IHavingObservableProperty } from '@lirx/dom';
+import { IObservable } from '@lirx/core';
 
 export type IMatInputPlaceholderProperty = IHavingObservableProperty<'placeholder', string>;
 

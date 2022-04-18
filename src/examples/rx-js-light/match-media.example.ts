@@ -1,4 +1,4 @@
-import { fromMatchMedia } from '@lifaon/rx-js-light';
+import { fromMatchMedia } from '@lirx/core';
 
 
 export function matchMediaExample() {

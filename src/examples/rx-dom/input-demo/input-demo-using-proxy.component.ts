@@ -1,6 +1,6 @@
 import {
   compileReactiveHTMLAsComponentTemplate, Component, generateComponentProxyData, IComponentProxyData, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 
 /** COMPONENT **/
 

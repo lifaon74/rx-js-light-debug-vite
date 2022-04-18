@@ -1,4 +1,4 @@
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 import { MatProgressRingComponent } from './mat-progress-ring.component';
 import { createProgressAnimation } from '../progress-bar/misc/create-progress-animation';
 

@@ -1,7 +1,7 @@
-import { interval, IObservable, map$$ } from '@lifaon/rx-js-light';
+import { interval, IObservable, map$$ } from '@lirx/core';
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import html from './aot.component.html?raw';
 // @ts-ignore

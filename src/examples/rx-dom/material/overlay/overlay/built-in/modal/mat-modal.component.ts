@@ -1,7 +1,7 @@
 // @ts-ignore
 import style from './mat-modal.component.scss?inline';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
-import { compileReactiveCSSAsComponentStyle, injectComponentStyle } from '@lifaon/rx-dom';
+import { compileReactiveCSSAsComponentStyle, injectComponentStyle } from '@lirx/dom';
 import { MatOverlayWithAnimationComponent } from '../../__component/with-animation/overlay-with-animation.component';
 import { makeMatOverlayComponentBackdropClosable } from '../../__component/helpers/make-mat-overlay-component-backdrop-closable';
 

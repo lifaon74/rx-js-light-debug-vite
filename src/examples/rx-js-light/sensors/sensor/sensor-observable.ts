@@ -1,7 +1,7 @@
 import {
   createErrorNotification, createEventListener, createNextNotification, IErrorNotification, INextNotification,
   IObservable, IObserver, IRemoveEventListener, IUnsubscribe,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 export type ISensorObservableNotifications<GValue> =
   INextNotification<GValue>

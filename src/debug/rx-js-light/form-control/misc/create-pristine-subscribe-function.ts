@@ -1,4 +1,4 @@
-import { IObserver, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { IObserver, IObservable, map$$$, pipe$$ } from '@lirx/core';
 
 export type ICreatePristineObservableReturn = [
   subsribe: IObservable<boolean>,

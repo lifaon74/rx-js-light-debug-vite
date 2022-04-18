@@ -1,4 +1,4 @@
-import { fromResizeObserver, IObservable, map$$, merge, single } from '@lifaon/rx-js-light';
+import { fromResizeObserver, IObservable, map$$, merge, single } from '@lirx/core';
 import { ISize } from '../../../../../../misc/types/size/size.type';
 import { getElementSizeFromResizeObserverEntry } from './get-element-size-from-resize-observer-entry';
 import { getElementSize } from './get-element-size';

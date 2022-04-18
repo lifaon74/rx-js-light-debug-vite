@@ -1,8 +1,8 @@
-import { interval, IObservable, map$$ } from '@lifaon/rx-js-light';
+import { interval, IObservable, map$$ } from '@lirx/core';
 import {
   createDocumentFragment, createElement, createReactiveTextNode, createTextNode, getDocumentBody, isDOMNode,
   nodeAppendChild
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import classes from './debug-tsx.module.scss'
 

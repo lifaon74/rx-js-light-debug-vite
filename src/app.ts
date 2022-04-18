@@ -29,13 +29,12 @@ import { webRTCDebug } from './debug/webrtc/webrtc.debug';
 import { storeExample } from './examples/rx-js-light/store/store.example';
 import { debugReactiveDOMCompiler } from './debug/rx-dom/aot/debug-reactive-dom-compiler';
 import { weatherExample } from './examples/rx-dom/weather/weather.example';
-import { overlayComponentExample } from './examples/rx-dom/material/overlay/overlay-component.example';
 import { pictureExample } from './examples/rx-js-light/picture/picture.example';
 import { matIconExample } from './examples/rx-dom/material/icon/mat-icon.example';
 import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
 import { matSelectInputExample } from './examples/rx-dom/material/form/components/inputs/select/mat-select-input.example';
 import { matColorInputExample } from './examples/rx-dom/material/form/components/inputs/color/mat-color-input.example';
-import { Component } from '@lifaon/rx-dom';
+import { Component } from '@lirx/dom';
 import { aotExample } from './debug/rx-dom/aot-component/aot.example';
 import { debugTSX } from './debug/tsx/debug-tsx';
 import { materialExample } from './examples/rx-dom/material/material.example';
@@ -52,7 +51,10 @@ import { gyroCubeExample } from './examples/rx-dom/gyro-cube/gyro-cube.example';
 import { debugUnits } from './debug/unit/unit.debug';
 import { inputDemoExample } from './examples/rx-dom/input-demo/input-demo.example';
 import { fileTreeExample } from './examples/rx-dom/file-tree/file-tree.example';
-import { asyncComponentLoaderExample } from './examples/rx-dom/async-component-loader/async-component-loader.example';
+import { syntaxExample } from './examples/rx-dom/__syntax/syntax.example';
+import { appCryptoExample } from './examples/rx-dom/crypto/main';
+import { wirex } from './examples/rx-dom/crypto/app/wirex/wirex';
+import { renderLogo } from './debug/logo/logo';
 
 
 function run() {
@@ -67,6 +69,9 @@ function run() {
   // debugMovement();
   // debugNFC();
   // debugUnits();
+  // wirex();
+  // renderLogo();
+
 
   // rxJSLightPerformancesExample();
   // rxJSLightPerformancesExample2();
@@ -74,7 +79,6 @@ function run() {
   // console.log('started');
   // dynamicDateExample();
   // mousePositionExample();
-  // overlayComponentExample();
   // youtubePlayerExample();
   // infinitePostsExample();
   // trustedTypesExample();
@@ -82,8 +86,7 @@ function run() {
   // matchMediaExample();
   // inputDemoExample();
   // forLoopExample();
-  // routerExample();
-  asyncComponentLoaderExample();
+  routerExample();
 
   // guidelineExample();
   // composeExample();
@@ -105,11 +108,14 @@ function run() {
   // animationsExample();
   // aotExample();
   // debugTSX();
-  // materialExample();
   // personalityExample();
   // websocketExample();
   // gyroCubeExample();
   // fileTreeExample();
+  // appCryptoExample();
+
+  // syntaxExample();
+  // materialExample();
 }
 
 run();

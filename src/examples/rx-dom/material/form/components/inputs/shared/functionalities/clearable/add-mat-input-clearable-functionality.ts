@@ -1,7 +1,7 @@
 import {
   defineSimpleObservableProperty, IHavingObservableProperty, setReactiveClass
-} from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { IObservable } from '@lirx/core';
 
 export type IMatInputClearableProperty = IHavingObservableProperty<'clearable', boolean>;
 

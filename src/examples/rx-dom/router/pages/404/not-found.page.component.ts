@@ -1,6 +1,5 @@
-import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
-import { AppVirtualLinkComponent } from '@lifaon/rx-router';
-
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lirx/dom';
+import { AppVirtualLinkComponent } from '@lirx/router';
 
 /** COMPONENT **/
 

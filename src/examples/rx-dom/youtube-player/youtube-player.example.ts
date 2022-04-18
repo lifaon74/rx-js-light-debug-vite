@@ -1,4 +1,4 @@
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 import { YoutubePlayerComponent } from './component/youtube-player.component';
 
 export function youtubePlayerExample() {

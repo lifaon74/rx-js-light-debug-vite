@@ -1,4 +1,4 @@
-import { createEventListener, IObservable, IObserver, IUnsubscribe } from '@lifaon/rx-js-light';
+import { createEventListener, IObservable, IObserver, IUnsubscribe } from '@lirx/core';
 import { INetworkState } from './types/network-state.type';
 import { getNetworkState } from './get-network-state';
 import { getNavigatorConnection } from './get-navigator-connection';

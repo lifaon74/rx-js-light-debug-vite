@@ -2,7 +2,7 @@ import {
   createWebSocketByteStream, IByteStream, IByteStreamObservable, IObservable, IWebSocketByteStreamObservable, map$$,
   noop,
   notificationObserver, stringToUTF8EncodedStringBuffer,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { SMTP_CONFIG } from './mail/smtp/config.constant';
 import { smtp$GREETING$PacketBufferDecoder } from './mail/smtp/packets/greeting/smtp-greeting-packet.buffer-decoder';
 import { IBufferDecoder, IBufferDecoderResult } from './encoding/types/buffer-decoder/buffer-decoder.type';

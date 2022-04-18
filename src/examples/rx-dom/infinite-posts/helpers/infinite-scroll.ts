@@ -1,6 +1,6 @@
 import {
   filterObservablePipe, fromEventTarget, interval, IObservable, merge, pipe$$, throttleTime$$$,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 export interface IInfiniteScrollOptions {
   scrollElement: HTMLElement;

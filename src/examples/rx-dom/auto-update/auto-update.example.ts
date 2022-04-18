@@ -1,8 +1,8 @@
 import {
   bootstrap, compileReactiveHTMLAsComponentTemplate, Component, generateComponentProxyData, IComponentProxyData,
   OnCreate,
-} from '@lifaon/rx-dom';
-import { add$$, IObservable, mapObservable } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { add$$, IObservable, mapObservable } from '@lirx/core';
 
 
 function castToNumber(

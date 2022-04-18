@@ -3,12 +3,13 @@ import { IHSLAColor } from '../../../hsla/hsla-color.type';
 import { createHSLAColor } from '../../../hsla/create-hsla-color';
 
 export function rgbaColorToHSLAColor(
-  rgbaColor: IReadonlyRGBAColor,
+  {
+    r,
+    g,
+    b,
+    a,
+  }: IReadonlyRGBAColor,
 ): IHSLAColor {
-  const r: number = rgbaColor.r;
-  const g: number = rgbaColor.g;
-  const b: number = rgbaColor.b;
-
   const max: number = Math.max(r, g, b);
   const min: number = Math.min(r, g, b);
 
@@ -38,7 +39,7 @@ export function rgbaColorToHSLAColor(
     h,
     s,
     l,
-    rgbaColor.a,
+    a,
   );
 }
 

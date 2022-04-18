@@ -1,5 +1,5 @@
-import { createHTMLElementModifier } from '@lifaon/rx-dom';
-import { IObserver } from '@lifaon/rx-js-light';
+import { createHTMLElementModifier } from '@lirx/dom';
+import { IObserver } from '@lirx/core';
 
 export function nodeReferenceModifierFunction<GElement extends HTMLElement>(
   element: GElement,

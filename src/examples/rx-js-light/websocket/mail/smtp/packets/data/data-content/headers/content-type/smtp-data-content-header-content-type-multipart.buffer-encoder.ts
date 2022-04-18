@@ -1,6 +1,6 @@
 import { u32 } from '@lifaon/number-types';
 
-import { stringToUTF8EncodedStringBuffer } from '@lifaon/rx-js-light';
+import { stringToUTF8EncodedStringBuffer } from '@lirx/core';
 import { Boundary } from '../../../../../../classes/boundary/boundary.class';
 import { asciiStringBufferEncoder } from '../../../../../../classes/ascii-string/functions/helpers/ascii-string.buffer-encoder';
 import { ensureUint8ArrayHasEnoughSpace } from '../../../../../../../array-buffer/ensure-uint8-array-has-enough-space';

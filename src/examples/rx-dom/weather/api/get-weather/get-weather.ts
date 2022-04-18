@@ -12,7 +12,7 @@ import {
 import { getOpenWeatherMapOneCallWeather } from './openweathermap/onecall/get-open-weather-map-one-call-weather';
 import { IWeatherStateId } from './weather-state-id/weather-state-id.type';
 import { SECONDS_PER_DAY, SECONDS_PER_HOUR } from '../../helpers/units/converters';
-import { fulfilled$$$, INotificationsObservable, pipe$$, singleN } from '../../../../../../../rx-js-light/dist';
+import { fulfilled$$$, INotificationsObservable, pipe$$, singleN } from '@lirx/core';
 
 
 // function convertOpenWeatherMapDailyDateToDateRange(

@@ -2,13 +2,13 @@ import {
   bootstrap,
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { MatProgressBarComponent } from '../material/progress/progress-bar/mat-progress-bar.component';
 import { MatProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
 import {
   conditionalObservablePipe, createMulticastReplayLastSource, distinctObservablePipe, fromEventTarget, interval,
   IObservable, mapObservablePipe, of, pipeObservable, reactiveFunction, shareObservablePipe
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 export const APP_GUIDELINE_CUSTOM_ELEMENTS = [
   MatProgressBarComponent,

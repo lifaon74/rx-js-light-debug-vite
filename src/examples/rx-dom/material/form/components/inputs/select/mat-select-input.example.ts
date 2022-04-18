@@ -1,6 +1,6 @@
 import { MatSelectInputComponent } from './mat-select-input.component';
-import { bootstrap } from '@lifaon/rx-dom';
-import { single } from '@lifaon/rx-js-light';
+import { bootstrap } from '@lirx/dom';
+import { single } from '@lirx/core';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { IMatSelectInputOption } from './types/mat-select-input-option.type';
 

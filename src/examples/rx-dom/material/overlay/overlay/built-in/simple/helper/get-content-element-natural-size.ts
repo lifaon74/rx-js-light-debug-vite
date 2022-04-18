@@ -4,7 +4,7 @@ import {
 } from './get-external-box-for-container-element-with-margin';
 import {
   getElementStyleDeclaration, getStylePropertyObjectOrNull, IStylePropertyObjectOrNull, setStylePropertyObjectOrNull,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 
 
 const PROPERTY_NAMES: string[] = [

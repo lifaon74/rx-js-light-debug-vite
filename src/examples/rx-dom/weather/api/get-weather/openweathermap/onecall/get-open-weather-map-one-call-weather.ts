@@ -1,7 +1,7 @@
 import { API_KEY } from '../../../config';
 import { IGetOpenWeatherMapOneCallWeatherJSONResponse } from './response.type';
 import { IGetOpenWeatherMapOneCallWeatherOptions } from './request.type';
-import { IObservable, fromFetchJSON, IFromFetchJSONObservableNotifications } from '@lifaon/rx-js-light';
+import { IObservable, fromFetchJSON, IFromFetchJSONObservableNotifications } from '@lirx/core';
 
 /**
  * DOC: https://openweathermap.org/api/one-call-api

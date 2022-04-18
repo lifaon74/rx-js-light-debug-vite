@@ -1,4 +1,4 @@
-import { IObserver, mapObserver, notificationObserver } from '@lifaon/rx-js-light';
+import { IObserver, mapObserver, notificationObserver } from '@lirx/core';
 import { accelerometerSensorObservable } from './sensor/motion/accelerometer/accelerometer-sensor-observable';
 import { deviceOrientationObservable } from './sensor/orientation/device/device-orientation-observable';
 import { ambientLightSensorObservable } from './sensor/ambient-light/ambient-light-sensor-observable';
@@ -166,7 +166,7 @@ export async function onlineObservableExample() {
 
 export async function sensorsExample() {
   // await deviceOrientationObservableExample();
-  await screenOrientationObservableExample();
+  // await screenOrientationObservableExample();
   // await absoluteOrientationSensorObservableExample();
   // await relativeOrientationSensorObservableExample();
 
@@ -179,7 +179,7 @@ export async function sensorsExample() {
   // await ambientLightSensorObservableExample();
 
   // await batteryObservableExample();
-  // await networkObservableExample();
+  await networkObservableExample();
   // await onlineObservableExample();
 }
 

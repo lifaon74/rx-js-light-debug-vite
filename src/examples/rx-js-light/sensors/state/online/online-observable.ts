@@ -1,6 +1,6 @@
 import {
   createEventListener, IObservable, IObserver, IUnsubscribe, mergeUnsubscribeFunctions,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { getOnlineState } from './get-online-state';
 
 

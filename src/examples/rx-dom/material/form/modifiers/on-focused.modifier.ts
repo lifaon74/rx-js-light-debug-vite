@@ -1,5 +1,5 @@
-import { createHTMLElementModifier, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
-import { IObserver } from '@lifaon/rx-js-light';
+import { createHTMLElementModifier, subscribeOnNodeConnectedTo } from '@lirx/dom';
+import { IObserver } from '@lirx/core';
 import { isElementOrChildrenFocusedObservableDebounced } from '../../helpers/focus-subscribe-function';
 
 export function onFocusedModifierFunction(

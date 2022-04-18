@@ -1,5 +1,5 @@
 import { u32 } from '@lifaon/number-types';
-import { IStringOrUTF8EncodedStringBuffer, IUTF8EncodedStringBuffer, toUTF8EncodedString } from '@lifaon/rx-js-light';
+import { IStringOrUTF8EncodedStringBuffer, IUTF8EncodedStringBuffer, toUTF8EncodedString } from '@lirx/core';
 import { smtpDataContentHeader$To$BufferEncoder } from './headers/smtp-data-content-header-to.buffer-encoder';
 import { EmailContact } from '../../../../classes/email-contact/email-contact.class';
 import { EmailAddress } from '../../../../classes/email-address/email-address.class';

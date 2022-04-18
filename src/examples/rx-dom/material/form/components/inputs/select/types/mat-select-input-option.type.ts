@@ -1,4 +1,4 @@
-import { IObservable } from '@lifaon/rx-js-light';
+import { IObservable } from '@lirx/core';
 import { IReadonlyOptionsSet } from '../../../../../helpers/options/types/readonly-options-set.type';
 
 export interface IMatSelectInputOption<GValue> {

@@ -1,4 +1,4 @@
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 import { AppFileTransferComponent } from './file-transfer.component';
 
 

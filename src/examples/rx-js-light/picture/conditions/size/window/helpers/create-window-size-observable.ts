@@ -1,4 +1,4 @@
-import { fromEventTarget, IObservable, map$$, merge, single } from '@lifaon/rx-js-light';
+import { fromEventTarget, IObservable, map$$, merge, single } from '@lirx/core';
 import { ISize } from '../../../../../../misc/types/size/size.type';
 import { getWindowSize } from './get-window-size';
 

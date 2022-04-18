@@ -1,7 +1,7 @@
 import {
-  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
-import { IObservable, IObserver, let$$ } from '@lifaon/rx-js-light';
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, customElementRef, OnCreate,
+} from '@lirx/dom';
+import { IObservable, IObserver, let$$ } from '@lirx/core';
 
 
 /** COMPONENT **/
@@ -34,7 +34,7 @@ interface IData {
       </div>
     `,
     customElements: [
-      () => AppFileTreeComponent,
+      customElementRef('app-file-tree', () => AppFileTreeComponent),
     ],
   }),
   styles: [compileReactiveCSSAsComponentStyle(`

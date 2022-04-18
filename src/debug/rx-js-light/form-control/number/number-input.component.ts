@@ -1,10 +1,10 @@
 import {
   IObserver, IMulticastReplayLastSource, IObservable, single, map$$, map$$$, pipe$$, function$$, let$$
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, HTMLElementConstructor, IOnInitOptions, OnCreate, OnInit, setReactiveClass
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { getStepBaseObservable, INumberInputValue, NumberInputValidity } from './number-input-validity';
 // @ts-ignore
 import style from './number-input.component.scss';

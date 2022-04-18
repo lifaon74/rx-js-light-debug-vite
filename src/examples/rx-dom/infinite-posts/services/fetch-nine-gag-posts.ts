@@ -1,7 +1,7 @@
 import {
   fromFetch, fromFetchJSON, fromPromise, IDefaultNotificationsUnion, IObservable,
   pipeObservable,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { noCORS } from '../../../misc/no-cors';
 
 // https://9gag.com/v1/group-posts/group/default/type/hot?after=azMXb4Z%2Ca6EomPN%2CaB2xKY1&c=10

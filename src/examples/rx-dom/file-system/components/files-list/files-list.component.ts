@@ -1,17 +1,15 @@
 import {
-  compileAndEvaluateReactiveHTMLAsComponentTemplate, compileAndEvaluateReactiveHTMLAsComponentTemplateOptimized,
-  compileReactiveCSSAsComponentStyle, Component,
-  DEFAULT_CONSTANTS_TO_IMPORT, OnCreate, subscribeOnNodeConnectedTo
-} from '@lifaon/rx-dom';
+  compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
+  subscribeOnNodeConnectedTo,
+} from '@lirx/dom';
 // @ts-ignore
 import html from './files-list.component.html?raw';
 // @ts-ignore
 import style from './files-list.component.scss';
 import {
-  fromPromise, IObservable, IFromPromiseObservableNotifications, let$$, letU$$, map$$, notificationObserver, of,
-  SubscriptionManager
-} from '@lifaon/rx-js-light';
-import { mutateReadonlyReplayLastSourceArray } from '@lifaon/rx-js-light';
+  fromPromise, IFromPromiseObservableNotifications, IObservable, let$$, map$$, mutateReadonlyReplayLastSourceArray,
+  notificationObserver, SubscriptionManager,
+} from '@lirx/core';
 import { createInfiniteScrollObservable } from '../../../infinite-posts/helpers/infinite-scroll';
 
 /** FUNCTIONS **/
@@ -86,21 +84,16 @@ type IFilesListState = 'awaiting' | 'loading' | 'done' | 'errored';
 
 interface IData {
   readonly files$: IObservable<readonly IFile[]>;
-  // readonly isLoading$: IObservable<boolean>;
-  // readonly isErrored$: IObservable<boolean>;
+  readonly isLoading$: IObservable<boolean>;
+  readonly isErrored$: IObservable<boolean>;
+  readonly isNotErrored$: IObservable<boolean>;
   readonly state$: IObservable<IFilesListState>;
   readonly errorMessage$: IObservable<string>;
 }
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-  of,
-  map$$,
-};
-
 @Component({
   name: 'app-files-list',
-  template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html, CONSTANTS_TO_IMPORT),
+  template: compileReactiveHTMLAsComponentTemplate(html),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class AppFilesListComponent extends HTMLElement implements OnCreate<IData> {
@@ -116,14 +109,14 @@ export class AppFilesListComponent extends HTMLElement implements OnCreate<IData
     const getFiles = async function * (): AsyncGenerator<IFile> {
       let index: number = 0;
       while (true) {
-      // while (index < 5) {
+        // while (index < 5) {
         // await sleep(200);
 
         yield {
-          id: `#${ index }`,
+          id: `#${index}`,
           // previewURL: '/assets/images/sample-01.jpg',
           previewURL: '',
-          name: `#${ index }`,
+          name: `#${index}`,
           metadata: {},
         };
         index++;
@@ -142,10 +135,11 @@ export class AppFilesListComponent extends HTMLElement implements OnCreate<IData
     const $state$ = let$$<IFilesListState>('awaiting');
     const state$ = $state$.subscribe;
 
-    // const isLoading$ = map$$(state$, (state: IFilesListState) => (state === 'loading'));
-    // const isErrored$ = map$$(state$, (state: IFilesListState) => (state === 'errored'));
+    const isLoading$ = map$$(state$, (state: IFilesListState) => (state === 'loading'));
+    const isErrored$ = map$$(state$, (state: IFilesListState) => (state === 'errored'));
+    const isNotErrored$ = map$$(state$, (state: IFilesListState) => (state !== 'errored'));
 
-    const $error$ = letU$$<unknown>();
+    const $error$ = let$$<unknown>();
     const error$ = $error$.subscribe;
     const errorMessage$ = map$$(error$, (error: unknown): string => {
       return (error instanceof Error)
@@ -211,6 +205,9 @@ export class AppFilesListComponent extends HTMLElement implements OnCreate<IData
 
     this._data = {
       files$,
+      isLoading$,
+      isErrored$,
+      isNotErrored$,
       state$,
       errorMessage$,
     };

@@ -1,6 +1,6 @@
 import {
   IObservable, IObservablePipe, mapObservablePipe, pipeObservable
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 export function toPercent(value: number): string {
   return `${ value * 100 }%`;

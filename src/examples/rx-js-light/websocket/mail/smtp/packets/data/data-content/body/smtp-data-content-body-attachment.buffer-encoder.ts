@@ -1,6 +1,6 @@
 import { u32 } from '@lifaon/number-types';
 import { uint8ArrayBufferEncoder } from '../../../../../../array-buffer/uint8-array.buffer-encoder';
-import { stringToUTF8EncodedStringBuffer } from '@lifaon/rx-js-light';
+import { stringToUTF8EncodedStringBuffer } from '@lirx/core';
 import { EmailAttachment } from '../../../../../classes/email-attachment/email-attachment.class';
 import { asciiStringBufferEncoder } from '../../../../../classes/ascii-string/functions/helpers/ascii-string.buffer-encoder';
 import { smtpDataContentBody$Base64$BufferEncoder } from './shared/smtp-data-content-body-base64.buffer-encoder';

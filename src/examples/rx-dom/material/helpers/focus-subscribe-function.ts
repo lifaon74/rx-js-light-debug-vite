@@ -1,4 +1,4 @@
-import { debounceTime$$, fromEventTarget, interval, IObservable, map$$, merge } from '@lifaon/rx-js-light';
+import { debounceTime$$, fromEventTarget, interval, IObservable, map$$, merge } from '@lirx/core';
 import { isElementFocused, isElementOrChildrenFocused } from './is-element-focused';
 
 export function onFocusChangeEventObservable(

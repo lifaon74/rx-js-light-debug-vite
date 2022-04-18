@@ -1,5 +1,5 @@
-import { setReactiveClass } from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
+import { setReactiveClass } from '@lirx/dom';
+import { IObservable } from '@lirx/core';
 
 export function addMatInputEmptyClass(
   target: Element,

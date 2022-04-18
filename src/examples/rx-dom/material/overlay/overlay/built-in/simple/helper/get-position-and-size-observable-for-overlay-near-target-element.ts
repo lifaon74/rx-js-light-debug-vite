@@ -1,4 +1,4 @@
-import { defer, fromResizeObserver, idle, interval, IObservable, map$$, merge } from '@lifaon/rx-js-light';
+import { defer, fromResizeObserver, idle, interval, IObservable, map$$, merge } from '@lirx/core';
 import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/css-position-and-size.type';
 import { IPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size.type';
 import {
@@ -15,7 +15,7 @@ import {
   IGetExternalBoxForContainerElementWithMarginOptions,
 } from './get-external-box-for-container-element-with-margin';
 import { IGetTargetBoxForTargetElementWithMarginOptions } from './get-target-box-for-target-element-with-margin';
-import { getParentElementOrThrow } from '@lifaon/rx-dom';
+import { getParentElementOrThrow } from '@lirx/dom';
 
 
 export interface IGetContentElementSizeFunction {

@@ -1,4 +1,4 @@
-import { mapObservablePipe, of, pipeObservablePipes } from '@lifaon/rx-js-light';
+import { mapObservablePipe, of, pipeObservablePipes } from '@lirx/core';
 
 
 function pipeExample1() {

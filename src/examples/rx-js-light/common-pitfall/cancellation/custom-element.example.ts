@@ -2,7 +2,7 @@ import {
   debounceTimeObservablePipe, fromEventTarget, fromFetch, fromPromise, IDefaultNotificationsUnion, IObservable,
   IObservableFromFetchNotifications, IUnsubscribe, mergeMapObservablePipe,
   mergeMapObservablePipeWithNotifications, noop, notificationObserver, pipeObservable
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 

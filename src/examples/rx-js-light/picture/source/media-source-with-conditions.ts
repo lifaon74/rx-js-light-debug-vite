@@ -1,4 +1,4 @@
-import { andM$$, IObservable, map$$ } from '@lifaon/rx-js-light';
+import { andM$$, IObservable, map$$ } from '@lirx/core';
 import { IOptionalSource } from './optional-source.type';
 
 export function mediaSourceWithConditions(

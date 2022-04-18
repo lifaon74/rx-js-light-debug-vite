@@ -2,7 +2,7 @@ import {
   createErrorNotification, createNextNotification,
   fromEventTarget, fromPromiseFactory, fulfilled$$$, IErrorNotification, INextNotification, IObservable, map$$, merge,
   pipe$$,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 // https://web.dev/nfc/#check-for-permission

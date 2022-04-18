@@ -1,10 +1,10 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
   subscribeOnNodeConnectedTo,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import {
   $$distinct, combineLatest, IObservable, IObserver, IUnsubscribe, let$$, map$$, timeout,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 // @ts-ignore
 import style from './mat-select-overlay.component.scss';
 // @ts-ignore

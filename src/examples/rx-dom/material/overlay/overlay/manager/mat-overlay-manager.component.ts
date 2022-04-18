@@ -1,7 +1,7 @@
 import {
   bootstrap, compileReactiveCSSAsComponentStyle, Component, getDocument, nodeAppendChild, nodeRemove,
   querySelectorOrThrow,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import style from './mat-overlay-manager.component.scss?inline';
 

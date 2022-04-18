@@ -1,7 +1,7 @@
-import { createElement } from '@lifaon/rx-dom';
+import { createElement } from '@lirx/dom';
 
 import { IDailyWeather, IHourlyWeather } from '../../api/get-weather/response.type';
-import { fromEventTarget, mergeUnsubscribeFunctions } from '@lifaon/rx-js-light';
+import { fromEventTarget, mergeUnsubscribeFunctions } from '@lirx/core';
 import { MM_PER_DAY_TO_METER_PER_SECOND } from '../units/converters';
 
 // @ts-ignore

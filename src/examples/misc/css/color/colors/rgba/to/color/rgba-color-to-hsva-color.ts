@@ -3,12 +3,13 @@ import { IHSVAColor } from '../../../hsva/hsva-color.type';
 import { createHSVAColor } from '../../../hsva/create-hsva-color';
 
 export function rgbaColorToHSVAColor(
-  rgbaColor: IReadonlyRGBAColor,
+  {
+    r,
+    g,
+    b,
+    a,
+  }: IReadonlyRGBAColor,
 ): IHSVAColor {
-  const r: number = rgbaColor.r;
-  const g: number = rgbaColor.g;
-  const b: number = rgbaColor.b;
-
   const max: number = Math.max(r, g, b);
   const min: number = Math.min(r, g, b);
 
@@ -40,7 +41,7 @@ export function rgbaColorToHSVAColor(
     h,
     s,
     v,
-    rgbaColor.a,
+    a,
   );
 }
 

@@ -1,6 +1,6 @@
 import {
   fromFetchText, fulfilled$$$, IDefaultNotificationsUnion, IObservable, pipe$$, singleN,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { noCORS } from '../../../misc/no-cors';
 import { IImageResource, IResource, IYoutubeResource } from './resource.type';
 

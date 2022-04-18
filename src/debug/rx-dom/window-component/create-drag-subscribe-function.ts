@@ -1,7 +1,7 @@
 import {
   createNotification, fromEventTarget, IObserver, INotification, IObservable, IUnsubscribe,
   TInferNotificationGName, freeze,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 export interface IPoint2D {
   readonly x: number;

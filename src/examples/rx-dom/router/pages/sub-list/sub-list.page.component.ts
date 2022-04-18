@@ -1,4 +1,4 @@
-import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lirx/dom';
 
 /** COMPONENT **/
 

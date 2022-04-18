@@ -1,5 +1,5 @@
-import { fromEventTarget, IUnsubscribe } from '@lifaon/rx-js-light';
-import { subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
+import { fromEventTarget, IUnsubscribe } from '@lirx/core';
+import { subscribeOnNodeConnectedTo } from '@lirx/dom';
 import { MatOverlayComponent } from '../mat-overlay.component';
 
 export function makeMatOverlayComponentClosableWithEscape(

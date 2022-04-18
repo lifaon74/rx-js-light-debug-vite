@@ -1,7 +1,7 @@
-import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lirx/dom';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
-import { eq$$, IObservable, let$$, map$$, single } from '@lifaon/rx-js-light';
-import { getRouteParams } from '@lifaon/rx-router';
+import { eq$$, IObservable, let$$, map$$, single } from '@lirx/core';
+import { AppVirtualLinkComponent, getRouteParams } from '@lirx/router';
 
 
 /** COMPONENT **/
@@ -36,7 +36,7 @@ interface IData {
            >
             Product: {{ $.single(productId) }}
             <rx-container *if="$.eq$$($.single(productId), $.productId$)">
-              Selected
+              -> Selected
             </rx-container>
            </a>
         </li>
@@ -44,6 +44,7 @@ interface IData {
     `,
     customElements: [
       AppMenuPageComponent,
+      AppVirtualLinkComponent,
     ],
   }),
 })

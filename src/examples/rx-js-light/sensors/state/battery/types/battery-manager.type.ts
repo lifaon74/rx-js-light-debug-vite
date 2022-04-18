@@ -1,4 +1,4 @@
-import { IReadonlyEventTarget, IToEventMap } from '@lifaon/rx-js-light';
+import { IReadonlyEventTarget, IToEventMap } from '@lirx/core';
 import { BatteryManagerEventsMap } from './battery-manager-events-map.type';
 
 export interface BatteryManager extends IReadonlyEventTarget<IToEventMap<BatteryManagerEventsMap>> {

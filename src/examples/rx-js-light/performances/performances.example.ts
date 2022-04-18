@@ -1,5 +1,5 @@
 import { from as fromRXJS } from 'rxjs';
-import { distinct$$$, fromArray, map$$$, pipe$$, filter$$$ } from '@lifaon/rx-js-light';
+import { distinct$$$, fromArray, map$$$, pipe$$, filter$$$ } from '@lirx/core';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 // https://blog.asayer.io/hyperapp-is-it-the-lightweight-react-killer

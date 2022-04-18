@@ -1,4 +1,4 @@
-import { IObservablePipe, mapObservablePipe } from '@lifaon/rx-js-light';
+import { IObservablePipe, mapObservablePipe } from '@lirx/core';
 import { ISanitizeHTMLConfig } from '../sanitite-html-function.type';
 import { DEFAULT_SANITIZE_HTML_CONFIG } from '../default-sanitize-html-config.constant';
 import DOMPurify from 'dompurify';

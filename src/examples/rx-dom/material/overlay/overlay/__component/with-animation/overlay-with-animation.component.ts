@@ -1,6 +1,6 @@
 import { MatOverlayComponent, IOverlayCloseOrigin } from '../mat-overlay.component';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
-import { createAnimationFrame, createTimeout } from '@lifaon/rx-js-light';
+import { createAnimationFrame, createTimeout } from '@lirx/core';
 import { getElementTransitionDuration } from '../../../../../../misc/css/quantities/time/__old/get-element-transition-duration';
 import { findDOMElement } from '../../../../../../misc/find-dom-element';
 

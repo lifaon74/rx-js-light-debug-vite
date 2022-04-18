@@ -1,7 +1,7 @@
 import { readSelectedOptionsObservableValue } from './read-selected-options-observable-value';
 import { readMultipleObservableValue } from './read-multiple-observable-value';
 import { toggleOptionSelect } from './toggle-option-select';
-import { IObservable, IObserver } from '@lifaon/rx-js-light';
+import { IObservable, IObserver } from '@lirx/core';
 import { IReadonlyOptionsSet } from './types/readonly-options-set.type';
 import { IOptionsList } from './types/options-list.type';
 

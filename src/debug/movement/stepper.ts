@@ -1,4 +1,4 @@
-import { createTimeout, IAbortTimer } from '@lifaon/rx-js-light';
+import { createTimeout, IAbortTimer } from '@lirx/core';
 import { float32, int32_t, uin64_t, uint32_t, uint8_t } from './number.types';
 import { getMovementDuration } from './math';
 import { IMovement } from './movement.types';

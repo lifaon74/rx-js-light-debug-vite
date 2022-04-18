@@ -31,7 +31,6 @@ export function focusElementAsync(
 ): Promise<void> {
   return new Promise<void>((
     resolve: (value: void | PromiseLike<void>) => void,
-    reject: (reason?: any) => void,
   ): void => {
     focusElementSync(element);
     setTimeout(() => {

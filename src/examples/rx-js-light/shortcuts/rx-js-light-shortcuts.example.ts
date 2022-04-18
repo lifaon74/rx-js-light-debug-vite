@@ -1,4 +1,4 @@
-import { andM$$, let$$, map$$, share$$, single } from '@lifaon/rx-js-light';
+import { andM$$, let$$, map$$, share$$, single } from '@lirx/core';
 
 
 function rxjsLightShortcutsExample1() {

@@ -2,8 +2,8 @@ import {
   attachNodeChildrenToNewDocumentFragment, compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate,
   Component, componentInputU$$, createDocumentFragment, createDocumentFragmentFilledWithNodes, IComponentInput,
   IDocumentFragmentOrNull, IHTMLTemplate, OnCreate, querySelector, querySelectorAll,
-} from '@lifaon/rx-dom';
-import { IObservable, map$$, single } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { IObservable, map$$, single } from '@lirx/core';
 
 
 export function selectComponentContentElements(

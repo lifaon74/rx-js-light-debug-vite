@@ -1,6 +1,6 @@
 import {
   debounceImmediateObservablePipe, distinct$$$, IObservable, IObservablePipe, pipe$$$, shareRL$$$
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 export function distinctDebouncedShared$$$<GValue>(): IObservablePipe<GValue, GValue> {
   return pipe$$$([

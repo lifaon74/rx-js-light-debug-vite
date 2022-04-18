@@ -1,4 +1,4 @@
-import { getDocument } from '@lifaon/rx-dom';
+import { getDocument } from '@lirx/dom';
 
 export function getActiveElement(): Element | null {
   return getDocument().activeElement;

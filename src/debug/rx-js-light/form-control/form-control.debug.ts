@@ -2,10 +2,10 @@ import {
   bootstrap, compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT,
   DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
   generateCreateElementFunctionWithCustomElements, OnCreate
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { AppNumberInputComponent } from './number/number-input.component';
 import { AppFormComponent } from './form/form.component';
-import { single } from '@lifaon/rx-js-light';
+import { single } from '@lirx/core';
 
 
 /** MAIN **/

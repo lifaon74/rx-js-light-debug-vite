@@ -29,10 +29,15 @@ export function hslaColorToHSL$AString(
 /*----*/
 
 function hslaColorToHSLStringMembers(
-  color: IReadonlyHSLAColor,
+  {
+    h,
+    s,
+    l,
+    a,
+  }: IReadonlyHSLAColor,
   precision: number = 0,
 ): string {
   return (precision === 0)
-  ? `${ Math.round(color.h * 360) }, ${ toFixedWithoutTrailingZeros(color.s * 100, 1) }%, ${ toFixedWithoutTrailingZeros(color.l * 100, 1) }%`
-  : `${ toPrecisionWithoutTrailingZeros(color.h * 360, precision) }, ${ toPrecisionWithoutTrailingZeros(color.s * 100, precision) }%, ${ toPrecisionWithoutTrailingZeros(color.l * 100, precision) }%`;
+  ? `${ Math.round(h * 360) }, ${ toFixedWithoutTrailingZeros(s * 100, 1) }%, ${ toFixedWithoutTrailingZeros(l * 100, 1) }%`
+  : `${ toPrecisionWithoutTrailingZeros(h * 360, precision) }, ${ toPrecisionWithoutTrailingZeros(s * 100, precision) }%, ${ toPrecisionWithoutTrailingZeros(l * 100, precision) }%`;
 }

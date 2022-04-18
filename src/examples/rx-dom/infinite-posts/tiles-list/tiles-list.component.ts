@@ -1,9 +1,9 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import {
   IDefaultNotificationsUnion, IObservable, let$$, mutateReadonlyReplayLastSourceArray, Subscription, SubscriptionManager,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 // @ts-ignore
 import style from './tiles-list.component.scss';
 // @ts-ignore
@@ -14,7 +14,7 @@ import { fetchNineGagPosts } from '../services/fetch-nine-gag-posts';
 import { IResource } from '../services/resource.type';
 import {
   filter$$,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 // @ts-ignore
 // import styleUrl from './tiles-list.component.css?url';
 

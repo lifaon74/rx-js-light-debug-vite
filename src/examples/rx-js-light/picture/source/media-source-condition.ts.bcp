@@ -1,4 +1,4 @@
-import { functionD$$, IObservable, IObservablePipe } from '@lifaon/rx-js-light';
+import { functionD$$, IObservable, IObservablePipe } from '@lirx/core';
 import { IOptionalSource } from './optional-source.type';
 
 export function mediaSourceCondition(

@@ -2,8 +2,8 @@ import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, IDocumentFragmentOrNull,
   IReactiveContent, OnCreate,
   subscribeOnNodeConnectedTo,
-} from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { IObservable } from '@lirx/core';
 import { ICSSPositionAndSize } from '../../../../../misc/types/position-and-size/css-position-and-size.type';
 import { applyCSSPositionAndSize } from '../../../../../misc/types/position-and-size/apply-css-position-and-size';
 import { getContentElementNaturalSize } from '../../overlay/built-in/simple/helper/get-content-element-natural-size';

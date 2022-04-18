@@ -1,6 +1,6 @@
 import {
   createMulticastReplayLastSource, IMulticastReplayLastSource, IObservable, reactiveFunction
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 
 /** CUSTOM ELEMENT EXAMPLE **/
@@ -85,9 +85,9 @@ function customElementWithObservable() {
 
     constructor() {
       super();
-      this._$prefix$ = createMulticastReplayLastSource<string>({ initialValue: '' });
-      this._$firstName$ = createMulticastReplayLastSource<string>({ initialValue: '' });
-      this._$lastName$ = createMulticastReplayLastSource<string>({ initialValue: '' });
+      this._$prefix$ = createMulticastReplayLastSource<string>('');
+      this._$firstName$ = createMulticastReplayLastSource<string>('');
+      this._$lastName$ = createMulticastReplayLastSource<string>('');
 
       // fulName is a computed variable so we use a reactiveFunction
       this._fullName$ = reactiveFunction([

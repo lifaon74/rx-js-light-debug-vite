@@ -1,8 +1,8 @@
 // @ts-ignore
 import style from './mat-simple-overlay.component.scss?inline';
 import { MatOverlayManagerComponent } from '../../manager/mat-overlay-manager.component';
-import { compileReactiveCSSAsComponentStyle, injectComponentStyle, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
-import { combineLatest, IObservable } from '@lifaon/rx-js-light';
+import { compileReactiveCSSAsComponentStyle, injectComponentStyle, subscribeOnNodeConnectedTo } from '@lirx/dom';
+import { combineLatest, IObservable } from '@lirx/core';
 import { MatOverlayWithAnimationComponent } from '../../__component/with-animation/overlay-with-animation.component';
 import { findDOMElement } from '../../../../../../misc/find-dom-element';
 import { ICSSPositionAndSize } from '../../../../../../misc/types/position-and-size/css-position-and-size.type';

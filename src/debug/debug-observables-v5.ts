@@ -7,7 +7,7 @@ import {
   IUnsubscribe, mapObservablePipe, mapObserverPipe, of, pipe$$, pipeObservablePipes, singleWithNotifications, then$$$,
   throwError, timeout, map$$, singleN, emptyN, IEmptyObservableNotifications, mergeMapS$$, ofWithNotifications,
   toAsyncIterable, fromAsyncIterable, raceWithNotifications, let$$,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { noCORS } from '../examples/misc/no-cors';
 import { sleep } from '../examples/misc/sleep';
 
@@ -500,8 +500,7 @@ async function debugMulticastSource1() {
 }
 
 async function debugReplayLastSource1() {
-  // const source = createMulticastReplayLastSource<number>({ initialValue: 0 });
-  const source = createUnicastReplayLastSource<number>({ initialValue: 0 });
+  const source = createUnicastReplayLastSource<number>(0);
 
   source.subscribe((value: number) => {
     console.log('value - A:', value);
@@ -577,7 +576,7 @@ async function debugObservableProxy1() {
     }),
   };
 
-  const $data$ = createMulticastReplayLastSource({ initialValue: data });
+  const $data$ = createMulticastReplayLastSource(data);
 
   const proxy = createObservableProxy($data$.subscribe);
 
@@ -626,7 +625,7 @@ async function debugObservableProxy2() {
     array: [{ value: 1 }, { value: 2 }],
   };
 
-  const dataSource = createMulticastReplayLastSource({ initialValue: data });
+  const dataSource = createMulticastReplayLastSource(data);
 
   const proxy = createObservableProxy(dataSource.subscribe);
 

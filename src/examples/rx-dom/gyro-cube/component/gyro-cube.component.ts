@@ -1,11 +1,11 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import style from './gyro-cube.component.scss';
 // @ts-ignore
 import html from './gyro-cube.component.html?raw';
-import { IObservable, map$$ } from '@lifaon/rx-js-light';
+import { IObservable, map$$ } from '@lirx/core';
 import {
   DEVICE_ORIENTATION,
 } from '../../../rx-js-light/sensors/sensor/orientation/device/device-orientation-observable.constant';

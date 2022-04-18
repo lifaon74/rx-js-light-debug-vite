@@ -1,4 +1,4 @@
-import { IObservable } from '@lifaon/rx-js-light';
+import { IObservable } from '@lirx/core';
 import { maxSizeWindow } from './max-size-window';
 
 export function maxWidthWindow(

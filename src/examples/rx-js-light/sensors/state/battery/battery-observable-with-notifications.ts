@@ -1,7 +1,7 @@
 import {
   createNextNotification, fromPromise, fulfilledObservable, IErrorNotification, INextNotification, IObservable,
   mapObservable,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { IBatteryState } from './types/battery-state.type';
 import { BatteryManager } from './types/battery-manager.type';
 import { getBattery } from './get-battery';

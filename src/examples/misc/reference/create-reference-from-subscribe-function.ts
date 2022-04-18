@@ -1,5 +1,5 @@
 import { IReference } from './reference.type';
-import { IObservable, IUnsubscribe } from '../../../../../rx-js-light/dist';
+import { IObservable, IUnsubscribe } from '@lirx/core';
 
 // WARN EXPERIMENTAL
 

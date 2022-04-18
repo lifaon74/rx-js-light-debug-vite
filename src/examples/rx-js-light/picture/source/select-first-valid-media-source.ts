@@ -1,4 +1,4 @@
-import { combineLatest, debounceTime$$$, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { combineLatest, debounceTime$$$, IObservable, map$$$, pipe$$ } from '@lirx/core';
 import { IOptionalSource } from './optional-source.type';
 
 export function selectFirstValidMediaSource(

@@ -2,7 +2,7 @@ import { IArrayBufferView } from '../array-buffer-view.type';
 import {
   asyncUnsubscribe, createErrorNotification, createNextNotification, IErrorNotification, INextNotification, IObservable,
   IObserver, IUnsubscribe,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { CircularBuffer, createCircularUint8Array, ICircularUint8Array } from './circular-buffer';
 import { createNotEnoughSpaceError } from '../../errors/not-enough-space/not-enough-space-error';
 

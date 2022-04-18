@@ -1,4 +1,4 @@
-import { fromEventTarget, IObservable, mapObservable, toTypedEventTarget } from '@lifaon/rx-js-light';
+import { fromEventTarget, IObservable, mapObservable, toTypedEventTarget } from '@lirx/core';
 import { IDeviceMotionRotationRate } from './types/device-motion-rotation-rate.type';
 import { IDeviceMotionAcceleration } from './types/device-motion-acceleration.type';
 import { IDeviceMotion } from './types/device-motion.type';

@@ -1,14 +1,20 @@
-import {
-  defineSimpleObservableProperty, IHavingObservableProperty, setReactiveClass
-} from '@lifaon/rx-dom';
-import { IObservable } from '@lifaon/rx-js-light';
+import { extendWithHigherOrderObservableView$, setReactiveClass } from '@lirx/dom';
+import { IHigherOrderObservableView, IObserverObservableTuple } from '@lirx/core';
 
-export type IMatInputDisabledProperty = IHavingObservableProperty<'disabled', boolean>;
+const MAT_INPUT_DISABLED_PROPERTY_NAME = 'disabled';
+
+type IMatInputDisabledPropertyName = typeof MAT_INPUT_DISABLED_PROPERTY_NAME;
+
+export type IMatInputDisabledProperty = IHigherOrderObservableView<IMatInputDisabledPropertyName, boolean>;
 
 export function addMatInputDisabledProperty(
   target: any,
-): IObservable<boolean> {
-  return defineSimpleObservableProperty<boolean>(target, 'disabled', false);
+): IObserverObservableTuple<boolean> {
+  return extendWithHigherOrderObservableView$<any, IMatInputDisabledPropertyName, boolean>(
+    target,
+    MAT_INPUT_DISABLED_PROPERTY_NAME,
+    false,
+  );
 }
 
 export function addMatInputDisabledClass(
@@ -19,8 +25,8 @@ export function addMatInputDisabledClass(
 
 export function addMatInputDisabledFunctionality(
   target: any,
-): IObservable<boolean> {
-  const disabled$ = addMatInputDisabledProperty(target);
+): IObserverObservableTuple<boolean> {
+  const tuple = addMatInputDisabledProperty(target);
   addMatInputDisabledClass(target);
-  return disabled$;
+  return tuple;
 }

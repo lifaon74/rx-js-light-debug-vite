@@ -1,7 +1,7 @@
 import {
   compileReactiveCSSAsComponentStyle, injectComponentStyle, defineObservableProperty
-} from '@lifaon/rx-dom';
-import { IObserver, IObservable, single, let$$ } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { IObserver, IObservable, single, let$$ } from '@lirx/core';
 import { MatInputComponent } from '../input/mat-input.component';
 // @ts-ignore
 import style from './mat-input-field.component.scss?inline';

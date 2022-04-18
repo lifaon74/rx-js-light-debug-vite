@@ -2,7 +2,7 @@ import {
   IGenericObservableProperty, IHavingMultipleObservableProperties,
   IObservablePropertiesToObservableSourceProperties,
   setComponentMultipleObservableProperties
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 
 // export type IHavingMultipleObservablePropertiesReturn<
 //   // generics
@@ -23,7 +23,9 @@ export type IHavingMultipleObservablePropertiesReturn<
   GBaseClass
   & (new(properties: IObservablePropertiesToObservableSourceProperties<GProperties>, ...args: ConstructorParameters<GBaseClass>) => (InstanceType<GBaseClass> & IHavingMultipleObservableProperties<GProperties>));
 
-
+/**
+ * @deprecated
+ */
 export function havingMultipleObservableProperties<
   // generics
   GProperties extends readonly IGenericObservableProperty[],

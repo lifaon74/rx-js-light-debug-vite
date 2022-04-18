@@ -1,6 +1,6 @@
-import { fromAnimationFrame, IObservable, map$$ } from '@lifaon/rx-js-light';
+import { fromAnimationFrame, IObservable, map$$ } from '@lirx/core';
 import { ICSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/css-position-and-size.type';
-import { querySelector } from '@lifaon/rx-dom';
+import { querySelector } from '@lirx/dom';
 import { POSITION_AND_SIZE_OUT_OF_WINDOW } from './position-and-size-out-of-window.constant';
 import { IPositionAndSize } from '../../../../../../../misc/types/position-and-size/position-and-size.type';
 import {

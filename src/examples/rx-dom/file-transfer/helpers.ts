@@ -1,4 +1,4 @@
-import { createElement } from '@lifaon/rx-dom';
+import { createElement } from '@lirx/dom';
 
 export function extractFileNameFromRequest(
   request: Request,

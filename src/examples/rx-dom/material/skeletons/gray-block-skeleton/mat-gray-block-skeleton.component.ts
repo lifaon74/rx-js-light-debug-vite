@@ -1,7 +1,4 @@
-import {
-  compileReactiveCSSAsComponentStyle, Component, loadAndCompileReactiveCSSAsComponentStyle,
-  loadReactiveHTMLAsGenericComponentTemplate
-} from '@lifaon/rx-dom';
+import { compileReactiveCSSAsComponentStyle, Component } from '@lirx/dom';
 // @ts-ignore
 import style from './mat-gray-block-skeleton.component.scss?inline';
 
@@ -11,7 +8,7 @@ import style from './mat-gray-block-skeleton.component.scss?inline';
 
 @Component({
   name: 'mat-gray-block-skeleton',
-  // styles: [compileReactiveCSSAsComponentStyle(style)],
+  styles: [compileReactiveCSSAsComponentStyle(style)],
 })
 export class MatGrayBlockSkeletonComponent extends HTMLElement {
 }

@@ -1,7 +1,7 @@
 import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, Component, DEFAULT_CONSTANTS_TO_IMPORT, OnCreate
-} from '@lifaon/rx-dom';
-import { of, single } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { of, single } from '@lirx/core';
 // @ts-ignore
 // import style from './number-input.component.scss';
 

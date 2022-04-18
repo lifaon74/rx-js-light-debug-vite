@@ -1,6 +1,6 @@
-import { interval, IObservable, let$$, map$$, map$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { interval, IObservable, let$$, map$$, map$$$, pipe$$ } from '@lirx/core';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
-import { currencyFormat$$$, ILocales } from '@lifaon/rx-i18n';
+import { currencyFormat$$$, ILocales } from '@lirx/i18n';
 
 
 export function formatCurrencyExample() {

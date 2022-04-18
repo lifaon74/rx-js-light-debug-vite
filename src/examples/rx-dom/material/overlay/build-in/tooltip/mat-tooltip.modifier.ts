@@ -1,10 +1,10 @@
 import {
   createHTMLElementModifier, IHTMLElementModifier, IReactiveContent, nodeRemove, onNodeConnectedToWithImmediateCached,
   setAttributeValue, uuid,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { MatOverlayManagerComponent } from '../../overlay/manager/mat-overlay-manager.component';
 import { MatTooltipComponent } from './mat-tooltip.component';
-import { debounceTime$$$, distinct$$$, IUnsubscribe, pipe$$ } from '@lifaon/rx-js-light';
+import { debounceTime$$$, distinct$$$, IUnsubscribe, pipe$$ } from '@lirx/core';
 import { mouseEnterObservable } from '../../../helpers/mouse-enter-subscribe-function';
 
 

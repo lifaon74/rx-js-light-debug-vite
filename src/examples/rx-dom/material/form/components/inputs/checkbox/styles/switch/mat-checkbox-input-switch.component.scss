@@ -31,7 +31,7 @@ $mat-checkbox-input-switch-background-color-disabled-indeterminate: var(--mat-ch
 $mat-checkbox-input-switch-button-color-disabled-indeterminate: var(--mat-checkbox-input-switch-button-color-disabled-indeterminate, $mat-checkbox-input-switch-button-background-color-disabled-off);
 
 
-%mat-checkbox-input-radio {
+%mat-checkbox-input-switch {
   $mat-checkbox-input-switch-button-size: calc(#{$mat-checkbox-input-switch-height} - (#{$mat-checkbox-input-switch-border-width} * 2));
 
   width: $mat-checkbox-input-switch-width;
@@ -134,6 +134,3 @@ $mat-checkbox-input-switch-button-color-disabled-indeterminate: var(--mat-checkb
     }
   }
 }
-
-
-

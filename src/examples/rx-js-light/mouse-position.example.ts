@@ -1,4 +1,4 @@
-import { fromEventTarget, Subscription } from '@lifaon/rx-js-light';
+import { fromEventTarget, Subscription } from '@lirx/core';
 
 /**
  * 704B bundled

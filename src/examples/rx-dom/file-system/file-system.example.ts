@@ -1,4 +1,4 @@
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 import { AppFilesListComponent } from './components/files-list/files-list.component';
 
 

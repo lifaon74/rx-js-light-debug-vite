@@ -1,11 +1,11 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate, querySelectorOrThrow,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import html from './mat-select-input.component.html?raw';
 // @ts-ignore
 import style from './mat-select-input.component.scss?inline';
-import { combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$ } from '@lirx/core';
 import { IMatSelectInputOption, IMatSelectInputReadonlySelectedOptions } from './types/mat-select-input-option.type';
 import { createMatOverlayController } from '../../../../overlay/overlay/__component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';

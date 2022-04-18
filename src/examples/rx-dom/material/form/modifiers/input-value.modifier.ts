@@ -1,5 +1,5 @@
-import { createHTMLElementModifier, setReactiveEventListener, setReactiveProperty } from '@lifaon/rx-dom';
-import { $$map, ISource } from '@lifaon/rx-js-light';
+import { createHTMLElementModifier, setReactiveEventListener, setReactiveProperty } from '@lirx/dom';
+import { $$map, ISource } from '@lirx/core';
 
 export function inputValueModifierFunction(
   element: HTMLElement,

@@ -1,6 +1,6 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 // @ts-ignore
 import style from './mat-positioned-overlay-content.component.scss';
 // @ts-ignore

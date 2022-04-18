@@ -1,6 +1,6 @@
 import {
   function$$, IObservable, IObserver, IUnsubscribe, let$$, map$$, mergeMapS$$, readObservableValue, single,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { IRXMediaPlayer, IRXMediaPlayState } from './rx-media-player';
 
 /** MEDIA **/

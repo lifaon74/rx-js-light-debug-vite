@@ -1,6 +1,6 @@
-import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
-import { INavigation, NAVIGATION } from '@lifaon/rx-router';
-import { idle, IObservable, map$$ } from '@lifaon/rx-js-light';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lirx/dom';
+import { INavigation, NAVIGATION } from '@lirx/router';
+import { idle, IObservable, map$$ } from '@lirx/core';
 import { AppMenuPageComponent } from '../components/menu/menu.component';
 
 /** COMPONENT **/

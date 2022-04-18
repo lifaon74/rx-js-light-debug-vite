@@ -1,7 +1,7 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
-import { IMulticastReplayLastSource, IObservable, let$$ } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { IMulticastReplayLastSource, IObservable, let$$ } from '@lirx/core';
 import { createAction, createStore, getStoreState, immutableArrayReplace, mapState } from '@lifaon/rx-store';
 
 

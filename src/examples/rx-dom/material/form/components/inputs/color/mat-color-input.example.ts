@@ -1,5 +1,5 @@
 import { MatColorInputComponent } from './mat-color-input.component';
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 
 

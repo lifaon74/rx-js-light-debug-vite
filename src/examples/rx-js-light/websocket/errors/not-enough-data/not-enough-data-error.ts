@@ -1,4 +1,4 @@
-import { createCustomError, ICustomError, ICustomErrorOptions, isCustomError } from '@lifaon/rx-js-light';
+import { createCustomError, ICustomError, ICustomErrorOptions, isCustomError } from '@lirx/core';
 
 
 // export function throwNotEnoughDataError(): never {

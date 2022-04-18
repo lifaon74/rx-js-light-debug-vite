@@ -1,8 +1,8 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { AppInjectContentComponent } from './inject-content.component';
-import { debounceFrame$$$, interval, IObservable, map$$$, pipe$$, single } from '@lifaon/rx-js-light';
+import { debounceFrame$$$, interval, IObservable, map$$$, pipe$$, single } from '@lirx/core';
 import { shuffleArray } from '../../misc/shuffle-array';
 
 

@@ -2,7 +2,7 @@ import DOMPurify from 'dompurify';
 import { ISanitizeHTMLConfig, ISanitizeHTMLFunction } from './sanitite-html-function.type';
 import { DEFAULT_SANITIZE_HTML_CONFIG } from './default-sanitize-html-config.constant';
 import { HTMLTrustedTypePolicy } from './trusted-types.type';
-import { createMulticastReplayLastSource, pipeObservable } from '@lifaon/rx-js-light';
+import { createMulticastReplayLastSource, pipeObservable } from '@lirx/core';
 import { sanitizeHTMLWithPolicyObservablePipe } from './pipes/sanitize-html-with-policy-observable-pipe';
 import { sanitizeHTMLWithPolicyObservable } from './pipes/sanitize-html-with-policy-observable';
 

@@ -1,8 +1,8 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, IDynamicStyleValue,
   OnCreate, querySelectorAll, querySelectorOrThrow, setReactiveClass, subscribeOnNodeConnectedTo,
-} from '@lifaon/rx-dom';
-import { andM$$, debounceFrame$$, fromEventTarget, IObservable, IObserver, map$$, single } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { andM$$, debounceFrame$$, fromEventTarget, IObservable, IObserver, map$$, single } from '@lirx/core';
 // @ts-ignore
 import style from './mat-color-input-overlay.component.scss?inline';
 // @ts-ignore

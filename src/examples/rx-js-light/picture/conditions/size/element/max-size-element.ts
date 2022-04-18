@@ -1,5 +1,5 @@
 import { IPartialSize, ISize } from '../../../../../misc/types/size/size.type';
-import { distinct$$$, functionD$$, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { distinct$$$, IObservable, map$$$, pipe$$ } from '@lirx/core';
 import { createElementSizeObservableInitialized } from './helpers/create-element-size-observable';
 import { _isLowerThanOrEqualSize } from '../helpers/is-lower-than-or-equal-size';
 

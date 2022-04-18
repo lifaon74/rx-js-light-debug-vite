@@ -29,12 +29,17 @@ export function rgbaColorToRGB$AString(
 
 
 function rgbaColorToRGBStringMembers(
-  color: IReadonlyRGBAColor,
+  {
+    r,
+    g,
+    b,
+    a,
+  }: IReadonlyRGBAColor,
   precision: number = 0,
 ): string {
   return (precision === 0)
-    ? `${ Math.round(color.r * 255) }, ${ Math.round(color.g * 255) }, ${ Math.round(color.b * 255) }`
-    : `${ toPrecisionWithoutTrailingZeros(color.r * 255, precision) }, ${ toPrecisionWithoutTrailingZeros(color.g * 255, precision) }, ${ toPrecisionWithoutTrailingZeros(color.b * 255, precision) }`;
+    ? `${ Math.round(r * 255) }, ${ Math.round(g * 255) }, ${ Math.round(b * 255) }`
+    : `${ toPrecisionWithoutTrailingZeros(r * 255, precision) }, ${ toPrecisionWithoutTrailingZeros(g * 255, precision) }, ${ toPrecisionWithoutTrailingZeros(b * 255, precision) }`;
 }
 
 // function rgbaColorToRGBStringMembers(

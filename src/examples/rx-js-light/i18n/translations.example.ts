@@ -1,14 +1,13 @@
 import {
   combineLatest, fromPromise, function$$, IObservable, let$$, map$$, mergeMapS$$$, notificationsToLastValueObservable,
   pipe$$, shareR$$, single,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { createCurrencySelectElement, createLocaleFormatContext } from './shared-functions';
 import {
-  currencyFormat$$$, dateTimeFormatS$$$, ICurrencyFormatOptions, ILocales, ILocaleToTranslations, IPluralRulesResult,
-  ITranslations,
+  currencyFormat$$$, dateTimeFormatS$$$, ICurrencyFormatOptions, ILocales, ILocaleToTranslations, ITranslations,
   listFormat$$$, localesToStringArray, numberFormat$$$, pluralRules$$$, pluralRulesResultToTranslationKey$$$,
   translate$$,
-} from '@lifaon/rx-i18n';
+} from '@lirx/i18n';
 
 function buildSimplePluralTranslations(
   key: string,
@@ -16,23 +15,23 @@ function buildSimplePluralTranslations(
   pluralValue: string,
 ): [string, string][] {
   return [
-    ...[ 'one'].map((quantity: string): [string, string] => [`${key}[${quantity}]`, singularValue]),
-    ...[ 'zero', 'two', 'few', 'many', 'other'].map((quantity: string): [string, string] => [`${key}[${quantity}]`, pluralValue]),
+    ...['one'].map((quantity: string): [string, string] => [`${key}[${quantity}]`, singularValue]),
+    ...['zero', 'two', 'few', 'many', 'other'].map((quantity: string): [string, string] => [`${key}[${quantity}]`, pluralValue]),
   ];
 }
 
 const TRANSLATIONS: ILocaleToTranslations = new Map<string, ITranslations>([
   ['en', new Map([
     ...buildSimplePluralTranslations('translate.apple', 'apple', 'apples'),
-    ['translate.banana[one]', 'banana'],
-    ['translate.banana[other]', 'bananas'],
+    ...buildSimplePluralTranslations('translate.banana', 'banana', 'bananas'),
+    // ['translate.banana[one]', 'banana'],
+    // ['translate.banana[other]', 'bananas'],
     ['translate.product.price', '{{ quantity }} {{ product }} at {{ price }}'],
     ['translate.product.list', 'I will sell {{ list }} the {{ date }}'],
   ])],
   ['fr', new Map([
     ...buildSimplePluralTranslations('translate.apple', 'pomme', 'pommes'),
-    ['translate.banana[one]', 'banane'],
-    ['translate.banana[other]', 'bananes'],
+    ...buildSimplePluralTranslations('translate.banana', 'banane', 'bananes'),
     ['translate.product.price', '{{ quantity }} {{ product }} à {{ price }}'],
     ['translate.product.list', 'Je vais vendre {{ list }} le {{ date }}'],
   ])],

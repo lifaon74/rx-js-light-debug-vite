@@ -1,4 +1,4 @@
-import { IObservable, single } from '@lifaon/rx-js-light';
+import { IObservable, single } from '@lirx/core';
 
 export const MAT_CLEAR_ICON_TITLE: IObservable<string> = single('Clear');
 

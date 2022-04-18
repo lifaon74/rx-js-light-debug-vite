@@ -3,6 +3,7 @@ import { IColor } from './color.type';
 import { parseCSSRGBALikeColor } from './colors/rgba/parse/parse-css-rgba-like-color';
 import { parseCSSHSL$AColor } from './colors/hsla/parse/parse-css-hsla-color';
 import { parseCSSHSV$AColor } from './colors/hsva/parse/parse-css-hsva-color';
+import { throwIfNull } from '../helpers/assert-not-null';
 
 export function parseCSSColor(
   input: string,
@@ -15,6 +16,16 @@ export function parseCSSColor(
   ]);
 }
 
+export function parseCSSColorOrThrow(
+  input: string,
+): IColor {
+  const color: IColor | null = parseCSSColor(input);
+  if (color === null) {
+    throw new Error(`Not a valid css color`);
+  } else {
+    return color;
+  }
+}
 
 function parseCSSKeywordColor(
   input: string,

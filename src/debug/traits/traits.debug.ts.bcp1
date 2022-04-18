@@ -1,0 +1,214 @@
+
+
+/*--------------------------*/
+
+export interface IColorGetRedFunction {
+  (): number;
+}
+
+export interface IColorGetRedTrait {
+  getRed: IColorGetRedFunction;
+}
+
+
+export interface IColorGetGreenFunction {
+  (): number;
+}
+
+export interface IColorGetGreenTrait {
+  getGreen: IColorGetGreenFunction;
+}
+
+
+export interface IColorGetBlueFunction {
+  (): number;
+}
+
+export interface IColorGetBlueTrait {
+  getBlue: IColorGetBlueFunction;
+}
+
+export interface IColorGetAlphaFunction {
+  (): number;
+}
+
+export interface IColorGetAlphaTrait {
+  getAlpha: IColorGetAlphaFunction;
+}
+
+export interface IColorGetChannelsTrait extends
+  // traits
+  IColorGetRedTrait,
+  IColorGetGreenTrait,
+  IColorGetBlueTrait,
+  IColorGetAlphaTrait
+  //
+{
+}
+
+
+/*-----*/
+
+export interface IColorToRGBFunction {
+  (
+    alpha?: boolean,
+  ): string;
+}
+
+export interface IColorToRGBATrait {
+  toRGB: IColorToRGBFunction;
+}
+
+export interface ICreateColorToRGBAFunctionUsingGetChannelsNewOptions extends
+  // traits
+  IColorGetChannelsTrait
+//
+{
+}
+
+
+export function createColorToRGBFunctionUsingGetChannels(
+  {
+    getRed,
+    getGreen,
+    getBlue,
+    getAlpha,
+  }: ICreateColorToRGBAFunctionUsingGetChannelsNewOptions,
+): IColorToRGBFunction {
+  return (
+    alpha: boolean = false
+  ): string => {
+    return `rgb${ alpha ? 'a' : '' }(${ Math.round(getRed() * 255) }, ${ Math.round(getGreen() * 255) }, ${ Math.round(getBlue() * 255) }${ alpha ? (', ' + getAlpha()) : '' })`;
+  };
+}
+
+
+/*-----*/
+
+export type IColorNewArguments = [
+  r: number,
+  g: number,
+  b: number,
+  a: number,
+];
+
+export type IColorNewFunction<GReturn> = INewFunction<IColorNewArguments, GReturn>;
+export type IColorNewTrait<GReturn> = INewTrait<IColorNewArguments, GReturn>;
+
+/*-----*/
+
+export interface IColorInvertFunction<GReturn> {
+  (
+    amount?: number,
+  ): GReturn;
+}
+
+export interface IColorInvertTrait<GReturn> {
+  invert: IColorInvertFunction<GReturn>;
+}
+
+export interface ICreateColorInvertFunctionUsingGetChannelsAndNewOptions<GReturn> extends
+  // traits
+  IColorGetChannelsTrait,
+  IColorNewTrait<GReturn>
+//
+{
+}
+
+export function createColorInvertFunctionUsingGetChannelsAndNew<GReturn>(
+  {
+    getRed,
+    getGreen,
+    getBlue,
+    getAlpha,
+    [NEW]: _new
+  }: ICreateColorInvertFunctionUsingGetChannelsAndNewOptions<GReturn>,
+): IColorInvertFunction<GReturn> {
+  return (
+    amount: number = 1,
+  ): GReturn => {
+    if ((0 <= amount) && (amount <= 1)) {
+      return _new(
+        amount * (1 - getRed()) + (1 - amount) * getRed(),
+        amount * (1 - getGreen()) + (1 - amount) * getGreen(),
+        amount * (1 - getBlue()) + (1 - amount) * getBlue(),
+        getAlpha(),
+      );
+    } else {
+      throw new RangeError(`Expected 'amount' in the range [0, 1]`);
+    }
+  };
+}
+
+/*--------------------------*/
+
+export interface IRGBAColorInternal {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
+export interface IRGBAColor extends
+  // traits
+  IColorNewTrait<IRGBAColor>,
+  IColorGetChannelsTrait,
+  IColorInvertTrait<IRGBAColor>,
+  IColorToRGBATrait,
+  IToStringTrait
+//
+{
+}
+
+export function createRGBAColor(
+  r: number,
+  g: number,
+  b: number,
+  a: number,
+): IRGBAColor {
+  const _new: IColorNewFunction<IRGBAColor> = createRGBAColor;
+
+  const getRed: IColorGetRedFunction = (): number => r;
+  const getGreen = (): number => g;
+  const getBlue = (): number => b;
+  const getAlpha = (): number => a;
+
+  const newTrait = {
+    [NEW]: _new,
+  };
+
+  const getChannelsTraits = {
+    getRed,
+    getGreen,
+    getBlue,
+    getAlpha,
+  };
+
+
+  const getChannelsAndNewTraits = {
+    ...newTrait,
+    ...getChannelsTraits,
+  };
+
+  const invert = createColorInvertFunctionUsingGetChannelsAndNew(getChannelsAndNewTraits);
+
+  const toRGB = createColorToRGBFunctionUsingGetChannels(getChannelsTraits);
+
+  const toString = toRGB;
+
+  return {
+    ...getChannelsAndNewTraits,
+    invert,
+    toRGB,
+    toString,
+  }
+}
+
+/*--------------------------*/
+
+
+export function debugTraits(): void {
+  const colorA = createRGBAColor(0.1, 0.2, 0.3, 1);
+  console.log(colorA.toRGB());
+  console.log(colorA.invert().toString());
+}

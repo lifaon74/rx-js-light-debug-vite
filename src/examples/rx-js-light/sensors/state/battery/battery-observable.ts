@@ -1,6 +1,6 @@
 import {
   createEventListener, IObservable, IObserver, IRemoveEventListener, IUnsubscribe, mergeUnsubscribeFunctions,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { IBatteryState } from './types/battery-state.type';
 import { BatteryManager } from './types/battery-manager.type';
 import { getBatteryState } from './get-battery-state';

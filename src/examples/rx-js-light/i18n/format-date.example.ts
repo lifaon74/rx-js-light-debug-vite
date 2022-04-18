@@ -1,8 +1,8 @@
 import {
   fromEventTarget, function$$, interval, IObservable, map$$, map$$$, merge, pipe$$, single,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { createLocaleFormatContext } from './shared-functions';
-import { dateTimeFormatS$$$, ILocales } from '@lifaon/rx-i18n';
+import { dateTimeFormatS$$$, ILocales } from '@lirx/i18n';
 
 /*----------------------*/
 

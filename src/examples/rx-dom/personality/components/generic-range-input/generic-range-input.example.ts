@@ -1,8 +1,8 @@
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 import {
   AppGenericRangeInputComponent, IGenericRangeInputOption, IGenericRangeInputOptionsList,
 } from './generic-range-input.component';
-import { single } from '@lifaon/rx-js-light';
+import { single } from '@lirx/core';
 import { MatOverlayManagerComponent } from '../../../material/overlay/overlay/manager/mat-overlay-manager.component';
 
 /** BOOTSTRAP FUNCTION **/

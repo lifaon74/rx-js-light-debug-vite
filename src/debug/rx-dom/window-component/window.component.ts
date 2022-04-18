@@ -2,14 +2,14 @@ import {
   createDragObservable, IDragObject, IDragObservableNotifications
 } from './create-drag-subscribe-function';
 import {
-  compileReactiveCSSAsComponentStyle, Component, DEFAULT_CONSTANTS_TO_IMPORT, DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
-  getParentNode, loadCompileAndEvaluateReactiveHTMLAsComponentTemplate, OnConnect, OnCreate, OnDisconnect, OnInit,
-  querySelectorOrThrow
-} from '@lifaon/rx-dom';
+  compileReactiveCSSAsComponentStyle, Component,
+  getParentNode, loadAndCompileReactiveCSSAsComponentStyle, loadReactiveHTMLAsComponentTemplate, OnCreate,
+  querySelectorOrThrow,
+} from '@lirx/dom';
 import {
   createMulticastReplayLastSource, freeze, IObserver, IMulticastReplayLastSource, IObservable,
   IUnsubscribe, noop, reactiveFunction, Subscription, SubscriptionManager,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 // @ts-ignore
 import style from './window.component.scss';
 // // @ts-ignore
@@ -238,11 +238,6 @@ export const DEFAULT_USER_BORDERS_RESIZE: IUserBordersResize = freeze({
 /*---*/
 
 
-const CONSTANTS_TO_IMPORT = {
-  ...DEFAULT_OBSERVABLE_CONSTANTS_TO_IMPORT,
-  ...DEFAULT_CONSTANTS_TO_IMPORT,
-};
-
 // interface IWindowData {
 //
 // }
@@ -251,10 +246,9 @@ type IWindowData = any;
 
 @Component({
   name: 'app-window',
-  template: loadCompileAndEvaluateReactiveHTMLAsComponentTemplate<IWindowData>(
+  template: await loadReactiveHTMLAsComponentTemplate(
     // @ts-ignore
     new URL('./window.component.html', import.meta.url).href,
-    CONSTANTS_TO_IMPORT,
   ),
   // template: compileAndEvaluateReactiveHTMLAsComponentTemplate(html),
   // style: loadAndCompileReactiveCSSAsComponentStyle(
@@ -263,7 +257,7 @@ type IWindowData = any;
   // ),
   styles: [compileReactiveCSSAsComponentStyle(style)],
 })
-export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowData>, OnConnect, OnDisconnect, OnInit {
+export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowData> {
   protected readonly data: IWindowData;
   protected readonly subscriptions: SubscriptionManager;
 
@@ -287,8 +281,8 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
 
     /** HORIZONTAL **/
 
-    this.left = createMulticastReplayLastSource<number>({ initialValue: 0.1 });
-    this.width = createMulticastReplayLastSource<number>({ initialValue: 0.8 });
+    this.left = createMulticastReplayLastSource<number>(0.1);
+    this.width = createMulticastReplayLastSource<number>(0.8);
 
     this.right = reactiveFunction([this.left.subscribe, this.width.subscribe], computeRightFromLeftAndWidth);
 
@@ -302,8 +296,8 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
 
     /** VERTICAL **/
 
-    this.top = createMulticastReplayLastSource<number>({ initialValue: 0.1 });
-    this.height = createMulticastReplayLastSource<number>({ initialValue: 0.8 });
+    this.top = createMulticastReplayLastSource<number>(0.1);
+    this.height = createMulticastReplayLastSource<number>(0.8);
 
     this.bottom = reactiveFunction([this.top.subscribe, this.height.subscribe], computeBottomFromTopAndHeight);
 
@@ -318,9 +312,7 @@ export class AppWindowComponent extends HTMLElement implements OnCreate<IWindowD
 
     /** OTHERS **/
 
-    this.userBorderResize = createMulticastReplayLastSource<IUserBordersResize | null>({
-      initialValue: DEFAULT_USER_BORDERS_RESIZE
-    });
+    this.userBorderResize = createMulticastReplayLastSource<IUserBordersResize | null>(DEFAULT_USER_BORDERS_RESIZE);
 
     this.isMaximised = reactiveFunction([
       this.left.subscribe,

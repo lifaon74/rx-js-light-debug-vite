@@ -1,5 +1,10 @@
-import { IRXRoutesList, navigateTo } from '@lifaon/rx-router';
-import { fromPromise, mergeMapS$$, singleN, timeout } from '@lifaon/rx-js-light';
+import { ICanActivateFunctionReturnedValue, IRXRoutesList, navigateTo } from '@lirx/router';
+import { mergeMapS$$, singleN, timeout } from '@lirx/core';
+import { AppSubListPageComponent } from '../pages/sub-list/sub-list.page.component';
+import { AppHomePageComponent } from '../pages/home/home.page.component';
+import { AppProductPageComponent } from '../pages/product/product.page.component';
+import { AppListPageComponent } from '../pages/list/list.page.component';
+import { AppNotFoundPageComponent } from '../pages/404/not-found.page.component';
 
 const listChildRoutes: IRXRoutesList = [
   {
@@ -7,39 +12,29 @@ const listChildRoutes: IRXRoutesList = [
   },
   {
     path: '/sub',
-    component: () => {
-      return fromPromise(import('../pages/sub-list//sub-list.page.component').then(_ => _.AppSubListPageComponent));
-    },
+    component: AppSubListPageComponent,
   },
 ];
 
 export const APP_ROUTES: IRXRoutesList = [
   {
     path: '/home',
-    // canActivate: () => {
-    //   return mergeMapS$$(timeout(2000), () => singleN<ICanActivateFunctionReturnedValue>(true));
-    // },
-    component: () => {
-      return fromPromise(import('../pages/home/home.page.component').then(_ => _.AppHomePageComponent));
-    },
+    component: AppHomePageComponent,
   },
   {
     path: '/product/:productId',
-    component: () => {
-      return fromPromise(import('../pages/product/product.page.component').then(_ => _.AppProductPageComponent));
-    },
+    component: AppProductPageComponent,
   },
   {
     path: '/list',
-    component: () => {
-      return fromPromise(import('../pages/list/list.page.component').then(_ => _.AppListPageComponent));
-    },
+    component: AppListPageComponent,
     children: [
       {
         path: '/async',
-        children: () => {
-          return mergeMapS$$(timeout(2000), () => singleN<IRXRoutesList>(listChildRoutes));
+        canActivate: () => {
+          return mergeMapS$$(timeout(2000), () => singleN<ICanActivateFunctionReturnedValue>(true));
         },
+        children: listChildRoutes,
       },
       ...listChildRoutes,
     ],
@@ -50,41 +45,7 @@ export const APP_ROUTES: IRXRoutesList = [
   },
   {
     path: '/**',
-    component: () => {
-      return fromPromise(import('../pages/404/not-found.page.component').then(_ => _.AppNotFoundPageComponent));
-    },
+    component: AppNotFoundPageComponent,
   },
 ];
-
-// const routes: IRXRoutesList = [
-//   {
-//     path: '/home',
-//     component: AppHomePageComponent,
-//   },
-//   {
-//     path: '/product/:productId',
-//     component: AppProductPageComponent,
-//   },
-//   {
-//     path: '/list',
-//     component: AppListPageComponent,
-//     children: [
-//       {
-//         path: '/',
-//       },
-//       {
-//         path: '/sub',
-//         component: AppSubListPageComponent,
-//       },
-//     ],
-//   },
-//   {
-//     path: '/forbidden',
-//     canActivate: navigateTo('/home'),
-//   },
-//   {
-//     path: '/**',
-//     component: AppNotFoundPageComponent,
-//   },
-// ];
 

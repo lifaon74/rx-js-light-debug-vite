@@ -1,5 +1,5 @@
 import { ISize } from '../../../../../misc/types/size/size.type';
-import { distinct$$$, IObservable, map$$$, pipe$$ } from '@lifaon/rx-js-light';
+import { distinct$$$, IObservable, map$$$, pipe$$ } from '@lirx/core';
 import { createElementSizeObservableInitialized } from './helpers/create-element-size-observable';
 
 export function elementVisible(

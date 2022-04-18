@@ -1,5 +1,5 @@
-import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lifaon/rx-dom';
-import { IObservable, IObserver, let$$ } from '@lifaon/rx-js-light';
+import { compileReactiveHTMLAsComponentTemplate, Component, OnCreate } from '@lirx/dom';
+import { IObservable, IObserver, let$$ } from '@lirx/core';
 
 /** COMPONENT **/
 

@@ -1,4 +1,4 @@
-import { createEventListener, IObservable, IObserver, IUnsubscribe } from '@lifaon/rx-js-light';
+import { createEventListener, IObservable, IObserver, IUnsubscribe } from '@lirx/core';
 import { IScreenOrientation } from './types/screen-orientation.type';
 import { getMappedScreenOrientation } from './get-mapped-screen-orientation';
 import { getScreenOrientation } from './get-screen-orientation';

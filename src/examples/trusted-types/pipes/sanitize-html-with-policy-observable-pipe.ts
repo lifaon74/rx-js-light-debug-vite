@@ -1,5 +1,5 @@
 import { HTMLTrustedTypePolicy } from '../trusted-types.type';
-import { IObservable, IObservablePipe } from '@lifaon/rx-js-light';
+import { IObservable, IObservablePipe } from '@lirx/core';
 import { sanitizeHTMLWithPolicyObservable } from './sanitize-html-with-policy-observable';
 
 export function sanitizeHTMLWithPolicyObservablePipe(

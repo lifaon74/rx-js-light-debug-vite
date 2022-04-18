@@ -1,14 +1,15 @@
 import {
-  createUnicastSource, fromAnimationFrame, IObservable, IObserver, IUnsubscribe, letU$$, map$$, mergeMapS$$, single,
+  createUnicastSource, fromAnimationFrame, IObservable, IObserver, IUnsubscribe, let$$, map$$, mergeMapS$$, single,
   timeout,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate, setReactiveClass,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 import { NODE_REFERENCE_MODIFIER } from '../../material/modifiers/node-reference.modifier';
 import { APP_ROUTES } from './routes';
 import { MatProgressBarComponent } from '../../material/progress/progress-bar/mat-progress-bar.component';
-import { createRXRouter, IRXRouterNavigationState } from '@lifaon/rx-router';
+import { createRXRouter, IRXRouterNavigationState } from '@lirx/router';
+import { APP_ROUTES_ASYNC } from './routes-async';
 
 function createFakeProgressObservable(
   timeConstant: number,
@@ -41,7 +42,7 @@ interface IData {
     html: `
       <mat-progress-bar
         class="loader"
-        [progress.value$]="$.progress$"
+        [progress$]="$.progress$"
       ></mat-progress-bar>
       
       <div
@@ -86,14 +87,16 @@ export class AppMainComponent extends HTMLElement implements OnCreate<IData> {
   constructor() {
     super();
 
-    const { emit: $progress, subscribe: progress$ } = letU$$<IObservable<number>>();
+    const routes = APP_ROUTES_ASYNC;
+    // const routes = APP_ROUTES;
 
+    const { emit: $progress, subscribe: progress$ } = let$$<IObservable<number>>();
 
     const { emit: $routerOutletElement, subscribe: routerOutletElement$ } = createUnicastSource<HTMLElement>();
 
     routerOutletElement$((routerOutletElement: HTMLElement) => {
       const router = createRXRouter({
-        routes: APP_ROUTES,
+        routes,
         routerOutletElement,
       });
 

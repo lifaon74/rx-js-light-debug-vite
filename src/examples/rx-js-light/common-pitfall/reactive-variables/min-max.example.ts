@@ -1,4 +1,4 @@
-import { createMulticastReplayLastSource, of, reactiveFunction } from '@lifaon/rx-js-light';
+import { createMulticastReplayLastSource, of, reactiveFunction } from '@lirx/core';
 
 /** MIN - MAX EXAMPLE **/
 
@@ -28,7 +28,7 @@ function minMaxWithoutObservable() {
 }
 
 function minMaxWithObservable() {
-  const $value$ = createMulticastReplayLastSource({ initialValue: 0 }); // mutable
+  const $value$ = createMulticastReplayLastSource(0); // mutable
   const min$ = of(0); // constant
   const max$ = of(10); // constant
 

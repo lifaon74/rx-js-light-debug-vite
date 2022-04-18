@@ -1,13 +1,18 @@
 import { IReadonlyRGBAColor } from '../../rgba-color.type';
 
 export function rgbaColorToHexNumber(
-  color: IReadonlyRGBAColor,
+  {
+    r,
+    g,
+    b,
+    a,
+  }: IReadonlyRGBAColor,
 ): number {
   return (
-    (Math.round(color.r * 255) << 24)
-    | (Math.round(color.g * 255) << 16)
-    | (Math.round(color.b * 255) << 8)
-    | Math.round(color.a * 255)
+    (Math.round(r * 255) << 24)
+    | (Math.round(g * 255) << 16)
+    | (Math.round(b * 255) << 8)
+    | Math.round(a * 255)
   ) >>> 0;
 }
 

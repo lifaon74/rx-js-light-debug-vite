@@ -1,8 +1,9 @@
-import { interval, IObservable, map$$$, mapObservablePipe, pipe$$, pipeObservable, single, } from '@lifaon/rx-js-light';
+import { interval, IObservable, map$$$, pipe$$, single } from '@lirx/core';
 import { createLocaleFormatContext } from './shared-functions';
 import {
-  ILocales, IRelativeTimeFormatOptions, IRelativeTimeFormatValueAndUnit, relativeTimeFormatObservablePipe
-} from '@lifaon/rx-i18n';
+  ILocales, IRelativeTimeFormatOptions, IRelativeTimeFormatUnit, IRelativeTimeFormatValue,
+  relativeTimeFormaObservablePipe,
+} from '@lirx/i18n';
 
 // const MS_TO_SEC = 1e-3;
 // const MS_TO_MIN = MS_TO_SEC / 60;
@@ -43,8 +44,8 @@ export function formatRelativeTimeExample() {
     // ]);
 
     return pipe$$(interval(1000), [
-      map$$$<void, IRelativeTimeFormatValueAndUnit>(() => ({ value: Date.now(), unit: 'day' })),
-      relativeTimeFormatObservablePipe(locales$, single<IRelativeTimeFormatOptions>({ style: 'long' })),
+      map$$$<void, IRelativeTimeFormatValue>((): IRelativeTimeFormatValue => Date.now()),
+      relativeTimeFormaObservablePipe(single<IRelativeTimeFormatUnit>('day'), locales$, single<IRelativeTimeFormatOptions>({ style: 'long' })),
     ]);
   });
 }

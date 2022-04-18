@@ -1,5 +1,5 @@
 import { MatCheckboxInputComponent } from './mat-checkbox-input.component';
-import { bootstrap } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 
 /** BOOTSTRAP FUNCTION **/
 

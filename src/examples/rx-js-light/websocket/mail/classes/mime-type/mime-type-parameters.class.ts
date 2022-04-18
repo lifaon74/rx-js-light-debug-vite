@@ -1,5 +1,5 @@
 import { ASCIIString } from '../ascii-string/ascii-string.class';
-import { u32, u8 } from '../../../../../../../../number-types/dist';
+import { u32, u8 } from '@lifaon/number-types';
 import { IBufferDecoderResult } from '../../../encoding/types/buffer-decoder/buffer-decoder.type';
 import { skipHTTPWhiteSpaces } from './functions/skip-http-white-spaces';
 import { simpleStringBufferDecoder } from '../../../encoding/functions/simple-string.buffer-decoder';
@@ -14,7 +14,6 @@ import { isHTTPWhiteSpaceChar } from '../../../chars/is/http/is-http-white-space
 import { CHAR_EQUAL } from '../../../chars/equal.constant';
 import { CHAR_SEMICOLON } from '../../../chars/semicolon.constant';
 import { CHAR_BACKSLASH } from '../../../chars/backslash.constant';
-import { IASCIIString } from '../../../misc/ascii-string/ascii-string.type';
 
 export type IMimeTypeParametersEntry = [
   key: ASCIIString,
@@ -26,7 +25,7 @@ export class MimeTypeParameters {
   /* FROM */
 
   static fromASCIIString(
-    input: IASCIIString,
+    input: ASCIIString,
   ): MimeTypeParameters {
     return mimeTypeParametersBufferDecoder(
       input.chars,
@@ -88,8 +87,8 @@ export class MimeTypeParameters {
   }
 
   set(
-    key: IASCIIString,
-    value: IASCIIString,
+    key: ASCIIString,
+    value: ASCIIString,
   ): void {
     let keyString: string;
     let keyASCIIString: ASCIIString;
@@ -124,12 +123,12 @@ export class MimeTypeParameters {
   }
 
   setQuoted(
-    key: IASCIIString,
-    value: IASCIIString,
+    key: ASCIIString,
+    value: ASCIIString,
   ): void {
     this.set(
       key,
-      `"${value.toString().replace(new RegExp('("|\\\\)', 'g'), '\\$1')}"`,
+      ASCIIString.fromSafeString(`"${value.toString().replace(new RegExp('("|\\\\)', 'g'), '\\$1')}"`),
     );
   }
 

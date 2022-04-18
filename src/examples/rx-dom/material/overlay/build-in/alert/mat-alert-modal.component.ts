@@ -1,7 +1,7 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate
-} from '@lifaon/rx-dom';
-import { IObserver, IObservable, single } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { IObserver, IObservable, single } from '@lirx/core';
 // @ts-ignore
 import style from './mat-alert-modal.component.scss';
 // @ts-ignore

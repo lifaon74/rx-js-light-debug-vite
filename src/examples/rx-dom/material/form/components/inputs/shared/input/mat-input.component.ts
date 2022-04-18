@@ -1,5 +1,5 @@
-import { defineObservableProperty, setReactiveClass } from '@lifaon/rx-dom';
-import { IObservable, IObserver, let$$, single } from '@lifaon/rx-js-light';
+import { defineObservableProperty, setReactiveClass } from '@lirx/dom';
+import { IObservable, IObserver, let$$, single } from '@lirx/core';
 import { addMatInputReadonlyFunctionality } from '../functionalities/readonly/add-mat-input-readonly-functionality';
 import { addMatInputDisabledFunctionality } from '../functionalities/disabled/add-mat-input-disabled-functionality';
 

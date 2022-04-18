@@ -1,4 +1,4 @@
-import { function$$, IObservable, map$$, notOrM$$, single } from '@lifaon/rx-js-light';
+import { function$$, IObservable, map$$, notOrM$$, single } from '@lirx/core';
 import { isStepValid } from '../misc/number-helpers';
 import { distinctDebouncedShared$$ } from '../misc/rx-js-light-helpers';
 import { IInputValidityOptions, InputValidity } from '../shared/input-validity';

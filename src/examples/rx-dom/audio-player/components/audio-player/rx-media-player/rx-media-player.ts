@@ -1,6 +1,6 @@
 import {
   fromEventTarget, function$$, IObservable, IObserver, map$$, merge, reference,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import { distinctSharedR$$ } from '../distinct-shared-replay-last';
 
 /** MEDIA **/

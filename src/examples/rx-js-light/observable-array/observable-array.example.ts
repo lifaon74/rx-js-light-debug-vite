@@ -1,4 +1,4 @@
-import { IMulticastReplayLastSource, IObservable, let$$ } from '@lifaon/rx-js-light';
+import { IMulticastReplayLastSource, IObservable, let$$ } from '@lirx/core';
 
 
 export interface IObservableArrayMutateFunction<GItem, GReturn> {

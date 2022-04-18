@@ -1,7 +1,7 @@
 import {
   createElement, getDocumentBody, nodeAppendChild, toReactiveContent, toReactiveContentObservable,
-} from '@lifaon/rx-dom';
-import { fromEventTarget } from '@lifaon/rx-js-light';
+} from '@lirx/dom';
+import { fromEventTarget } from '@lirx/core';
 import { MatOverlayManagerComponent } from './overlay/manager/mat-overlay-manager.component';
 import { MatTooltipComponent } from './build-in/tooltip/mat-tooltip.component';
 import { MAT_TOOLTIP_MODIFIER } from './build-in/tooltip/mat-tooltip.modifier';

@@ -1,6 +1,6 @@
 import { IGetOpenWeatherMapOneCallWeatherOptions } from './request.type';
 import { IGetOpenWeatherMapOneCallWeatherJSONResponse } from './response.type';
-import { INotificationsObservable, singleN } from '../../../../../../../../../rx-js-light/dist';
+import { INotificationsObservable, singleN } from '@lirx/core';
 
 export function getOpenWeatherMapOneCallWeatherCached(
   options?: IGetOpenWeatherMapOneCallWeatherOptions,

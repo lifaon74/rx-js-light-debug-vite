@@ -1,13 +1,12 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component,
-  defineObservableProperty, IHavingObservableProperty, OnCreate,
-  setReactiveClass, setReactiveClassList, setReactiveEventListener, subscribeOnNodeConnectedTo, uuid,
-} from '@lifaon/rx-dom';
-;
+  extendWithHigherOrderObservableView$, OnCreate, setReactiveClass, setReactiveClassList, setReactiveEventListener,
+  subscribeOnNodeConnectedTo, uuid,
+} from '@lirx/dom';
 import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
-  combineLatest, createMulticastSource, IObserver, IObservable, single, map$$, tuple, let$$,
-} from '@lifaon/rx-js-light';
+  combineLatest, createMulticastSource, IHigherOrderObservableView, IObservable, IObserver, map$$, single, tuple,
+} from '@lirx/core';
 import { isElementOrChildrenFocusedObservable } from '../../../../helpers/focus-subscribe-function';
 import {
   addMatInputReadonlyFunctionality, IMatInputReadonlyProperty,
@@ -19,7 +18,11 @@ import {
 // @ts-ignore
 import html from './mat-checkbox-input.component.html?raw';
 // @ts-ignore
-import style from './mat-checkbox-input.component.scss?inline'
+import style from './mat-checkbox-input.component.scss?inline';
+// // @ts-ignore
+// import styleSwitch from './styles/switch/mat-checkbox-input-switch.component.scss?inline';
+// // @ts-ignore
+// import styleRadio from './styles/radio/mat-checkbox-input-radio.component.scss?inline';
 
 
 /** CONSTRUCTOR **/
@@ -29,14 +32,14 @@ interface IMatCheckboxInputComponentConstructor {
     HTMLElement
     & IMatInputReadonlyProperty
     & IMatInputDisabledProperty
-    & IHavingObservableProperty<'state', IMatCheckboxInputState>
+    & IHigherOrderObservableView<'state', IMatCheckboxInputState>
     );
 }
 
 /** TYPES **/
 
 export type IMatCheckboxInputState =
-  'off'
+  | 'off'
   | 'on'
   | 'indeterminate'
   ;
@@ -66,6 +69,8 @@ interface IData {
   }),
   styles: [
     compileReactiveCSSAsComponentStyle(style),
+    // compileReactiveCSSAsComponentStyle(styleSwitch),
+    // compileReactiveCSSAsComponentStyle(styleRadio),
   ],
 })
 export class MatCheckboxInputComponent extends (HTMLElement as IMatCheckboxInputComponentConstructor) implements OnCreate<IData> {
@@ -77,19 +82,12 @@ export class MatCheckboxInputComponent extends (HTMLElement as IMatCheckboxInput
 
     /** FUNCTIONALITIES **/
 
-    addMatInputReadonlyFunctionality(this);
-    addMatInputDisabledFunctionality(this);
+    const [, disabled$] = addMatInputReadonlyFunctionality(this);
+    const [, readonly$] = addMatInputDisabledFunctionality(this);
 
     /** VARIABLES **/
 
-    const $state$ = let$$<IObservable<IMatCheckboxInputState>>(single('off'));
-    defineObservableProperty(this, 'state', $state$);
-
-    const $state = this.$state;
-    const state$ = this.state$;
-
-    const disabled$ = this.disabled$;
-    const readonly$ = this.readonly$;
+    const [$state, state$] = extendWithHigherOrderObservableView$<this, 'state', IMatCheckboxInputState>(this, 'state', 'off');
 
     const id$ = single(uuid());
 
@@ -108,7 +106,7 @@ export class MatCheckboxInputComponent extends (HTMLElement as IMatCheckboxInput
     subscribeOnNodeConnectedTo(this, inputChange$, ([readonly, event]) => {
       if (!readonly) {
         $state(
-          (event.target as HTMLInputElement).checked ? 'on' : 'off'
+          (event.target as HTMLInputElement).checked ? 'on' : 'off',
         );
       }
     });

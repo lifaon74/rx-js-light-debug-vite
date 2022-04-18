@@ -2,7 +2,7 @@ import {
   combineLatest,
   createMulticastSource,
   ICombineLatestObservablesValues, IObserver, IGenericObservable, ISource, IObservable
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 /** TODO EXPERIMENTAL **/
 

@@ -4,7 +4,7 @@ import {
   map$$, map$$$,
   mapObservablePipe, pipe$$,
   pipeObservable, reactiveFunction, share$$, share$$$, shareObservablePipe
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 
 /** FORM EXAMPLE **/
 
@@ -88,14 +88,14 @@ function withObservable() {
   const inputAValue = pipeObservable(fromEventTarget(inputA, 'input'), [ // creates an observable from an event
       mapObservablePipe<Event, string>(() => inputA.value), // maps the event to return the input value
       shareObservablePipe<string>( // shares the observable
-        () => createMulticastReplayLastSource<string>({ initialValue: inputA.value }) // initial observable value
+        () => createMulticastReplayLastSource<string>(inputA.value) // initial observable value
       ),
     ]);
 
   // creates an observable which reflects the value of inputB
   const inputBValue = pipeObservable(fromEventTarget(inputB, 'input'), [
     mapObservablePipe<Event, string>(() => inputB.value),
-    shareObservablePipe<string>(() => createMulticastReplayLastSource<string>({ initialValue: inputB.value })),
+    shareObservablePipe<string>(() => createMulticastReplayLastSource<string>(inputB.value)),
   ]);
 
   // creates a reactive function with listen to inputAValue and inputBValue,
@@ -194,7 +194,7 @@ function withObservableAndShortcuts() {
 
   // creates a reactive function with listen to inputAValue and inputBValue,
   // and maps the result (returns true if the form is valid)
-  const isFormValid = distinctShared$$(function$$([
+  const isFormValid = function$$([
     inputAValue,
     inputBValue,
   ], (
@@ -203,7 +203,7 @@ function withObservableAndShortcuts() {
   ): boolean => {
     return (inputAValue.length < 10)
       && (inputBValue.length < 10);
-  }));
+  });
 
   // creates a shared observable which emits an Event when the form is submitted
   const formSubmit = share$$(fromEventTarget(form, 'submit'));

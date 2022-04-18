@@ -1,7 +1,8 @@
 @import '../../../../../style/mixins';
 
 :host {
-  $icon-vertical-offset: 5%;
+  //$icon-vertical-offset: 5%;
+  $icon-vertical-offset: 0;
 
   $mat-icon-size-inner: var(--mat-icon-size-inner, 20px);
   $mat-icon-size-outer-x: var(--mat-icon-size-outer-x, $mat-icon-size-inner);
@@ -12,7 +13,7 @@
   user-select: none;
   position: relative;
   width: $mat-icon-size-outer-x;
-  height: var($mat-icon-size-outer-y);
+  height: $mat-icon-size-outer-y;
   overflow: hidden;
 
   &::before {
@@ -30,40 +31,3 @@
     line-height: $mat-icon-size-inner;
   }
 }
-
-
-//:host {
-//  $icon-vertical-offset: 5%;
-//
-//  $icon-size-inner: create-var('icon-size-inner', 20px);
-//  @include create-css-var($icon-size-inner);
-//
-//  $icon-size-outer-x: create-var('icon-size-outer-x', get-css-var($icon-size-inner));
-//  @include create-css-var($icon-size-outer-x);
-//
-//  $icon-size-outer-y: create-var('icon-size-outer-y', get-css-var($icon-size-outer-x));
-//  @include create-css-var($icon-size-outer-y);
-//
-//  display: inline-block;
-//  cursor: inherit;
-//  user-select: none;
-//  position: relative;
-//  width: get-css-var($icon-size-outer-x);
-//  height: get-css-var($icon-size-outer-y);
-//
-//  &::before {
-//    position: absolute;
-//    //left: ($icon-size-outer-x - $icon-size-inner) / 2;
-//    //top: ($icon-size-outer-y - $icon-size-inner) / 2;
-//    text-align: center;
-//    left: 50%;
-//    top: 50% + $icon-vertical-offset;
-//    margin-left: calc(-(get-css-var($icon-size-inner) * 0.5));
-//    margin-top: calc(-(get-css-var($icon-size-inner) * 0.5));
-//    width: get-css-var($icon-size-inner);
-//    height: get-css-var($icon-size-inner);
-//    font-size: get-css-var($icon-size-inner);
-//    line-height: get-css-var($icon-size-inner);
-//  }
-//}
-

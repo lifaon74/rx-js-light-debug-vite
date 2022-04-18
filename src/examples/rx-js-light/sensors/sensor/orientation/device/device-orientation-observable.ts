@@ -1,4 +1,4 @@
-import { fromEventTarget, IObservable, mapObservable, toTypedEventTarget } from '@lifaon/rx-js-light';
+import { fromEventTarget, IObservable, mapObservable, toTypedEventTarget } from '@lirx/core';
 import { IDeviceOrientation } from './device-orientation.type';
 
 export function deviceOrientationObservable(): IObservable<IDeviceOrientation> {

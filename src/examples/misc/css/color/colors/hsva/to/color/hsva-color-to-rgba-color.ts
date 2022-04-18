@@ -3,12 +3,13 @@ import { IRGBAColor } from '../../../rgba/rgba-color.type';
 import { createRGBAColor } from '../../../rgba/create-rgba-color';
 
 export function hsvaColorToRGBAColor(
-  color: IReadonlyHSVAColor,
+  {
+    h,
+    s,
+    v,
+    a,
+  }: IReadonlyHSVAColor,
 ): IRGBAColor {
-  const h: number = color.h;
-  const s: number = color.s;
-  const v: number = color.v;
-
   let r!: number, g!: number, b!: number;
 
   const i: number = Math.floor(h * 6);
@@ -54,7 +55,7 @@ export function hsvaColorToRGBAColor(
     r,
     g,
     b,
-    color.a,
+    a,
   );
 }
 

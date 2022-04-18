@@ -1,5 +1,5 @@
-import { fromEventTarget, IUnsubscribe, merge } from '@lifaon/rx-js-light';
-import { getDocument, removeStyleProperty, setStyleProperty, subscribeOnNodeConnectedTo } from '@lifaon/rx-dom';
+import { fromEventTarget, IUnsubscribe, merge } from '@lirx/core';
+import { getDocument, removeStyleProperty, setStyleProperty, subscribeOnNodeConnectedTo } from '@lirx/dom';
 import { MatOverlayComponent } from '../mat-overlay.component';
 import { cloneEvent } from '../../../../../../misc/clone-event';
 

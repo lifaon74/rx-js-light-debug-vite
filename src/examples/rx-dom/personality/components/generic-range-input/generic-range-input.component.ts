@@ -1,8 +1,8 @@
-import { eq$$, function$$, IObservable, IObserver, map$$, readObservableValue } from '@lifaon/rx-js-light';
+import { eq$$, function$$, IObservable, IObserver, map$$, readObservableValue } from '@lirx/core';
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component,
   defineSimpleObservableProperty, IHavingObservableProperty, OnCreate, toReactiveContent,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 
 // @ts-ignore
 import html from './generic-range-input.component.html?raw';

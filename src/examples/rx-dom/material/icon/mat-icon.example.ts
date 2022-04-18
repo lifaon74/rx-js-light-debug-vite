@@ -1,5 +1,5 @@
 import { MatIconComponent } from './mat-icon.component';
-import { bootstrap, createStyleElement, getDocumentHead, nodeAppendChild } from '@lifaon/rx-dom';
+import { bootstrap } from '@lirx/dom';
 
 /** BOOTSTRAP FUNCTION **/
 
@@ -8,6 +8,8 @@ export function matIconExample() {
   bootstrap(component);
 
   component.title = 'abc';
-  component.name = 'icon-playback-pause';
+  // component.name = 'icon-playback-pause';
+  component.name = 'icon-mat-search';
+  component.style.setProperty('color', 'red');
   component.style.setProperty('--mat-icon-size-inner', '40px');
 }

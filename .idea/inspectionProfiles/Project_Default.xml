@@ -15,10 +15,14 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="3">
+          <list size="7">
             <item index="0" class="java.lang.String" itemvalue="*for" />
             <item index="1" class="java.lang.String" itemvalue="*if" />
             <item index="2" class="java.lang.String" itemvalue="*switch-case" />
+            <item index="3" class="java.lang.String" itemvalue="*async-pending" />
+            <item index="4" class="java.lang.String" itemvalue="(click)" />
+            <item index="5" class="java.lang.String" itemvalue="*if-false" />
+            <item index="6" class="java.lang.String" itemvalue="*async-rejected" />
           </list>
         </value>
       </option>
@@ -27,7 +31,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="9">
+          <list size="10">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -37,6 +41,7 @@
             <item index="6" class="java.lang.String" itemvalue="rx-switch" />
             <item index="7" class="java.lang.String" itemvalue="rx-inject-content" />
             <item index="8" class="java.lang.String" itemvalue="rx-container" />
+            <item index="9" class="java.lang.String" itemvalue="rx-if-true" />
           </list>
         </value>
       </option>

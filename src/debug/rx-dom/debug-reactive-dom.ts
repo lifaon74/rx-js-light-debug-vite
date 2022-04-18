@@ -1,12 +1,12 @@
 import {
   createUnicastReplayLastSource, debounceFrameObservablePipe, interval, IObservable, logStateObservablePipe,
   mapObservablePipe, of, pipeObservable, shareObservablePipe,
-} from '@lifaon/rx-js-light';
+} from '@lirx/core';
 import {
   attachNode, attachNodeRaw, attachShadow, createDocumentFragment, createElementNode,
   createReactiveForLoopNode, createReactiveIfNode, createReactiveSwitchNode, createReactiveTextNode, createTextNode,
   detachNode, nodeAppendChild, onNodeConnectedTo, onNodePositionChangeListener,
-} from '@lifaon/rx-dom';
+} from '@lirx/dom';
 
 
 /*---*/

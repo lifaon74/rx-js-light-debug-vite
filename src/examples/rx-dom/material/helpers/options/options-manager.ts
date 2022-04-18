@@ -1,5 +1,5 @@
-import { function$$, IObservable, IObserver, map$$, shareRL$$ } from '@lifaon/rx-js-light';
-import { defineSimpleObservableProperty, IHavingObservableProperty } from '@lifaon/rx-dom';
+import { function$$, IObservable, IObserver, map$$, shareRL$$ } from '@lirx/core';
+import { defineSimpleObservableProperty, IHavingObservableProperty } from '@lirx/dom';
 import { isSet } from '../../../../misc/is/is-set';
 import { isOptionSelected } from './is-option-selected';
 import { IReadonlyOptionsSet } from './types/readonly-options-set.type';
