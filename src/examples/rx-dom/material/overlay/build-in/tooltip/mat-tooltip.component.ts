@@ -1,6 +1,6 @@
 import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, IDocumentFragmentOrNull,
-  IReactiveContent, OnCreate,
+  IReactiveContentObservable, OnCreate,
   subscribeOnNodeConnectedTo,
 } from '@lirx/dom';
 import { IObservable } from '@lirx/core';
@@ -11,7 +11,7 @@ import {
   getPositionAndSizeObservableForOverlayNearTargetElement, IContentElementSizeOptions,
 } from '../../overlay/built-in/simple/helper/get-position-and-size-observable-for-overlay-near-target-element';
 // @ts-ignore
-import style from './mat-tooltip.component.scss';
+import style from './mat-tooltip.component.scss?inline';
 // @ts-ignore
 import html from './mat-tooltip.component.html?raw';
 
@@ -19,7 +19,7 @@ import html from './mat-tooltip.component.html?raw';
 
 export interface IMatTooltipModalComponentOptions {
   targetElement: HTMLElement,
-  content$: IReactiveContent;
+  content$: IReactiveContentObservable;
 }
 
 

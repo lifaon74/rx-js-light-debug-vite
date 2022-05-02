@@ -1,6 +1,6 @@
 import { createHTMLElementModifier, subscribeOnNodeConnectedTo } from '@lirx/dom';
 import { IObserver } from '@lirx/core';
-import { isElementOrChildrenFocusedObservableDebounced } from '../../helpers/focus-subscribe-function';
+import { isElementOrChildrenFocusedObservableDebounced } from '../../helpers/focus-observable';
 
 export function onFocusedModifierFunction(
   element: HTMLElement,

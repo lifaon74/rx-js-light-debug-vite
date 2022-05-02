@@ -258,7 +258,7 @@ export const DEFAULT_LANGUAGES = [
 //   'CHF',
 // ];
 
-export const DEFAULT_CURRENCIES = (Intl as any).supportedValuesOf("currency");
+export const DEFAULT_CURRENCIES = (Intl as any).supportedValuesOf('currency');
 
 /*------------*/
 

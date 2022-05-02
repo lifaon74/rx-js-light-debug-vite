@@ -48,7 +48,7 @@ import {
   MatPositionedOverlayContentComponent
 } from '../../../../../overlay/overlay/built-in/positioned-overlay-content/mat-positioned-overlay-content.component';
 import { applyCSSPositionAndSize } from '../../../../../../../misc/types/position-and-size/apply-css-position-and-size';
-import { isElementOrChildrenFocusedObservableDebounced } from '../../../../../helpers/focus-subscribe-function';
+import { isElementOrChildrenFocusedObservableDebounced } from '../../../../../helpers/focus-observable';
 import {
   getPositionAndSizeObservableForOverlayNearTargetElement, IContentElementSizeOptions,
 } from '../../../../../overlay/overlay/built-in/simple/helper/get-position-and-size-observable-for-overlay-near-target-element';

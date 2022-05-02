@@ -143,5 +143,16 @@ export function renderLogo(): void {
   //   bottomTextContent: 'router',
   //   bottomTextScale: 0.8,
   // });
+
+  // generateLogo({
+  //   color: parseCSSColorOrThrow('#2edac0'),
+  //   bottomTextContent: 'i18n',
+  // });
+
+  // generateLogo({
+  //   color: parseCSSColorOrThrow('#da8a2e'),
+  //   bottomTextContent: 'store',
+  //   bottomTextScale: 0.8,
+  // });
 }
 

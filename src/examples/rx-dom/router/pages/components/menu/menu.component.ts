@@ -21,7 +21,8 @@ interface IData {
            <a is="v-link" href="./product/0">Products</a>
         </li>
         <li>
-           <a is="v-link" href="./list">List</a>
+<!--           <a is="v-link" href="./list">List</a>-->
+           <v-link href="./list">List</v-link>
         </li>
         <li>
            <a is="v-link" href="./list/sub">Sub-list</a>
@@ -32,12 +33,12 @@ interface IData {
         <li>
            <a is="v-link" href="./forbidden">Forbidden</a>
         </li>
-  <!--      <li>-->
-  <!--         <a is="v-link" href="/list" target="_blank">List page (new tab)</a>-->
-  <!--      </li>-->
-  <!--      <li>-->
-  <!--         <a is="v-link" href="mailto:bob@alice.com">Email</a>-->
-  <!--      </li>-->
+<!--        <li>-->
+<!--           <a is="v-link" href="/list" target="_blank">List page (new tab)</a>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--           <a is="v-link" href="mailto:bob@alice.com">Email</a>-->
+<!--        </li>-->
       </ul>
     `,
     customElements: [

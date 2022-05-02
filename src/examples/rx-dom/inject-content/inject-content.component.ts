@@ -1,6 +1,6 @@
 import {
   attachNodeChildrenToNewDocumentFragment, compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate,
-  Component, componentInputU$$, createDocumentFragment, createDocumentFragmentFilledWithNodes, IComponentInput,
+  Component, createDocumentFragment, createDocumentFragmentFilledWithNodes, IComponentInput,
   IDocumentFragmentOrNull, IHTMLTemplate, OnCreate, querySelector, querySelectorAll,
 } from '@lirx/dom';
 import { IObservable, map$$, single } from '@lirx/core';
@@ -46,7 +46,7 @@ export function selectComponentContentNodesAsObservable(
 type IHeaderTemplate = IHTMLTemplate<any>;
 
 interface IData {
-  readonly headerContent$: IObservable<IDocumentFragmentOrNull>; // IReactiveContent;
+  readonly headerContent$: IObservable<IDocumentFragmentOrNull>; // IReactiveContentObservable;
   readonly selectComponentContentElementsAsObservable: typeof selectComponentContentElementsAsObservable;
   readonly selectComponentContentNodesAsObservable: typeof selectComponentContentNodesAsObservable;
 }

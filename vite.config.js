@@ -1,6 +1,22 @@
 import { aotPlugin } from '@lirx/dom-aot-plugin';
 // import { defineConfig } from 'vite'
 
+// function myPlugin() {
+//   return {
+//     name: 'transform-file',
+//
+//     transform(src, id) {
+//       console.log(id);
+//       // if (fileRegex.test(id)) {
+//       //   return {
+//       //     code: compileFileToJS(src),
+//       //     map: null // provide source map if available
+//       //   }
+//       // }
+//     }
+//   }
+// }
+
 /**
  * @type {import('vite').UserConfig}
  */
@@ -28,24 +44,37 @@ const config = {
       },
       mangle: {
         eval: true,
-      }
+      },
     },
   },
   plugins: [
-    aotPlugin(),
+    // myPlugin(),
+    aotPlugin({
+      pathMatches: (path) => {
+        const matches = path.endsWith('.ts')
+          || (
+            path.endsWith('component.mjs')
+            // && path.includes('lirx/mdi')
+          );
+        // if (matches) {
+        //   console.log(`\nOPTIMIZING => ${path}`);
+        // }
+        return matches;
+      },
+    }),
   ],
   server: {
     // https: true,
     // host: true,
     watch: {
       ignored: [/\.cache/],
-    }
+    },
   },
   optimizeDeps: {
     include: [
       '@lirx/core',
-      '@lirx/dom',
-      '@lirx/router',
+      // '@lirx/dom',
+      // '@lirx/router',
     ],
   },
 };

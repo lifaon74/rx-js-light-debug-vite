@@ -27,7 +27,7 @@ import { parseCSSHexColorAsNumber } from '../../../../../../misc/css/color/color
 import { hsvaColorToHSVAString } from '../../../../../../misc/css/color/colors/hsva/to/string/hsla-color-to-hsva-string';
 import { MatInputFieldComponent } from '../shared/input-field/mat-input-field.component';
 import { colorStringToColor } from './misc/color-string-to-color';
-import { $$filter } from '../../../../../../../../../rx-js-light/dist/src/observer/pipes/built-in/filter/filter-observer.shortcut';
+import { $$filter } from '@lirx/core';
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color
 

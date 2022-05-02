@@ -1,0 +1,39 @@
+<mat-sidenav-container
+  [opened]="$.sidenavOpened$"
+  [mode]="$.sidenavMode$"
+  [hasBackdrop]="$.sidenavHasBackdrop$"
+  (user-close)="$.onUserCloseSidenav"
+>
+  <div sidenav>
+    <div class="header">
+
+    </div>
+
+    <div class="body">
+
+    </div>
+
+    <div class="footer">
+
+    </div>
+  </div>
+
+  <div content>
+    <mat-toolbar-container>
+      <mat-toolbar>
+        <button
+          *if="$.menuButtonVisible$"
+          (click)="$.onClickMenuButton"
+        >
+          menu
+        </button>
+      </mat-toolbar>
+      <div content>
+<!--        content-->
+<!--        <mat-icon-ab-testing></mat-icon-ab-testing>-->
+        <mat-icons-demo></mat-icons-demo>
+      </div>
+    </mat-toolbar-container>
+  </div>
+
+</mat-sidenav-container>

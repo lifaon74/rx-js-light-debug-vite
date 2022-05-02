@@ -29,8 +29,7 @@ import { webRTCDebug } from './debug/webrtc/webrtc.debug';
 import { storeExample } from './examples/rx-js-light/store/store.example';
 import { debugReactiveDOMCompiler } from './debug/rx-dom/aot/debug-reactive-dom-compiler';
 import { weatherExample } from './examples/rx-dom/weather/weather.example';
-import { pictureExample } from './examples/rx-js-light/picture/picture.example';
-import { matIconExample } from './examples/rx-dom/material/icon/mat-icon.example';
+import { pictureExample } from './examples/rx-dom/picture/picture.example';
 import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
 import { matSelectInputExample } from './examples/rx-dom/material/form/components/inputs/select/mat-select-input.example';
 import { matColorInputExample } from './examples/rx-dom/material/form/components/inputs/color/mat-color-input.example';
@@ -55,6 +54,7 @@ import { syntaxExample } from './examples/rx-dom/__syntax/syntax.example';
 import { appCryptoExample } from './examples/rx-dom/crypto/main';
 import { wirex } from './examples/rx-dom/crypto/app/wirex/wirex';
 import { renderLogo } from './debug/logo/logo';
+import { mailClientExample } from './examples/rx-dom/mail-client/mail-client.example';
 
 
 function run() {
@@ -86,7 +86,7 @@ function run() {
   // matchMediaExample();
   // inputDemoExample();
   // forLoopExample();
-  routerExample();
+  // routerExample();
 
   // guidelineExample();
   // composeExample();
@@ -116,6 +116,7 @@ function run() {
 
   // syntaxExample();
   // materialExample();
+  mailClientExample();
 }
 
 run();

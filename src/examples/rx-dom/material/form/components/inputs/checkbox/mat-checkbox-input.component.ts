@@ -7,7 +7,7 @@ import { INPUT_VALUE_MODIFIER } from '../../../modifiers/input-value.modifier';
 import {
   combineLatest, createMulticastSource, IHigherOrderObservableView, IObservable, IObserver, map$$, single, tuple,
 } from '@lirx/core';
-import { isElementOrChildrenFocusedObservable } from '../../../../helpers/focus-subscribe-function';
+import { isElementOrChildrenFocusedObservable } from '../../../../helpers/focus-observable';
 import {
   addMatInputReadonlyFunctionality, IMatInputReadonlyProperty,
 } from '../shared/functionalities/readonly/add-mat-input-readonly-functionality';

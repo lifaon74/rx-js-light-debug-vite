@@ -87,8 +87,8 @@ export class AppMainComponent extends HTMLElement implements OnCreate<IData> {
   constructor() {
     super();
 
-    const routes = APP_ROUTES_ASYNC;
-    // const routes = APP_ROUTES;
+    // const routes = APP_ROUTES_ASYNC;
+    const routes = APP_ROUTES;
 
     const { emit: $progress, subscribe: progress$ } = let$$<IObservable<number>>();
 

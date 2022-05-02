@@ -15,7 +15,7 @@
 }
 
 * {
-  //@include scrollbar-mixin();
+  @include scrollbar-mixin();
 }
 
 html,

@@ -4,9 +4,9 @@
   @extend %mat-overlay-content;
 
   display: block;
-  position: absolute;
+  //position: absolute;
   max-width: 200px;
-  overflow: auto;
+  //overflow: auto;
   pointer-events: none;
 }
 

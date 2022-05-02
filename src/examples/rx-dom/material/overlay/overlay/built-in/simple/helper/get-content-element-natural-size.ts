@@ -3,7 +3,8 @@ import {
   IGetExternalBoxForContainerElementWithMarginOptions,
 } from './get-external-box-for-container-element-with-margin';
 import {
-  getElementStyleDeclaration, getStylePropertyObjectOrNull, IStylePropertyObjectOrNull, setStylePropertyObjectOrNull,
+  getElementStyleDeclaration, getStylePropertyObjectOrNull, IStylePropertyObjectOrNull, setStyleProperty,
+  setStylePropertyObjectOrNull,
 } from '@lirx/dom';
 
 
@@ -35,9 +36,9 @@ export function getContentElementNaturalSize(
     containerVerticalMargin,
   }: IGetElementNaturalSizeOptions,
 ): ISize {
+  const styleDeclaration: CSSStyleDeclaration = getElementStyleDeclaration(contentElement);
 
-  const styleDeclaration = getElementStyleDeclaration(contentElement);
-
+  // store current style properties
   const properties: INamedProperty[] = PROPERTY_NAMES.map((propertyName: string): INamedProperty => {
     return [
       propertyName,
@@ -45,28 +46,33 @@ export function getContentElementNaturalSize(
     ];
   });
 
-  const setProperty = (
-    name: string,
-    value: string,
-  ): void => {
-    contentElement.style.setProperty(name, value, 'important');
-  };
-
+  // store current scroll state
   const scrollTop: number = contentElement.scrollTop;
   const scrollLeft: number = contentElement.scrollLeft;
 
-  setProperty('width', 'auto');
-  setProperty('height', 'auto');
-  setProperty('left', 'auto');
-  setProperty('top', 'auto');
-  setProperty('margin', `${containerVerticalMargin}px ${containerHorizontalMargin}px`);
+  const _setStyleProperty = (
+    name: string,
+    value: string,
+  ): void => {
+    setStyleProperty(styleDeclaration, name, value, 'important');
+  };
 
+  // set style properties for a "natural" element
+  _setStyleProperty('width', 'auto');
+  _setStyleProperty('height', 'auto');
+  _setStyleProperty('left', 'auto');
+  _setStyleProperty('top', 'auto');
+  _setStyleProperty('margin', `${containerVerticalMargin}px ${containerHorizontalMargin}px`);
+
+  // compute natural element size
   const { width, height }: DOMRect = contentElement.getBoundingClientRect();
 
+  // restore style properties
   properties.forEach(([propertyName, property]: INamedProperty): void => {
     setStylePropertyObjectOrNull(styleDeclaration, propertyName, property);
   });
 
+  // restore scroll state
   contentElement.scrollTop = scrollTop;
   contentElement.scrollLeft = scrollLeft;
 

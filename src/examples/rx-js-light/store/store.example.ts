@@ -1,7 +1,7 @@
 import {
   createAction, createSelector, createStore, Immutable, ImmutableArray, immutableArrayPush, immutableArrayRemove,
   immutableArrayReplace, mapState, selectState
-} from '@lifaon/rx-store';
+} from '@lirx/store';
 
 
 // export class Store<GState> {

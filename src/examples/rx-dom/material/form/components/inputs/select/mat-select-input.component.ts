@@ -5,15 +5,12 @@ import {
 import html from './mat-select-input.component.html?raw';
 // @ts-ignore
 import style from './mat-select-input.component.scss?inline';
-import { combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$ } from '@lirx/core';
+import { $$filter, combineLatest, IObservable, IObserver, map$$, map$$$, mergeMapS$$$, pipe$$ } from '@lirx/core';
 import { IMatSelectInputOption, IMatSelectInputReadonlySelectedOptions } from './types/mat-select-input-option.type';
 import { createMatOverlayController } from '../../../../overlay/overlay/__component/helpers/create-open-close-tuple';
 import { MatOverlayManagerComponent } from '../../../../overlay/overlay/manager/mat-overlay-manager.component';
 import { MatSelectInputOverlayComponent } from './overlay/mat-select-overlay.component';
 import { isOptionSelected } from '../../../../helpers/options/is-option-selected';
-import {
-  $$filter,
-} from '../../../../../../../../../rx-js-light/dist/src/observer/pipes/built-in/filter/filter-observer.shortcut';
 import {
   addMatInputReadonlyFunctionality, IMatInputReadonlyProperty,
 } from '../shared/functionalities/readonly/add-mat-input-readonly-functionality';

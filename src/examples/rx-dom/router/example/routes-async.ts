@@ -1,5 +1,7 @@
 import { IRXRoutesList, navigateTo } from '@lirx/router';
 import { fromPromise, mergeMapS$$, singleN, timeout } from '@lirx/core';
+import { createSlugs } from '../slugs/create-slugs';
+import { SLUGS } from './slugs';
 
 const listChildRoutes: IRXRoutesList = [
   {
@@ -48,6 +50,7 @@ export const APP_ROUTES_ASYNC: IRXRoutesList = [
     path: '/forbidden',
     canActivate: navigateTo('/home'),
   },
+  ...createSlugs(SLUGS, '/slugs'),
   {
     path: '/**',
     component: () => {
@@ -55,36 +58,4 @@ export const APP_ROUTES_ASYNC: IRXRoutesList = [
     },
   },
 ];
-
-// const routes: IRXRoutesList = [
-//   {
-//     path: '/home',
-//     component: AppHomePageComponent,
-//   },
-//   {
-//     path: '/product/:productId',
-//     component: AppProductPageComponent,
-//   },
-//   {
-//     path: '/list',
-//     component: AppListPageComponent,
-//     children: [
-//       {
-//         path: '/',
-//       },
-//       {
-//         path: '/sub',
-//         component: AppSubListPageComponent,
-//       },
-//     ],
-//   },
-//   {
-//     path: '/forbidden',
-//     canActivate: navigateTo('/home'),
-//   },
-//   {
-//     path: '/**',
-//     component: AppNotFoundPageComponent,
-//   },
-// ];
 

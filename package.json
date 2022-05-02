@@ -3,31 +3,37 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "npm run clear:cache",
+    "prebuild": "npm run clear:cache",
     "dev": "vite",
     "build": "vite build && npm run fix:index-html",
     "serve": "vite preview",
-    "fix:index-html": "node ./plugins/fix-index-html.js"
+    "fix:index-html": "node ./plugins/fix-index-html.js",
+    "clear:cache": "npm run clear:cache:vite && npm run clear:cache:lirx-dom",
+    "clear:cache:vite": "node ./plugins/clear-cache.js --vite",
+    "clear:cache:lirx-dom": "node ./plugins/clear-cache.js --lirx-dom"
   },
   "sideEffects": false,
   "devDependencies": {
-    "@types/w3c-generic-sensor": "^1.0.5",
     "@types/dompurify": "^2.3.3",
     "@types/estree": "^0.0.50",
     "@types/requestidlecallback": "^0.3.4",
     "@types/resize-observer-browser": "^0.1.6",
+    "@types/w3c-generic-sensor": "^1.0.5",
     "sass": "^1.49.11",
     "typescript": "^4.6.3",
     "vite": "^2.9.1"
   },
   "dependencies": {
+    "@lifaon/number-types": "1.0.0",
+    "@lifaon/path": "2.1.0",
     "@lirx/core": "1.0.0",
     "@lirx/dom": "1.0.0",
-    "@lirx/router": "0.9.0",
-    "@lirx/store": "1.0.0",
     "@lirx/dom-aot-plugin": "1.0.0",
     "@lirx/i18n": "1.0.0",
-    "@lifaon/path": "2.1.0",
-    "@lifaon/number-types": "1.0.0",
+    "@lirx/router": "0.9.0",
+    "@lirx/store": "1.0.0",
+    "@lirx/mdi": "1.0.0",
     "dompurify": "^2.3.6",
     "rxjs": "^7.5.5",
     "tslib": "^2.3.1"

@@ -1,21 +1,31 @@
 import {
-  createHTMLElementModifier, IHTMLElementModifier, IReactiveContent, nodeRemove, onNodeConnectedToWithImmediateCached,
-  setAttributeValue, uuid,
+  createHTMLElementModifier, IHTMLElementModifier, IReactiveContentObservable, nodeRemove,
+  onNodeConnectedToWithImmediateCached, setAttributeValue, uuid,
 } from '@lirx/dom';
 import { MatOverlayManagerComponent } from '../../overlay/manager/mat-overlay-manager.component';
 import { MatTooltipComponent } from './mat-tooltip.component';
 import { debounceTime$$$, distinct$$$, IUnsubscribe, pipe$$ } from '@lirx/core';
-import { mouseEnterObservable } from '../../../helpers/mouse-enter-subscribe-function';
+import { mouseEnterObservable } from '../../../helpers/mouse-enter-observable';
 
 
 export interface IMatTooltipModifierFunction {
-  (element: HTMLElement, content$: IReactiveContent): HTMLElement;
+  (
+    element: HTMLElement,
+    content$: IReactiveContentObservable,
+  ): HTMLElement;
+}
+
+export interface IGetMatOverlayManagerComponentReferenceFunction {
+  (): MatOverlayManagerComponent;
 }
 
 export function createMatTooltipModifierFunction(
-  managerRef: () => MatOverlayManagerComponent = () => MatOverlayManagerComponent.getInstance(),
+  managerRef: IGetMatOverlayManagerComponentReferenceFunction = () => MatOverlayManagerComponent.getInstance(),
 ): IMatTooltipModifierFunction {
-  return (element: HTMLElement, content$: IReactiveContent): HTMLElement => {
+  return (
+    element: HTMLElement,
+    content$: IReactiveContentObservable,
+  ): HTMLElement => {
     const ariaUUID: string = uuid();
     setAttributeValue(element, 'aria-describedby', ariaUUID);
 
@@ -24,7 +34,7 @@ export function createMatTooltipModifierFunction(
       distinct$$$<boolean>(),
     ]);
 
-    let _unsubscribe: IUnsubscribe;
+    let _unsubscribe: IUnsubscribe | undefined;
     let overlay: MatTooltipComponent | undefined;
 
     const close = () => {
@@ -37,11 +47,10 @@ export function createMatTooltipModifierFunction(
     const unsubscribe = () => {
       if (_unsubscribe !== void 0) {
         _unsubscribe();
-        overlay = void 0;
+        _unsubscribe = void 0;
       }
     };
 
-    // TODO externalize as function
     onNodeConnectedToWithImmediateCached(element)((connected: boolean): void => {
       if (connected) {
         _unsubscribe = display$((display: boolean): void => {
@@ -50,7 +59,6 @@ export function createMatTooltipModifierFunction(
             overlay.id = ariaUUID;
             setAttributeValue(overlay, 'role', 'tooltip');
           } else {
-            console.log('close');
             close();
           }
         });
@@ -71,7 +79,7 @@ export function createMatTooltipModifierFunction(
 export type IMatTooltipModifier = IHTMLElementModifier<'tooltip', IMatTooltipModifierFunction>;
 
 export function createMatTooltipModifier(
-  managerRef: () => MatOverlayManagerComponent,
+  managerRef: IGetMatOverlayManagerComponentReferenceFunction,
 ): IMatTooltipModifier {
   return createHTMLElementModifier('tooltip', createMatTooltipModifierFunction(managerRef));
 }

@@ -22,7 +22,7 @@ export function smtpDataContentBody$Base64$BufferEncoder(
     i += SPLIT_SIZE;
   }
 
-  index = base64BufferEncoder(data.slice(i), buffer, index);
+  index = base64BufferEncoder(data.subarray(i), buffer, index);
 
   return index;
 }
