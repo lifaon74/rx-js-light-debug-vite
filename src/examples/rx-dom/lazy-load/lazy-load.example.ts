@@ -61,7 +61,7 @@ export async function lazyLoadExample() {
   bootstrap(lazy);
 
   const load = async () => {
-    const { MatProgressBarComponent } = await import('../material/progress/progress-bar/mat-progress-bar.component');
+    const { MatProgressBarComponent } = await import('../material/components/progress/progress-bar/mat-progress-bar.component');
     lazy.component$ = of(MatProgressBarComponent);
   };
 

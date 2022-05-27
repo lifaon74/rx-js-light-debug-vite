@@ -1,0 +1,90 @@
+@import 'mat-button.variables';
+
+$mat-button-transition-duration: var(--mat-button-transition-duration, 250ms);
+
+
+$mat-button-color: var(--mat-button-color, black);
+$mat-button-background-color: var(--mat-button-background-color, transparent);
+$mat-button-border-color: var(--mat-button-border-color, $mat-button-background-color);
+
+$mat-button-color-focus: var(--mat-button-color-focus, inherit);
+$mat-button-background-color-focus: var(--mat-button-background-color-focus, #fafafa);
+$mat-button-border-color-focus: var(--mat-button-border-color-focus, $mat-button-background-color-focus);
+
+//$button-color-default: $color-gray-04;
+//$button-background-color-default: $color-gray-02;
+//$button-border-color-default: $color-gray-03;
+//
+//$button-color-default-disabled: lighten($button-color-default, 10%);
+//$button-background-color-default-disabled: lighten($button-color-default, 10%);
+//$button-border-color-default-disabled: lighten($button-color-default, 10%);
+//
+//$button-colors-default: (
+//  color: $color-gray-04,
+//  background-color: $color-gray-02,
+//  border-color: $color-gray-03,
+//);
+
+
+/** STYLE **/
+
+:host {
+  display: inline-block;
+  appearance: none;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  //text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+
+  border-width: 1px;
+  border-style: solid;
+
+  color: $mat-button-color;
+  background-color: $mat-button-background-color;
+  border-color: $mat-button-border-color;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: red;
+    transform: scale(0);
+    //transition: transform $mat-button-transition-duration;
+  }
+
+  //&:active {
+  //  &::after {
+  //    animation: mat-button-animation $mat-button-transition-duration linear;
+  //  }
+  //}
+
+  &:focus-visible {
+    //transition: transform 0ms;
+    //
+    //&::after {
+    //  transform: scale(1);
+    //}
+  }
+
+  //&:active,
+  //&:focus-visible {
+  //  &::after {
+  //    transform: scale(1);
+  //  }
+  //}
+  //
+  //@include setup-button-mixin($button-config-default);
+  //
+  //@include disabled-mixin() {
+  //  cursor: default;
+  //};
+  //
+  //@include active-mixin() {
+  //  transform: translateY(2px);
+  //};
+}

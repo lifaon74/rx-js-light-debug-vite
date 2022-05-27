@@ -1,0 +1,50 @@
+<div class="input-container">
+  <input
+    $input-value="[$.$inputValue$]"
+  />
+
+  <div class="icons-count-container">
+    {{ $.count$ }} / {{ $.total$ }}
+  </div>
+</div>
+
+
+<div class="icons-container">
+  <div
+    class="icon-container"
+    *for="let icon of $.icons$"
+  >
+    <div class="illustration-container">
+      <rx-async expression="icon.content$">
+        <mat-dual-ring-loader
+          *async-pending
+        ></mat-dual-ring-loader>
+
+        <div
+          class="svg-container"
+          *async-fulfilled="content"
+        >
+          <rx-inject-content
+            content="content"
+          ></rx-inject-content>
+        </div>
+
+
+        <div
+          class="error-message"
+          *async-rejected="error"
+        >
+          {{ error.message }}
+        </div>
+      </rx-async>
+    </div>
+
+    <div class="icon-component-tag-name">
+      &lt;{{ icon.componentTagName }}&gt;
+    </div>
+    <div class="icon-component-name">
+      {{ icon.componentName }}
+    </div>
+  </div>
+</div>
+

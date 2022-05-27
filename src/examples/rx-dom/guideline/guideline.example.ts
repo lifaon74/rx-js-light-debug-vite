@@ -3,8 +3,8 @@ import {
   compileAndEvaluateReactiveHTMLAsComponentTemplate, compileReactiveCSSAsComponentStyle, Component,
   DEFAULT_CONSTANTS_TO_IMPORT, generateCreateElementFunctionWithCustomElements, OnCreate
 } from '@lirx/dom';
-import { MatProgressBarComponent } from '../material/progress/progress-bar/mat-progress-bar.component';
-import { MatProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
+import { MatProgressBarComponent } from '../material/components/progress/progress-bar/mat-progress-bar.component';
+import { MatProgressRingComponent } from '../material/components/progress/progress-ring/mat-progress-ring.component';
 import {
   conditionalObservablePipe, createMulticastReplayLastSource, distinctObservablePipe, fromEventTarget, interval,
   IObservable, mapObservablePipe, of, pipeObservable, reactiveFunction, shareObservablePipe

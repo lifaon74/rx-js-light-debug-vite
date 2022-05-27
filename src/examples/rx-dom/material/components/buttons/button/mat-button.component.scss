@@ -1,0 +1,71 @@
+@import 'mat-button.variables';
+
+
+
+/** STYLE **/
+
+:host {
+  display: inline-block;
+  appearance: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+
+  color: $mat-button-color;
+  --mat-icon-color: #{$mat-button-color};
+  background-color: $mat-button-background-color;
+  border-color: $mat-button-border-color;
+
+  & > mat-ripple {
+    & > .content {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      //font-family: inherit;
+      //font-size: 16px;
+      //text-transform: uppercase;
+
+      font-family: Roboto, Helvetica Neue, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+  }
+
+
+  &:not(:disabled) {
+    transition: color $mat-button-transition-duration,
+    background-color $mat-button-transition-duration,
+    border-color $mat-button-transition-duration;
+
+    &:focus-visible {
+      color: $mat-button-color-focus;
+      --mat-icon-color: #{$mat-button-color-focus};
+      background-color: $mat-button-background-color-focus;
+      border-color: $mat-button-border-color-focus;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: $mat-button-color-hover;
+        --mat-icon-color: #{$mat-button-color-hover};
+        background-color: $mat-button-background-color-hover;
+        border-color: $mat-button-border-color-hover;
+      }
+    }
+  }
+
+  &:disabled {
+    transition: all 0ms;
+    cursor: default;
+    color: $mat-button-color-disabled;
+    --mat-icon-color: #{$mat-button-color-disabled};
+    background-color: $mat-button-background-color-disabled;
+    border-color: $mat-button-border-color-disabled;
+  }
+}

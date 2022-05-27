@@ -1,0 +1,5 @@
+@import 'toolbar/mat-toolbar.variables';
+
+$mat-toolbar-container-toolbar-background-color: var(--mat-toolbar-container-toolbar-background-color, #fff);
+$mat-toolbar-container-toolbar-height: var(--mat-toolbar-container-toolbar-height, $mat-toolbar-height);
+$mat-toolbar-container-content-background-color: var(--mat-toolbar-container-content-background-color, #fafafa);

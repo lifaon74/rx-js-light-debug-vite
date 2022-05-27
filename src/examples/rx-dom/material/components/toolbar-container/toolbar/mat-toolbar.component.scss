@@ -1,0 +1,12 @@
+@import 'mat-toolbar.variables';
+
+/** STYLE **/
+
+:host {
+  display: flex;
+  height: $mat-toolbar-height;
+  background-color: $mat-toolbar-background-color;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+}

@@ -7,7 +7,7 @@ import {
 } from '@lirx/dom';
 import { NODE_REFERENCE_MODIFIER } from '../../material/modifiers/node-reference.modifier';
 import { APP_ROUTES } from './routes';
-import { MatProgressBarComponent } from '../../material/progress/progress-bar/mat-progress-bar.component';
+import { MatProgressBarComponent } from '../../material/components/progress/progress-bar/mat-progress-bar.component';
 import { createRXRouter, IRXRouterNavigationState } from '@lirx/router';
 import { APP_ROUTES_ASYNC } from './routes-async';
 

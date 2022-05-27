@@ -1,0 +1,84 @@
+
+:host {
+  display: block;
+  overflow: hidden;
+
+  & > .input-container {
+    $height: 30px;
+    text-align: center;
+
+    & > * {
+      display: inline-block;
+      vertical-align: top;
+      height: $height;
+    }
+
+
+    & > .icons-count-container {
+      line-height: $height;
+      margin-left: 15px;
+    }
+
+    padding-bottom: 20px;
+  }
+
+  & > .icons-container {
+    $margin: 10px;
+    margin: -$margin;
+    text-align: center;
+
+    & > .icon-container {
+      display: inline-block;
+      vertical-align: top;
+      width: 300px;
+      //border: 1px solid black;
+      margin: $margin;
+      transform: translateZ(0);
+
+      & > .illustration-container {
+        $icon-svg-size: 60px;
+        margin: 0 auto;
+        width: $icon-svg-size;
+        height: $icon-svg-size;
+
+        & > mat-dual-ring-loader {
+          //--mat-dual-ring-loader-size: #{$icon-svg-size};
+          --mat-dual-ring-loader-size: 100%;
+        }
+
+        & > .svg-container {
+          width: 100%;
+          height: 100%;
+
+          & > * {
+            --mat-icon-size: 100%;
+          }
+        }
+
+        & > .error-message {
+          font-size: 14px;
+          color: red;
+          padding: 5px 0;
+          text-align: center;
+        }
+      }
+
+      & > .icon-component-tag-name,
+      & > .icon-component-name {
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+
+      & > .icon-component-tag-name {
+        padding-top: 15px;
+      }
+
+      & > .icon-component-name {
+        padding-top: 5px;
+      }
+    }
+  }
+}

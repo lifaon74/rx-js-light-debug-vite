@@ -2,7 +2,7 @@ import {
   compileReactiveCSSAsComponentStyle, compileReactiveHTMLAsComponentTemplate, Component, OnCreate,
   onNodeConnectedToWithImmediate,
 } from '@lirx/dom';
-import { MatProgressRingComponent } from '../material/progress/progress-ring/mat-progress-ring.component';
+import { MatProgressRingComponent } from '../material/components/progress/progress-ring/mat-progress-ring.component';
 import {
   createNetworkErrorFromResponse, createProgress, eq$$, fromPromise, fromXHR, IFromPromiseObservableNotifications,
   IFromXHRObservableNotifications,

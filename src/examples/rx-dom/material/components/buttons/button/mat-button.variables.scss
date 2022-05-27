@@ -1,0 +1,20 @@
+$mat-button-transition-duration: var(--mat-button-transition-duration, 250ms);
+
+
+$mat-button-color: var(--mat-button-color, rgba(black, 0.87));
+//$mat-button-background-color: var(--mat-button-background-color, transparent);
+$mat-button-background-color: var(--mat-button-background-color, #ddd);
+$mat-button-border-color: var(--mat-button-border-color, $mat-button-background-color);
+
+$mat-button-color-hover: var(--mat-button-color-hover, $mat-button-color);
+$mat-button-background-color-hover: var(--mat-button-background-color-hover, #eee);
+$mat-button-border-color-hover: var(--mat-button-border-color-hover, $mat-button-background-color-hover);
+
+$mat-button-color-focus: var(--mat-button-color-focus, $mat-button-color);
+$mat-button-background-color-focus: var(--mat-button-background-color-focus, #ddd);
+$mat-button-border-color-focus: var(--mat-button-border-color-focus, $mat-button-background-color-focus);
+
+$mat-button-color-disabled: var(--mat-button-color-disabled, rgba(black, 0.26));
+$mat-button-background-color-disabled: var(--mat-button-background-color-disabled, $mat-button-background-color);
+$mat-button-border-color-disabled: var(--mat-button-border-color-disabled, $mat-button-background-color-disabled);
+

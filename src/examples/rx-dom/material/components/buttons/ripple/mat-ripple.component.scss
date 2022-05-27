@@ -1,0 +1,18 @@
+@import 'mat-ripple.variables';
+
+//$mat-ripple-color: var(--mat-ripple-color, red);
+
+
+/** STYLE **/
+
+:host {
+  display: inline-block;
+  position: relative;
+
+  & > .ripples-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+}

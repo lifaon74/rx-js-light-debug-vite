@@ -31,7 +31,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="10">
+          <list size="16">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -42,6 +42,12 @@
             <item index="7" class="java.lang.String" itemvalue="rx-inject-content" />
             <item index="8" class="java.lang.String" itemvalue="rx-container" />
             <item index="9" class="java.lang.String" itemvalue="rx-if-true" />
+            <item index="10" class="java.lang.String" itemvalue="mat-toolbar-container" />
+            <item index="11" class="java.lang.String" itemvalue="mat-toolbar" />
+            <item index="12" class="java.lang.String" itemvalue="mat-icon-menu" />
+            <item index="13" class="java.lang.String" itemvalue="mat-button" />
+            <item index="14" class="java.lang.String" itemvalue="mat-ripple" />
+            <item index="15" class="java.lang.String" itemvalue="mat-sidenav-container" />
           </list>
         </value>
       </option>

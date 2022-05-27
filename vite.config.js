@@ -74,6 +74,7 @@ const config = {
     include: [
       '@lirx/core',
       // '@lirx/dom',
+      // '@lirx/mdi',
       // '@lirx/router',
     ],
   },

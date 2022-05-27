@@ -1,0 +1,29 @@
+@import 'mat-dual-ring-loader.variables';
+
+
+:host {
+  display: inline-block;
+  width: $mat-dual-ring-loader-size;
+  height: $mat-dual-ring-loader-size;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: $mat-dual-ring-loader-stroke-size;
+    border-color: $mat-dual-ring-loader-color transparent $mat-dual-ring-loader-color transparent;
+    animation: mat-dual-ring-loader-animation 1.2s linear infinite;
+  }
+}
+
+@keyframes mat-dual-ring-loader-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,22 @@
+@import './mat-progress-bar.variables';
+
+:host {
+  display: block;
+  width: 100%;
+  height: $mat-progress-bar-height;
+  border: 1px solid $mat-progress-bar-border-color;
+  border-radius: 4px;
+  overflow: hidden;
+  text-align: center;
+  font-size: 14px;
+  color: $mat-progress-bar-text-color;
+
+  & > .progress {
+    height: 100%;
+    background-color: $mat-progress-bar-color;
+  }
+
+  &.with-animation {
+    transition: width 500ms;
+  }
+}
