@@ -33,7 +33,6 @@ import { pictureExample } from './examples/rx-dom/picture/picture.example';
 import { matButtonExample } from './examples/rx-dom/material/__experimental/button/mat-button.example';
 import { matSelectInputExample } from './examples/rx-dom/material/form/components/inputs/select/mat-select-input.example';
 import { matColorInputExample } from './examples/rx-dom/material/form/components/inputs/color/mat-color-input.example';
-import { Component } from '@lirx/dom';
 import { aotExample } from './debug/rx-dom/aot-component/aot.example';
 import { debugTSX } from './debug/tsx/debug-tsx';
 import { materialExample } from './examples/rx-dom/material/material.example';
@@ -66,7 +65,7 @@ function run() {
   // stateMachineDebug();
   // webRTCDebug();
   // pathExample();
-  // debugMovement();
+  debugMovement();
   // debugNFC();
   // debugUnits();
   // wirex();

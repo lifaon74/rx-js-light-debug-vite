@@ -3,6 +3,7 @@ import {
 } from './movement.types';
 import { CanvasMovementRenderer, createContext, renderMovements } from './stepper';
 import { getMovementDuration } from './math';
+import { GCODE_SAMPLE_01 } from './assets/cgode-sample-01';
 
 
 /*
@@ -358,7 +359,7 @@ function decomposeConstrainedMultiAxisMovement(
     // minimalDistance = 0,
   }: IDecomposeConstraint = {},
 ): IMovement[] {
-  if (multiAxisMovement.every(({distance}) => distance === 0)) {
+  if (multiAxisMovement.every(({ distance }) => distance === 0)) {
     return [];
   }
 
@@ -657,6 +658,165 @@ function coordinatesToIConstrainedMultiAxisMovement(
 
 /*-----------------*/
 
+// https://marlinfw.org/docs/gcode/M104.html
+// TODO continue here
+
+function abc(
+  gcode: string,
+  constraints: IMovementConstraint[],
+  distanceMultiplier: number = 1,
+): IConstrainedMultiAxisMovement[] {
+  const multiAxisMovements: IConstrainedMultiAxisMovement[] = [];
+
+  const lines: string[] = gcode.split(/\r?\n/);
+
+  let isAbsoluteCoordinates: boolean = false;
+  let x: number = 0;
+  let y: number = 0;
+  let z: number = 0;
+  let e: number = 0;
+
+  let _distanceMultiplier!: number;
+
+  const setUnitMultiplier = (
+    unitMultiplier: number,
+  ): void => {
+    _distanceMultiplier = (unitMultiplier * distanceMultiplier);
+    x *= _distanceMultiplier;
+    y *= _distanceMultiplier;
+    z *= _distanceMultiplier;
+    e *= _distanceMultiplier;
+  };
+
+  setUnitMultiplier(1000);
+
+  for (let i = 0, l = lines.length; i < l; i++) {
+    const line: string = lines[i];
+    const parts: string[] = line.split(';');
+    const command: string = parts[0].trim();
+    if (command !== '') {
+      if (
+        command.startsWith('G0')
+        || command.startsWith('G1')
+      ) {
+        let dx: number = 0;
+        let dy: number = 0;
+        let dz: number = 0;
+        let de: number = 0;
+
+        const axisCommands = command.slice(3).split(/\s+/);
+        for (let j = 0, lj = axisCommands.length; j < lj; j++) {
+          const axisCommand: string = axisCommands[j];
+
+          if (axisCommand.startsWith('F')) { // feedrate
+          } else if (axisCommand.startsWith('X')) {
+            const _x: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              dx = _x - x;
+              x = _x;
+            } else {
+              dx = _x;
+            }
+          } else if (axisCommand.startsWith('Y')) {
+            const _y: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              dy = _y - y;
+              y = _y;
+            } else {
+              dy = _y;
+            }
+          } else if (axisCommand.startsWith('Z')) {
+            const _z: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              dz = _z - z;
+              z = _z;
+            } else {
+              dz = _z;
+            }
+          } else if (axisCommand.startsWith('E')) {
+            const _e: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              de = _e - e;
+              e = _e;
+            } else {
+              de = _e;
+            }
+          } else {
+            console.log(`Unknown axis: ${axisCommand}`);
+          }
+        }
+
+        // console.log(axisCommands);
+        // console.log(dx, dy, dz, de);
+
+        multiAxisMovements.push([
+          {
+            distance: dx,
+            ...constraints[0],
+          },
+          {
+            distance: dy,
+            ...constraints[1],
+          },
+          {
+            distance: dz,
+            ...constraints[2],
+          },
+          {
+            distance: de,
+            ...constraints[3],
+          },
+        ]);
+      } else if (command.startsWith('G20')) { // inch unit
+        setUnitMultiplier(1000 / 25.4);
+      } else if (command.startsWith('G21')) { // mm unit
+        setUnitMultiplier(1000);
+      } else if (command.startsWith('G28')) { // auto home
+        x = 0;
+        y = 0;
+        z = 0;
+      } else if (command.startsWith('G92')) { // set position
+        const axisCommands = command.slice(4).split(/\s+/);
+        for (let j = 0, lj = axisCommands.length; j < lj; j++) {
+          const axisCommand: string = axisCommands[j];
+
+          if (axisCommand.startsWith('F')) { // feedrate
+          } else if (axisCommand.startsWith('X')) {
+            x = Number(axisCommand.slice(1)) * _distanceMultiplier;
+          } else if (axisCommand.startsWith('Y')) {
+            y = Number(axisCommand.slice(1)) * _distanceMultiplier;
+          } else if (axisCommand.startsWith('Z')) {
+            z = Number(axisCommand.slice(1)) * _distanceMultiplier;
+          } else if (axisCommand.startsWith('E')) {
+            e = Number(axisCommand.slice(1)) * _distanceMultiplier;
+          } else {
+            console.log(`Unknown axis: ${axisCommand}`);
+          }
+        }
+      } else if (command.startsWith('M82')) { // absolute coordinates
+        isAbsoluteCoordinates = true;
+      } else if (command.startsWith('M83')) { // relative coordinates
+        isAbsoluteCoordinates = false;
+      } else if (command.startsWith('M84')) { // stop the idle hold
+      } else if (command.startsWith('M104')) { // set extruder temperature
+      } else if (command.startsWith('M105')) { // report temperatures
+      } else if (command.startsWith('M106')) { // set fan speed
+      } else if (command.startsWith('M107')) { // fan off
+      } else if (command.startsWith('M109')) { // wait for hotend temperature
+      } else if (command.startsWith('M140')) { // set bed temperature
+      } else {
+        console.log(`Unknown command: ${command}`);
+        break;
+      }
+    }
+  }
+  return multiAxisMovements;
+}
+
+
+/*-----------------*/
+
+
 /*
 TODO:
   the current minimalDuration is not optimal:
@@ -784,11 +944,36 @@ export function debugMovementRenderer1() {
 }
 
 
+export function debugGCode1() {
+  const axeAConstraint: IMovementConstraint = {
+    maxVelocity: 1e9,
+    maxAcceleration: 1e3,
+    maxJerk: 1e9,
+  };
+
+  const constraints = [
+    axeAConstraint,
+    axeAConstraint,
+    axeAConstraint,
+    axeAConstraint,
+  ];
+
+  const constrainedMovements = abc(GCODE_SAMPLE_01, constraints, 1e-2);
+
+  console.log(constrainedMovements.slice(0, 5));
+
+  const movements: IMovement[] = decomposeConstrainedMultiAxisMovements(constrainedMovements);
+
+  renderMovements(movements);
+
+}
+
 /*---*/
 
 export function debugMovement() {
   // debugMovement1();
-  debugMovement2();
+  // debugMovement2();
   // debugMovementRenderer1();
+  debugGCode1();
 }
 

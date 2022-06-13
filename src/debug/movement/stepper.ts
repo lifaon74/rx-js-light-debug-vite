@@ -264,11 +264,14 @@ export class CanvasMovementRenderer {
 export function renderMovements(
   movements: IMovement[],
 ): void {
-  const renderer = new CanvasMovementRenderer(createContext(512));
+  // const size: number = 512;
+  const size: number = 1024;
+  // const size: number = 2**14;
+  const renderer = new CanvasMovementRenderer(createContext(size));
 
   renderer.ctx.canvas.style.backgroundColor = 'black';
 
-  renderer.ctx.translate(256, 256);
+  // renderer.ctx.translate(renderer.ctx.canvas.width / 2, renderer.ctx.canvas.height / 2);
 
   for (let i = 0, l = movements.length; i < l; i++) {
     renderer.stepper.queueMovement(movements[i]);
