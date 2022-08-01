@@ -623,66 +623,13 @@ function decomposeConstrainedMultiAxisMovement(
 
 
 function decomposeConstrainedMultiAxisMovements(
-  multiAxisMovements: readonly IConstrainedMultiAxisMovement[],
+  multiAxisMovements: IConstrainedMultiAxisMovement[],
   options?: IDecomposeConstraint,
 ): IMovement[] {
   return multiAxisMovements.reduce((movements: IMovement[], multiAxisMovement: IConstrainedMultiAxisMovement): IMovement[] => {
     return movements.concat(decomposeConstrainedMultiAxisMovement(multiAxisMovement, options));
   }, []);
 }
-
-function roundMovements(
-  movements: readonly IMovement[],
-): IMovement[] {
-  const axisCount: number = movements[0].distances.length;
-  const offset: number[] = Array.from({ length: axisCount }, () => 0);
-
-  return movements.map((movement: IMovement): IMovement => {
-    const distances: number[] = movement.distances;
-
-    const roundedDistance: number[] = distances.map((distance: number, index: number): number => {
-      return Math.round(distance + offset[index]);
-    });
-
-    for (let i = 0; i < axisCount; i++) {
-      offset[i] += distances[i] - roundedDistance[i];
-    }
-
-    return {
-      ...movement,
-      distances: roundedDistance,
-    };
-  });
-}
-
-function getMovementsDuration(
-  movements: readonly IMovement[],
-): number {
-  return movements.reduce((duration: number, movement: IMovement): number => {
-    return duration + getMovementDuration(movement);
-  }, 0);
-}
-
-
-// function roundMovements(
-//   movements: readonly IMovement[],
-// ): IMovement[] {
-//   const axisCount: number = movements[0].distances.length;
-//   const absolutePositions: number[] = Array.from({ length: axisCount }, () => 0);
-//   const roundedAbsolutePositions: number[] = Array.from({ length: axisCount }, () => 0);
-//
-//   return movements.map((movement: IMovement): IMovement => {
-//     const distances: number[] = movement.distances;
-//     for (let i = 0; i < axisCount; i++) {
-//       absolutePositions[i] += distances[i];
-//     }
-//
-//     const nextAbsolutePositions: number[] = absolutePositions.map((absolutePosition: number, index: number): number => {
-//       return Math.round(absolutePosition + movement.distances[index]);
-//     });
-//     // const roundedDistance: number[] = movement.distances.map(Math.round);
-//   });
-// }
 
 /*-----------------*/
 
@@ -783,25 +730,28 @@ function coordinatesToIConstrainedMultiAxisMovement(
 
 function convertGCodeToConstrainedMultiAxisMovements(
   gcode: string,
-  constraints: readonly IConstrainedSingleAxisMovement[], // x, y, z, e
+  constraints: IConstrainedSingleAxisMovement[],
 ): IConstrainedMultiAxisMovement[] {
   const multiAxisMovements: IConstrainedMultiAxisMovement[] = [];
 
   const lines: string[] = gcode.split(/\r?\n/);
 
   let isAbsoluteCoordinates: boolean = false;
+  let x: number = 0;
+  let y: number = 0;
+  let z: number = 0;
+  let e: number = 0;
 
-  const axisCount: number = constraints.length;
-  const absolutePositions: number[] = constraints.map(() => 0);
-  const distanceMultipliers: number[] = constraints.map(() => 1);
+  let _distanceMultipliers!: number[];
 
   const setUnitMultiplier = (
     unitMultiplier: number,
   ): void => {
-    for (let i = 0; i < axisCount; i++) {
-      distanceMultipliers[i] = unitMultiplier * constraints[i].distance;
-      absolutePositions[i] *= distanceMultipliers[i];
-    }
+    _distanceMultipliers = constraints.map(({ distance }) => unitMultiplier * distance);
+    x *= _distanceMultipliers[0];
+    y *= _distanceMultipliers[1];
+    z *= _distanceMultipliers[2];
+    e *= _distanceMultipliers[3];
   };
 
   setUnitMultiplier(1 / 1000);
@@ -815,74 +765,98 @@ function convertGCodeToConstrainedMultiAxisMovements(
         command.startsWith('G0')
         || command.startsWith('G1')
       ) {
-        const distances: number[] = constraints.map(() => 0);
+        let dx: number = 0;
+        let dy: number = 0;
+        let dz: number = 0;
+        let de: number = 0;
 
         const axisCommands = command.slice(3).split(/\s+/);
         for (let j = 0, lj = axisCommands.length; j < lj; j++) {
           const axisCommand: string = axisCommands[j];
-          let axisIndex: number = -1;
 
           if (axisCommand.startsWith('F')) { // feedrate
           } else if (axisCommand.startsWith('X')) {
-            axisIndex = 0;
+            const _x: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              dx = _x - x;
+              x = _x;
+            } else {
+              dx = _x;
+            }
           } else if (axisCommand.startsWith('Y')) {
-            axisIndex = 1;
+            const _y: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              dy = _y - y;
+              y = _y;
+            } else {
+              dy = _y;
+            }
           } else if (axisCommand.startsWith('Z')) {
-            axisIndex = 2;
+            const _z: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              dz = _z - z;
+              z = _z;
+            } else {
+              dz = _z;
+            }
           } else if (axisCommand.startsWith('E')) {
-            axisIndex = 3;
+            const _e: number = Number(axisCommand.slice(1)) * _distanceMultiplier;
+            if (isAbsoluteCoordinates) {
+              de = _e - e;
+              e = _e;
+            } else {
+              de = _e;
+            }
           } else {
             console.log(`Unknown axis: ${axisCommand}`);
           }
-
-          if (axisIndex !== -1) {
-            const value: number = Number(axisCommand.slice(1)) * distanceMultipliers[axisIndex];
-            if (isAbsoluteCoordinates) {
-              distances[axisIndex] = value - absolutePositions[axisIndex];
-              absolutePositions[axisIndex] = value;
-            } else {
-              distances[axisIndex] = value;
-            }
-          }
         }
 
-        multiAxisMovements.push(
-          constraints.map((constraint: IConstrainedSingleAxisMovement, index: number): IConstrainedSingleAxisMovement => {
-            return {
-              ...constraint,
-              distance: distances[index],
-            };
-          }),
-        );
+        // console.log(axisCommands);
+        // console.log(dx, dy, dz, de);
+
+        multiAxisMovements.push([
+          {
+            distance: dx,
+            ...constraints[0],
+          },
+          {
+            distance: dy,
+            ...constraints[1],
+          },
+          {
+            distance: dz,
+            ...constraints[2],
+          },
+          {
+            distance: de,
+            ...constraints[3],
+          },
+        ]);
       } else if (command.startsWith('G20')) { // inch unit
         setUnitMultiplier(25.4 / 1000);
       } else if (command.startsWith('G21')) { // mm unit
         setUnitMultiplier(1 / 1000);
       } else if (command.startsWith('G28')) { // auto home
-        for (let i = 0; i < axisCount; i++) {
-          absolutePositions[i] = 0;
-        }
+        x = 0;
+        y = 0;
+        z = 0;
       } else if (command.startsWith('G92')) { // set position
         const axisCommands = command.slice(4).split(/\s+/);
         for (let j = 0, lj = axisCommands.length; j < lj; j++) {
           const axisCommand: string = axisCommands[j];
-          let axisIndex: number = -1;
 
           if (axisCommand.startsWith('F')) { // feedrate
           } else if (axisCommand.startsWith('X')) {
-            axisIndex = 0;
+            x = Number(axisCommand.slice(1)) * _distanceMultiplier;
           } else if (axisCommand.startsWith('Y')) {
-            axisIndex = 1;
+            y = Number(axisCommand.slice(1)) * _distanceMultiplier;
           } else if (axisCommand.startsWith('Z')) {
-            axisIndex = 2;
+            z = Number(axisCommand.slice(1)) * _distanceMultiplier;
           } else if (axisCommand.startsWith('E')) {
-            axisIndex = 3;
+            e = Number(axisCommand.slice(1)) * _distanceMultiplier;
           } else {
             console.log(`Unknown axis: ${axisCommand}`);
-          }
-
-          if (axisIndex !== -1) {
-            absolutePositions[axisIndex] = Number(axisCommand.slice(1)) * distanceMultipliers[axisIndex];
           }
         }
       } else if (command.startsWith('M82')) { // absolute coordinates
@@ -919,23 +893,17 @@ function getMicroStepsPerMeter(
     microSteps,
     stepsPerTurn,
     turnsPerMeter,
-  }: IMicroStepsPerMeter,
+  }: IMicroStepsPerMeter
 ): number {
   return microSteps * stepsPerTurn * turnsPerMeter;
 }
 
-function getMovementConstraints(): IConstrainedSingleAxisMovement[] {
+function getMovementConstraints(): IMovementConstraint[] {
   const axeX: IMicroStepsPerMeter = {
     microSteps: 256,
     stepsPerTurn: 200,
     turnsPerMeter: 100 / 4,
   };
-
-  // const axeX: IMicroStepsPerMeter = {
-  //   microSteps: 1,
-  //   stepsPerTurn: 1,
-  //   turnsPerMeter: 1000,
-  // };
 
   const axeY: IMicroStepsPerMeter = {
     ...axeX,
@@ -954,22 +922,21 @@ function getMovementConstraints(): IConstrainedSingleAxisMovement[] {
   const axeZMicroStepsPerMeter = getMicroStepsPerMeter(axeZ);
   const axeEMicroStepsPerMeter = getMicroStepsPerMeter(axeE);
 
-  const axeXConstraint: IConstrainedSingleAxisMovement = {
+  const axeXConstraint: IMovementConstraint = {
     maxVelocity: 0.2 * axeXMicroStepsPerMeter,
     maxAcceleration: 0.4 * axeXMicroStepsPerMeter,
     maxJerk: 1e10,
-    distance: axeXMicroStepsPerMeter,
   };
 
-  const axeYConstraint: IConstrainedSingleAxisMovement = {
+  const axeYConstraint: IMovementConstraint = {
+   ...axeXConstraint,
+  };
+
+  const axeZConstraint: IMovementConstraint = {
     ...axeXConstraint,
   };
 
-  const axeZConstraint: IConstrainedSingleAxisMovement = {
-    ...axeXConstraint,
-  };
-
-  const axeEConstraint: IConstrainedSingleAxisMovement = {
+  const axeEConstraint: IMovementConstraint = {
     ...axeXConstraint,
   };
 
@@ -981,6 +948,11 @@ function getMovementConstraints(): IConstrainedSingleAxisMovement[] {
   ];
 }
 
+/*
+TODO:
+  the current minimalDuration is not optimal:
+  - we should start at the velocity and acceleration of the jerkMovement
+ */
 
 function debugMovement1() {
   // const axeAConstraint: IMovementConstraint = {
@@ -1108,23 +1080,15 @@ function debugGCode1() {
 
   const constraints = getMovementConstraints();
 
-  const constrainedMovements = convertGCodeToConstrainedMultiAxisMovements(GCODE_SAMPLE_01, constraints);
+  const constrainedMovements = convertGCodeToConstrainedMultiAxisMovements(GCODE_SAMPLE_01, constraints, microStepsPerMeter);
 
-  // console.log(constrainedMovements.slice(0, 20));
+  console.log(constrainedMovements.slice(0, 20));
 
   const movements: IMovement[] = decomposeConstrainedMultiAxisMovements(constrainedMovements, { minimalDuration });
 
-  // console.log(movements.slice(0, 20));
+  console.log(movements.slice(0, 20));
 
-  const roundedMovement = roundMovements(movements);
-
-  // console.log(roundedMovement.slice(0, 20));
-
-  const duration: number = getMovementsDuration(movements);
-
-  console.log('duration', duration);
-
-  renderMovements(roundedMovement);
+  renderMovements(movements);
 
 }
 

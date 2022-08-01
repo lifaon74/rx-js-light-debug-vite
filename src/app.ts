@@ -65,10 +65,10 @@ function run() {
   // stateMachineDebug();
   // webRTCDebug();
   // pathExample();
-  debugMovement();
+  // debugMovement();
   // debugNFC();
   // debugUnits();
-  // wirex();
+  wirex();
   // renderLogo();
 
 

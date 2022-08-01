@@ -1,4 +1,4 @@
-import { createTimeout, IAbortTimer } from '@lirx/core';
+import { createAnimationFrameLoop, createTimeout, IAbortTimer } from '@lirx/core';
 import { float32, int32_t, uin64_t, uint32_t, uint8_t } from './number.types';
 import { getMovementDuration } from './math';
 import { IMovement } from './movement.types';
@@ -206,6 +206,7 @@ export class CanvasMovementRenderer {
 
   constructor(
     public readonly ctx: CanvasRenderingContext2D,
+    public readonly size: number,
   ) {
     this.stepper = new MultiStepper(2);
   }
@@ -218,7 +219,7 @@ export class CanvasMovementRenderer {
 
     if (x !== 0 || y !== 0) {
       this.ctx.translate(x, y);
-      this.ctx.fillRect(0, 0, 1, 1);
+      this.ctx.fillRect(0, 0, this.size, this.size);
     }
   }
 
@@ -239,8 +240,10 @@ export class CanvasMovementRenderer {
         this.update();
       }
 
-      loopTimeout = createTimeout(loop, 0);
+      // loopTimeout = createTimeout(loop, 0);
     };
+
+    loopTimeout = createAnimationFrameLoop(loop);
 
     const colorLoop = () => {
       this.ctx.fillStyle = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
@@ -264,13 +267,15 @@ export class CanvasMovementRenderer {
 export function renderMovements(
   movements: IMovement[],
 ): void {
-  // const size: number = 512;
-  const size: number = 1024;
+  const size: number = 512;
+  // const size: number = 1024;
   // const size: number = 2**14;
-  const renderer = new CanvasMovementRenderer(createContext(size));
+  // const scale: number = 1;
+  const scale: number = 5e-3;
+  const renderer = new CanvasMovementRenderer(createContext(size), 1 / scale);
 
   renderer.ctx.canvas.style.backgroundColor = 'black';
-
+  renderer.ctx.scale(scale, scale);
   // renderer.ctx.translate(renderer.ctx.canvas.width / 2, renderer.ctx.canvas.height / 2);
 
   for (let i = 0, l = movements.length; i < l; i++) {
